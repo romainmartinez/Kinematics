@@ -1,0 +1,96 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%% general settings %%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+participant name
+'TA'
+
+coordinates file in static position
+'\\134.214.26.46\d$\recherche\yoann\STA_MSK\subject\TA\opensim\Anato.trc'
+
+static file type (opensim,vicon)
+'opensim'
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%% model settings %%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+number of segment
+'4'
+
+segment name 1
+'thorax'
+
+segment name 2
+'clavicle'
+
+segment name 3
+'scapula'
+
+segment name 4
+'humerus'
+
+marker names segment 1
+@'STER','XIPH','T1','T10'@
+
+marker names segment 2
+@'CLAV_SC','CLAVm','CLAV_ant','CLAV_post','CLAVl','CLAV_AC','CL_CLAV_1','CL_CLAV_2','CL_CLAV_3','CL_CLAV_4'@
+
+marker names segment 3
+@'ACRO_tip','SCAP_AA','SCAPl','SCAPm','SCAP_CP','SCAP_RS','SCAP_SA','SCAP_IA','CL_SCAP_1','CL_SCAP_2','CL_SCAP_3','CL_SCAP_4'@
+
+marker names segment 4
+@'DELT','ARMl','ARMm','ARMp_up','ARMp_do','EPICl','EPICm','CL_HUM_1','CL_HUM_2','CL_HUM_3','CL_HUM_4','CL_HUM_5'@
+
+ellipsoid (none,opensim,kinematics)
+'opensim'
+
+marker thorax coordinates file
+'\\134.214.26.46\d$\recherche\yoann\STA_MSK\subject\TA\opensim\results_PK\markerThoCoord.txt'
+
+number of additional point for scapula contact (0,1,2)
+'2'
+
+position of additional point for scapula contact
+@mean([ACRO_tip,SCAP_IA,SCAP_IA],2)@
+@mean([SCAP_SA,SCAP_IA,SCAP_IA],2)@
+
+start point of the vector going to the new scapula point
+'ACRO_tip'
+
+center of rotation type (opensim,kinematics)
+'opensim'
+
+number of CoR
+'3'
+
+CoR coordinates file 1
+'\\134.214.26.46\d$\recherche\yoann\STA_MSK\subject\TA\opensim\results_PK\markerSternoCoord.txt'
+
+CoR coordinates file 2
+'\\134.214.26.46\d$\recherche\yoann\STA_MSK\subject\TA\opensim\results_PK\markerAcromioCoord.txt'
+
+CoR coordinates file 3
+'\\134.214.26.46\d$\recherche\yoann\STA_MSK\subject\TA\opensim\results_PK\markerGHCoord.txt'
+
+
+segment axis 1
+@3=mean([STER,T1],2)-mean([XIPH,T10],2)@
+@1=cross(mean([T10,XIPH],2)-T1,[STER-T1])@
+@2=cross(axe1_3,axe1_1)@
+
+segment axis 2
+@1=CLAV_AC-CLAV_SC@
+@2=cross(axe1_3,axe2_1)@
+@3=cross(axe2_1,axe2_2)@
+
+segment axis 3
+@1=ACRO_tip-SCAP_SA@
+@2=cross(SCAP_IA-ACRO_tip,SCAP_SA-ACRO_tip)@
+@3=cross(axe3_1,axe3_2)@
+
+
+segment axis 4
+@3=CoR3-mean([EPICl,EPICm],2)@
+@2=cross(EPICl-CoR3,EPICm-CoR3)@
+@1=cross(axe4_2,axe4_3)@
