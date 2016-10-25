@@ -37,16 +37,25 @@ Alias.nTags    = S2M_rbdl('nTags', Stuff.model) ;
 Alias.nameBody = S2M_rbdl('nameBody', Stuff.model) ;
     % identification des marqueurs correspondant à chaque segement
         % handelbow
-        handelbow = [32:43];
+        Alias.segmentMarkers.handelbow = [32:43];
         % GH
-        GH        = [25:31];
+        Alias.segmentMarkers.GH        = [25:31];
         % SCAC
-        SCAC      = [11:24];
+        Alias.segmentMarkers.SCAC      = [11:24];
         % RoB
-        RoB       = [1:10];
+        Alias.segmentMarkers.RoB       = [1:10];
+    % identification des DoF correspondant à chaque segement
+        % handelbow
+        Alias.segmentDoF.handelbow = [25:28];
+        % GH
+        Alias.segmentDoF.GH        = [19:24];
+        % SCAC
+        Alias.segmentDoF.SCAC      = [13:18];
+        % RoB
+        Alias.segmentDoF.RoB       = [1:12];    
 
 %% Importation des data
-for trial = 1 : length(Alias.Qnames)
+for trial = 1 : 3%length(Alias.Qnames)
     % Importation des Q,QDOT,QDDOT
 Data(trial).Qdata     = importdata([Path.importPath Alias.Qnames(trial).name]) ;
     % Noms des essais
@@ -63,19 +72,19 @@ end
 %%  Code Mickael (Optimiser) %%%%%%%%%%%%%
     % Initialisation des Q
 i = 1;
-q1 = Data(i).Qdata.Q2;
+Data(i).q1 = Data(i).Qdata.Q2;
 %% Articulation 1 : Poignet + coude
     % Coordonnées des marqueurs dans le repère global
-T           = S2M_rbdl('Tags', Stuff.model, q1) ;
+Data(i).T           = S2M_rbdl('Tags', Stuff.model, Data(i).q1) ;
 
     % Définition de la hauteur pour les marqueurs du segment en cours
     % le '3' correspond au Z car on s'intéresse à la hauteur
-H1          = squeeze(T(3,32:43,:));
+Data(i).H1          = squeeze(Data(i).T(3,Alias.segmentMarkers.handelbow(1):Alias.segmentMarkers.handelbow(end),:));
 
-q1(:,25:28) = 0;
+Data(i).q1(:,Alias.segmentDoF.handelbow(1):Alias.segmentDoF.handelbow(end)) = 0;
 
-T           = S2M_rbdl('Tags', Stuff.model, q1) ;
+Data(i).T           = S2M_rbdl('Tags', Stuff.model, q1) ;
 
-H2          = squeeze(T(3,32:43,:));
+Data(i).H2          = squeeze(T(3,32:43,:));
 
 xi          = H2-H1;
