@@ -9,7 +9,6 @@
                             clc; clear; close all 
 %% Informations sur le sujet et l'essai                            
 Alias.sujet = input('Enter subjet name : ','s'); ;
-
 %% Chemin de la librairie et des fichiers
     % Librairie S2M
 loadS2MLib;
@@ -60,20 +59,26 @@ for trial = 1 : 3%length(Alias.Qnames)
 Data(trial).Qdata     = importdata([Path.importPath Alias.Qnames(trial).name]) ;
     % Noms des essais
 Data(trial).trialname = Alias.Qnames(trial).name(5:11) ;
-    % Interpolation (juste pour pouvoir visualiser)
-% Data(trial).Qdata.Q2  = transpose(Data(trial).Qdata.Q2);
-Stuff.oldframe        = (1:size(transpose(Data(trial).Qdata.Q2),1))./size(transpose(Data(trial).Qdata.Q2),1)*100;
-Stuff.newframe        = linspace(Stuff.oldframe(1,1),100,100);
-Data(trial).Qinterp   = interp1(Stuff.oldframe,transpose(Data(trial).Qdata.Q2),Stuff.newframe,'spline');
-clearvars Stuff.oldframe Stuff.newframe
+%% Contribution des articulation à la hauteur
+    % Initialisation des Q
+Data(trial).q1 = Data(trial).Qdata.Q2;
+%% Articulation 1 : Poignet + coude
+    % Coordonnées des marqueurs dans le repère global
+Data(trial).T = S2M_rbdl('Tags', Stuff.model, Data(trial).q1) ;
+            % Marqueurs du segment en cours ('3' correspond à Z car on s'intéresse à la hauteur)
+        Data(trial).H1 = squeeze(Data(trial).T(3,Alias.segmentMarkers.handelbow(1):Alias.segmentMarkers.handelbow(end),:));
+    % Blocage des q du segment
+Data(trial).q1(Alias.segmentDoF.handelbow(1):Alias.segmentDoF.handelbow(end),:) = 0;
+    % Redefinition des marqueurs avec les q bloqués
+Data(trial).T = S2M_rbdl('Tags', Stuff.model, Data(trial).q1) ;
+            % Marqueurs du segment en cours avec q bloqués
+        Data(trial).H2 = squeeze(Data(trial).T(3,Alias.segmentMarkers.handelbow(1):Alias.segmentMarkers.handelbow(end),:));
+    % Delta entre les deux matrices de marqueurs en Z
+Data(trial).deltahand = Data(trial).H1-Data(trial).H2;
 end
 
-%% Condition de l'essai
-[Data] = getcondition(Data);
-
-%%  Code Mickael (Optimiser) %%%%%%%%%%%%%
+%% Contribution des articulation à la hauteur
     % Initialisation des Q
-i = 1;
 Data(i).q1 = Data(i).Qdata.Q2;
 %% Articulation 1 : Poignet + coude
     % Coordonnées des marqueurs dans le repère global
@@ -83,10 +88,13 @@ Data(i).T           = S2M_rbdl('Tags', Stuff.model, Data(i).q1) ;
     % le '3' correspond au Z car on s'intéresse à la hauteur
 Data(i).H1          = squeeze(Data(i).T(3,Alias.segmentMarkers.handelbow(1):Alias.segmentMarkers.handelbow(end),:));
 
-Data(i).q1(:,Alias.segmentDoF.handelbow(1):Alias.segmentDoF.handelbow(end)) = 0;
+Data(i).q1(Alias.segmentDoF.handelbow(1):Alias.segmentDoF.handelbow(end),:) = 0;
 
-Data(i).T           = S2M_rbdl('Tags', Stuff.model, q1) ;
+Data(i).T           = S2M_rbdl('Tags', Stuff.model, Data(i).q1) ;
 
-Data(i).H2          = squeeze(T(3,32:43,:));
+Data(i).H2          = squeeze(Data(i).T(3,Alias.segmentMarkers.handelbow(1):Alias.segmentMarkers.handelbow(end),:));
 
-xi          = H2-H1;
+xi          = Data(i).H1-Data(i).H2;
+
+%% Condition de l'essai
+[Data] = getcondition(Data);
