@@ -107,10 +107,13 @@ Data(trial).deltaRoB  = Data(trial).H4-Data(trial).H5;
 
 end
 
+%% remplacer 0 par NaN
+% Data(trial).deltahand(Data(trial).deltahand==0) = NaN;
+
 %% Condition de l'essai
 [Data] = getcondition(Data);
 
 %% plot
-figure
-plot(transpose(Data(1).deltahand))
-
+% figure
+plot(transpose(Data(3).deltahand),'LineWidth',2)
+plot(transpose(Data(3).H1),'LineWidth',2)
