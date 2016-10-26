@@ -14,7 +14,7 @@ Alias.sujet = input('Enter subjet name : ','s'); ;
     % Librairie S2M
 loadS2MLib;
     % Chemin des fonctions perso
-addpath(genpath('\\10.89.24.15\Projet_Romain\Codes\Functions_Matlab'))
+addpath(genpath('\\10.89.24.15\e\Projet_Romain\Codes\Functions_Matlab'))
     % Dossier du sujet
 Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\IRSST_' Alias.sujet 'd\Model_2\'] ;
     % Dossier du modèle pour le sujet
