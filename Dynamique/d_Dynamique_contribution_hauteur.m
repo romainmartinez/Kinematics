@@ -8,7 +8,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                             clc; clear; close all 
 %% Informations sur le sujet et l'essai                            
-Alias.sujet = input('Enter subjet name : ','s'); ;
+Alias.sujet = input('Enter subject name : ','s');
 %% Chemin de la librairie et des fichiers
     % Librairie S2M
 loadS2MLib;
@@ -109,3 +109,8 @@ end
 
 %% Condition de l'essai
 [Data] = getcondition(Data);
+
+%% plot
+figure
+plot(transpose(Data(1).deltahand))
+
