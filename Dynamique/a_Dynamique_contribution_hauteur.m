@@ -7,12 +7,12 @@
 %                                                                                %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                             clc; clear; close all; tic;
-%% Load des fonctions
-    if isempty(strfind(path, '\\10.89.24.15\e\Projet_Romain\Codes\Functions_Matlab'))
+%% Chargement des fonctions
+    if isempty(strfind(path, '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab'))
         % Librairie S2M
             loadS2MLib;
         % Fonctions perso
-            addpath(genpath('\\10.89.24.15\e\Projet_Romain\Codes\Functions_Matlab'));
+            addpath(genpath('\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab'));
     end
 %% Nom du sujet
 % Alias.sujet = input('Enter subject name : ','s');
@@ -57,7 +57,7 @@ Alias.nameBody = S2M_rbdl('nameBody', Stuff.model);
         % RoB
         Alias.segmentDoF.RoB       = 1:12;    
 
-for trial = 1 : length(Alias.Qnames)
+for trial = 1 : 3 %length(Alias.Qnames)
 %% Importation des Q,QDOT,QDDOT
 Data(trial).Qdata     = importdata([Path.importPath Alias.Qnames(trial).name]);
     % Noms des essais
@@ -115,6 +115,23 @@ end
 %% Condition de l'essai
 [Data] = getcondition(Data);
 
+%% Déterminer la phase du mouvement
+    % Obtenir les onset et offset de force
+[Force] = getforcedata(Alias.sujet)
+
+T = S2M_rbdl('Tags', Stuff.model, Data(trial).Qdata.Q2);
+main = squeeze(T(1:3,39,:));
+mainpoint = diff(main)
+plot(main','LineWidth',2)
+legend('x','y','z')
+
+    % début essai : time = 0
+    % arraché : force start OK
+    % transfert : marqueur main avec vitesse verticale
+    % dépôt : fin vitesse verticale
+    % fin dépôt : force end OK
+    
+[Force] = getforcedata(Alias.sujet)
 %% Plot
 % figure;
 % plot([H1 H2 H3 H4 H5])
