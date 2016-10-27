@@ -14,9 +14,10 @@
         % Fonctions perso
             addpath(genpath('\\10.89.24.15\e\Projet_Romain\Codes\Functions_Matlab'));
     end
-%% Informations sur le sujet et l'essai                            
-Alias.sujet = input('Enter subject name : ','s');
-%% Chemin de la librairie et des fichiers
+%% Nom du sujet
+% Alias.sujet = input('Enter subject name : ','s');
+Alias.sujet = 'dapo';                    
+%% Chemin des fichiers
     % Dossier du sujet
 Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\IRSST_' Alias.sujet 'd\Model_2\'];
     % Dossier du modèle pour le sujet
@@ -26,7 +27,7 @@ Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\IRSST_' A
     % Noms des fichiers data
 Alias.Qnames    = dir([Path.importPath '*.Q2']);
 
-%% Ouverture et information du modèle
+%% Ouverture et information du modèle    
     % Ouverture du modèle
 Stuff.model    = S2M_rbdl('new',Path.pathModel);
     % Noms et nombre de DoF
@@ -55,11 +56,8 @@ Alias.nameBody = S2M_rbdl('nameBody', Stuff.model);
         Alias.segmentDoF.SCAC      = 13:18;
         % RoB
         Alias.segmentDoF.RoB       = 1:12;    
-%% Pre-allocation des variables pour vitesse du code
-toc;
-Data=zeros(length(Alias.Qnames),10)
 
-for trial = 1 : 3 %length(Alias.Qnames)
+for trial = 1 : length(Alias.Qnames)
 %% Importation des Q,QDOT,QDDOT
 Data(trial).Qdata     = importdata([Path.importPath Alias.Qnames(trial).name]);
     % Noms des essais
@@ -111,9 +109,21 @@ T = S2M_rbdl('Tags', Stuff.model, q1);
     % Delta entre les deux matrices de marqueurs en Z
 Data(trial).deltaRoB  = H4-H5;
     % Nettoyage du workspace
-clearvars H1 H2 H3 H4 H5 q1 T
+% clearvars H1 H2 H3 H4 H5 q1 T
 end
 
 %% Condition de l'essai
 [Data] = getcondition(Data);
+
+%% Plot
+% figure;
+% plot([H1 H2 H3 H4 H5])
+% legend('normal','without hand','without GH','without SCAC','without RoB')
+% figure;
+% plot(Data(3).deltahand') ; hold on
+% plot(Data(3).deltaGH')
+% plot(Data(3).deltaSCAC')
+% plot(Data(3).deltaRoB')
+% legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
+
 toc;
