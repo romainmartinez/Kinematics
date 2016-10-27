@@ -10,8 +10,13 @@
 %% Informations sur le sujet
 sujet = 'DavO';
 
-%% Chemin de la librairie et des fichiers
-loadS2MLib;
+%% Chargement des fonctions
+    if isempty(strfind(path, '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab'))
+        % Librairie S2M
+            loadS2MLib;
+        % Fonctions perso
+            addpath(genpath('\\10.89.24.15\e\Projet_Romain\Codes\Functions_Matlab'));
+    end
 DirModels = ['\\10.89.24.15\f\Data\Shoulder\Lib\IRSST_' sujet 'd\Model_2\'];
 path.model = [DirModels 'Model.s2mMod'];
 
