@@ -16,7 +16,7 @@
     end
 %% Nom du sujet
 % Alias.sujet = input('Enter subject name : ','s');
-Alias.sujet = 'dapo';                    
+Alias.sujet = 'davo';                    
 %% Chemin des fichiers
     % Dossier du sujet
 Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\IRSST_' Alias.sujet 'd\Model_2\'];
@@ -49,13 +49,13 @@ Alias.nameBody = S2M_rbdl('nameBody', Stuff.model);
         Alias.segmentMarkers.RoB       = 1:10;
     % identification des DoF correspondant à chaque segement
         % handelbow
-        Alias.segmentDoF.handelbow = 25:28;
+        Alias.segmentDoF.handelbow     = 25:28;
         % GH
-        Alias.segmentDoF.GH        = 19:24;
+        Alias.segmentDoF.GH            = 19:24;
         % SCAC
-        Alias.segmentDoF.SCAC      = 13:18;
+        Alias.segmentDoF.SCAC          = 13:18;
         % RoB
-        Alias.segmentDoF.RoB       = 1:12;    
+        Alias.segmentDoF.RoB           = 1:12;    
 
 for trial = 1 : 3 %length(Alias.Qnames)
 %% Importation des Q,QDOT,QDDOT
@@ -117,30 +117,37 @@ end
 
 %% Déterminer la phase du mouvement
     % Obtenir les onset et offset de force
-[Force] = getforcedata(Alias.sujet)
+[Force] = getforcedata(Alias.sujet);
+    % Obtenir la vitesse verticale du marqueur WRIST
 
 T = S2M_rbdl('Tags', Stuff.model, Data(trial).Qdata.Q2);
-main = squeeze(T(1:3,39,:));
-mainpoint = diff(main)
-plot(main','LineWidth',2)
-legend('x','y','z')
+TJ = S2M_rbdl('TagsJacobian', Stuff.model, Data(trial).Qdata.Q2);
+xpoint = TJ*Data(trial).Qdata.QDOT2;
 
-    % début essai : time = 0
-    % arraché : force start OK
+
+plot(xpoint(125,:)); hold on
+vline([Force(trial).onsetensec*100 Force(trial).offsetensec*100],{'g','r'},{'Début','Fin'})
+
+
+
+    % début essai : time = 0                                OK
+    % arraché : force start                                 OK
     % transfert : marqueur main avec vitesse verticale
     % dépôt : fin vitesse verticale
-    % fin dépôt : force end OK
+    % fin dépôt : force end                                 OK
     
 [Force] = getforcedata(Alias.sujet)
 %% Plot
-% figure;
-% plot([H1 H2 H3 H4 H5])
-% legend('normal','without hand','without GH','without SCAC','without RoB')
-% figure;
-% plot(Data(3).deltahand') ; hold on
-% plot(Data(3).deltaGH')
-% plot(Data(3).deltaSCAC')
-% plot(Data(3).deltaRoB')
-% legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
+subplot(1,2,1)
+plot([H1 H2 H3 H4 H5])
+legend('normal','without hand','without GH','without SCAC','without RoB')
+subplot(1,2,2)
+plot(Data(3).deltahand') ; hold on
+plot(Data(3).deltaGH')
+plot(Data(3).deltaSCAC')
+plot(Data(3).deltaRoB')
+legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
+
+    hauteur= Data(3).deltahand+Data(3).deltaGH+Data(3).deltaSCAC+Data(3).deltaRoB
 
 toc;
