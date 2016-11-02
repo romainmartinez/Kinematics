@@ -16,7 +16,7 @@
     end
 %% Nom du sujet
 % Alias.sujet = input('Enter subject name : ','s');
-Alias.sujet = 'davo';                    
+Alias.sujet = 'dapo';                    
 %% Chemin des fichiers
     % Dossier du sujet
 Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\IRSST_' Alias.sujet 'd\Model_2\'];
@@ -142,10 +142,10 @@ subplot(1,2,1)
 plot([H1 H2 H3 H4 H5])
 legend('normal','without hand','without GH','without SCAC','without RoB')
 subplot(1,2,2)
-plot(Data(3).deltahand') ; hold on
-plot(Data(3).deltaGH')
-plot(Data(3).deltaSCAC')
-plot(Data(3).deltaRoB')
+plot(Data(1).deltahand') ; hold on
+plot(Data(1).deltaGH')
+plot(Data(1).deltaSCAC')
+plot(Data(1).deltaRoB')
 legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
 
     hauteur= Data(3).deltahand+Data(3).deltaGH+Data(3).deltaSCAC+Data(3).deltaRoB
