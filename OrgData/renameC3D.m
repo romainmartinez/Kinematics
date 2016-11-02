@@ -53,7 +53,7 @@ for f = 1 : length(correctlabel)
 btkSetAnalogLabel(btkc3d, find(strcmp(fieldnames(btkanalog), char(oldlabel{f}))), correctlabel{f}.Text);
 end
 
-%% Renommer les marqueurs
+%% Renommer les marqueurs %%%%%%%%% PROBLEME SUR OLDLABEL %%%%%%%%%%%
     if i == 1;
         fields = fieldnames(btkmarkers);
         correctlabel = xmlfile.MarkersProtocols.MarkersProtocol.MarkersList.Marker;
