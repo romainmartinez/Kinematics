@@ -17,51 +17,52 @@
     
 %% Chemin des essais
     % Nom du sujet
-Alias.subject = input('Enter subject name : ','s');
+Alias.subject  = input('Enter subject name : ','s');
     % Chemin des essais
-Path.trials = ['\\10.89.24.15\e\Projet_IRSST_LeverCaisse\InputData\' Alias.subject '\'];
+Path.trials    = ['\\10.89.24.15\e\Projet_IRSST_LeverCaisse\InputData\' Alias.subject '\'];
 Alias.C3dfiles = dir([Path.trials '*.c3d']); 
 
 %% Chargement des fichiers de configuration
     % Configuration du set de marqueurs
     xmlfile.MarkersProtocols = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab\MOtoNMS\SetupFiles\AcquisitionInterface\MarkersProtocols\S2M_IRSST_ALL_Markers.xml';
     xmlfile.MarkersProtocols = xml2struct( xmlfile.MarkersProtocols );
+    Alias.Markers            = xmlfile.MarkersProtocols.MarkersProtocol.MarkersList.Marker;
     % Configuration des EMG
     xmlfile.EMGsProtocols    = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab\MOtoNMS\SetupFiles\AcquisitionInterface\EMGsProtocols\S2M_IRSST_EMG.xml';
     xmlfile.EMGsProtocols    = xml2struct( xmlfile.EMGsProtocols );
-    % Caractéristique du laboratoire
-    xmlfile.Laboratories     = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab\MOtoNMS\SetupFiles\AcquisitionInterface\Laboratories\S2M_IRSST.xml';
-    xmlfile.Laboratories     = xml2struct( xmlfile.Laboratories );
+    Alias.Muscle             = xmlfile.EMGsProtocols.EMGsProtocol.MuscleList.Muscle;
 
 %% Chargement des c3d
 
 for i = 1 : length(Alias.C3dfiles)
-Filename = [Path.trials Alias.C3dfiles(i).name];
+Filename   = [Path.trials Alias.C3dfiles(i).name];
 
-btkc3d = btkReadAcquisition(Filename);
-btkanalog = btkGetAnalogs(btkc3d);
+btkc3d     = btkReadAcquisition(Filename);
+btkanalog  = btkGetAnalogs(btkc3d);
 btkmarkers = btkGetMarkers(btkc3d);
 %% Renommer les fichiers EMG
     if i == 1;
         fields = fieldnames(btkanalog);
-        correctlabel = xmlfile.EMGsProtocols.EMGsProtocol.MuscleList.Muscle;
-        GUI_OrgData
+        newlabel = xmlfile.EMGsProtocols.EMGsProtocol.MuscleList.Muscle;
+        GUI_c3drename
         pause
-       
+        oldlabelEMG = oldlabel ;     
     end
-for f = 1 : length(correctlabel)
-btkSetAnalogLabel(btkc3d, find(strcmp(fieldnames(btkanalog), char(oldlabel{f}))), correctlabel{f}.Text);
+    
+for f = 1 : length(Alias.Muscle)
+btkSetAnalogLabel(btkc3d, find(strcmp(fieldnames(btkanalog), char(oldlabelEMG{f}))), Alias.Muscle{f}.Text);
 end
 
-%% Renommer les marqueurs %%%%%%%%% PROBLEME SUR OLDLABEL %%%%%%%%%%%
+%% Renommer les marqueurs
     if i == 1;
         fields = fieldnames(btkmarkers);
-        correctlabel = xmlfile.MarkersProtocols.MarkersProtocol.MarkersList.Marker;
-        GUI_OrgData
+        newlabel = xmlfile.MarkersProtocols.MarkersProtocol.MarkersList.Marker;
+        GUI_c3drename
         pause
+        oldlabelMarkers = oldlabel ; 
     end
-for u = 1 : length(correctlabel)
-btkSetPointLabel(btkc3d, find(strcmp(fieldnames(btkmarkers), char(oldlabel{u}))), correctlabel{u}.Text);
+for u = 1 : length(Alias.Markers)
+btkSetPointLabel(btkc3d, find(strcmp(fieldnames(btkmarkers), char(oldlabelMarkers{u}))), Alias.Markers{u}.Text);
 end
 
 btkanalog = btkGetAnalogs(btkc3d);
