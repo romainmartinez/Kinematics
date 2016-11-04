@@ -7,6 +7,7 @@
 %                                                                                %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                             clc; clear; close all
+%% TODO : AC post et ant inutile , CLAV post manquaunt seulement sur Arst ?
 %% Chargement des fonctions
     if isempty(strfind(path, '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab'))
         % Librairie S2M
