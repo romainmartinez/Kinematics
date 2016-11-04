@@ -36,10 +36,18 @@ Alias.C3dfiles = dir([Path.trials '*.c3d']);
 
 for i = 1 : length(Alias.C3dfiles)
 Filename   = [Path.trials Alias.C3dfiles(i).name];
-
+fprintf('Traitement de %d (%s)\n', i, Alias.C3dfiles(i).name);
 btkc3d     = btkReadAcquisition(Filename);
 btkanalog  = btkGetAnalogs(btkc3d);
 btkmarkers = btkGetMarkers(btkc3d);
+%% supprimer les analogues vides
+    for b = 1 : length(fieldnames(btkanalog))
+        if sum(btkanalog.(fields{b})) == 0 
+            btkanalog = rmfield(btkanalog,(fields{b}));
+%             fields{b} = [];
+        end
+    end
+%     fields = fields(~cellfun('isempty',fields));
 %% Renommer les fichiers EMG
     if i == 1;
         fields = fieldnames(btkanalog);
@@ -49,7 +57,7 @@ btkmarkers = btkGetMarkers(btkc3d);
         oldlabelEMG = oldlabel ;     
     end
     
-for f = 1 : length(Alias.Muscle)
+for f = 1 : length(fieldnames(btkanalog))
 btkSetAnalogLabel(btkc3d, find(strcmp(fieldnames(btkanalog), char(oldlabelEMG{f}))), Alias.Muscle{f}.Text);
 end
 
@@ -61,11 +69,9 @@ end
         pause
         oldlabelMarkers = oldlabel ; 
     end
-for u = 1 : length(Alias.Markers)
+for u = 1 : length(fieldnames(btkmarkers))
 btkSetPointLabel(btkc3d, find(strcmp(fieldnames(btkmarkers), char(oldlabelMarkers{u}))), Alias.Markers{u}.Text);
 end
 
-btkanalog = btkGetAnalogs(btkc3d);
-btkmarkers = btkGetMarkers(btkc3d);
 btkWriteAcquisition(btkc3d, Filename)
 end
