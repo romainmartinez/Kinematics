@@ -62,7 +62,7 @@ Y = Y/norm(Y);
 Z = cross(X,Y)
 Z = Z/norm(Z);
 
-R = [X' Y' Z']*10000
+R = [X' Y' Z']
 RT = [R Milieu']
 RT(4,:) = [0 0 0 1]
 
