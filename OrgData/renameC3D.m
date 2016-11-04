@@ -41,37 +41,38 @@ btkc3d     = btkReadAcquisition(Filename);
 btkanalog  = btkGetAnalogs(btkc3d);
 btkmarkers = btkGetMarkers(btkc3d);
 %% supprimer les analogues vides
-    for b = 1 : length(fieldnames(btkanalog))
-        if sum(btkanalog.(fields{b})) == 0 
-            btkanalog = rmfield(btkanalog,(fields{b}));
-%             fields{b} = [];
-        end
+Names = fieldnames(btkanalog);
+delet = {};
+for loopIndex = numel(Names):-1:1  %1 : numel(Names) 
+    if sum(btkanalog.(Names{loopIndex})) == 0
+        btkanalog = btkRemoveAnalog(btkc3d, find(strcmp(Names,char(Names(loopIndex))))); 
     end
-%     fields = fields(~cellfun('isempty',fields));
+end
 %% Renommer les fichiers EMG
     if i == 1;
-        fields = fieldnames(btkanalog);
+        fields   = fieldnames(btkanalog);
         newlabel = xmlfile.EMGsProtocols.EMGsProtocol.MuscleList.Muscle;
         GUI_c3drename
         pause
-        oldlabelEMG = oldlabel ;     
+        oldlabelEMG = oldlabel ;
     end
-    
-for f = 1 : length(fieldnames(btkanalog))
-btkSetAnalogLabel(btkc3d, find(strcmp(fieldnames(btkanalog), char(oldlabelEMG{f}))), Alias.Muscle{f}.Text);
-end
+
+oldlabelEMG = oldlabelEMG(~cellfun('isempty',oldlabelEMG)) 
+        for f = 1 : length(oldlabelEMG)
+            btkSetAnalogLabel(btkc3d, find(strcmp(fieldnames(btkanalog),char(oldlabelEMG{f}))), Alias.Muscle{f}.Text);
+        end
 
 %% Renommer les marqueurs
     if i == 1;
-        fields = fieldnames(btkmarkers);
+        fields   = fieldnames(btkmarkers);
         newlabel = xmlfile.MarkersProtocols.MarkersProtocol.MarkersList.Marker;
         GUI_c3drename
         pause
         oldlabelMarkers = oldlabel ; 
     end
-for u = 1 : length(fieldnames(btkmarkers))
-btkSetPointLabel(btkc3d, find(strcmp(fieldnames(btkmarkers), char(oldlabelMarkers{u}))), Alias.Markers{u}.Text);
-end
+        for u = 1 : length(oldlabelMarkers)
+            btkSetPointLabel(btkc3d, find(strcmp(fieldnames(btkmarkers), char(oldlabelMarkers{u}))), Alias.Markers{u}.Text);
+        end
 
 btkWriteAcquisition(btkc3d, Filename)
 end
