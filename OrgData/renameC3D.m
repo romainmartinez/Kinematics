@@ -58,7 +58,7 @@ end
         oldlabelEMG = oldlabel ;
     end
 
-oldlabelEMG = oldlabelEMG(~cellfun('isempty',oldlabelEMG)) 
+oldlabelEMG = oldlabelEMG(~cellfun('isempty',oldlabelEMG)) ;
         for f = 1 : length(oldlabelEMG)
             btkSetAnalogLabel(btkc3d, find(strcmp(fieldnames(btkanalog),char(oldlabelEMG{f}))), Alias.Muscle{f}.Text);
         end
@@ -71,6 +71,8 @@ oldlabelEMG = oldlabelEMG(~cellfun('isempty',oldlabelEMG))
         pause
         oldlabelMarkers = oldlabel ; 
     end
+    
+oldlabelMarkers = oldlabelMarkers(~cellfun('isempty',oldlabelMarkers)) ;    
         for u = 1 : length(oldlabelMarkers)
             btkSetPointLabel(btkc3d, find(strcmp(fieldnames(btkmarkers), char(oldlabelMarkers{u}))), Alias.Markers{u}.Text);
         end
