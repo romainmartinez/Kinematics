@@ -8,7 +8,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                             clc; clear; close all 
 %% Informations sur le sujet et l'essai                            
-Alias.sujet = input('Enter subjet name : ','s'); ;
+Alias.sujet = input('Enter subjet name : ','s');
 
 %% Chemin de la librairie et des fichiers
 	% Chargement des fonctions
@@ -95,3 +95,8 @@ end
 
     % Condition des essais (hauteur et poids)
 [Data] = getcondition(Data);
+
+%% Plot 3D
+plot3(T(1,:,1),T(2,:,1),T(3,:,1),'-k.','MarkerSize',12) ; hold on
+quiver3(zeros(3,1),zeros(3,1),zeros(3,1),[1;0;0],[0;1;0],[0;0;1])
+
