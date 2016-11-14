@@ -15,7 +15,7 @@
             addpath(genpath('\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab'));
     end
 %% Nom du sujet
-Alias.sujet = 'dapo';  
+Alias.sujet = 'davo';  
 
 %% Dossier des essais
 folderPath = ['\\10.89.24.15\f\Data\Shoulder\RAW\IRSST_' Alias.sujet 'd\trials\'];
