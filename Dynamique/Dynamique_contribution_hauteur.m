@@ -16,7 +16,7 @@
     end
 %% Nom du sujet
 % Alias.sujet = input('Enter subject name : ','s');
-Alias.sujet = 'dapo';                    
+Alias.sujet = 'davo';                    
 %% Chemin des fichiers
     % Dossier du sujet
 Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\IRSST_' Alias.sujet 'd\Model_2\'];
