@@ -82,55 +82,36 @@ end
 
 %% Force
     % marqueurs de la boite (markers*n*dim)
-Mmat(1,:,:) = btkmarkers.boite_arriere_droit;
-Mmat(2,:,:) = btkmarkers.boite_arriere_gauche;
-Mmat(3,:,:) = btkmarkers.boite_avant_droit;
-Mmat(4,:,:) = btkmarkers.boite_avant_gauche;
-Mmat(5,:,:) = btkmarkers.boite_droite_ext;
-Mmat(6,:,:) = btkmarkers.boite_droite_int;
-Mmat(7,:,:) = btkmarkers.boite_gauche_int;
-Mmat(8,:,:) = btkmarkers.boite_gauche_ext;
+Mmat(:,1,:) = btkmarkers.boite_arriere_droit';
+Mmat(:,2,:) = btkmarkers.boite_arriere_gauche';
+Mmat(:,3,:) = btkmarkers.boite_avant_droit';
+Mmat(:,4,:) = btkmarkers.boite_avant_gauche';
+Mmat(:,5,:) = btkmarkers.boite_droite_ext';
+Mmat(:,6,:) = btkmarkers.boite_droite_int';
+Mmat(:,7,:) = btkmarkers.boite_gauche_int';
+Mmat(:,8,:) = btkmarkers.boite_gauche_ext';
     % marqueurs de la main (markers*n*dim)
-Mmat(9,:,:) = btkmarkers.INDEX;
-Mmat(10,:,:) = btkmarkers.LASTC;
-Mmat(11,:,:) = btkmarkers.MEDH;
-Mmat(12,:,:) = btkmarkers.LATH;
+Mmat(:,9,:) = btkmarkers.INDEX';
+Mmat(:,10,:) = btkmarkers.LASTC';
+Mmat(:,11,:) = btkmarkers.MEDH';
+Mmat(:,12,:) = btkmarkers.LATH';
 
     % plot de la boite
-plot3(Mmat(1:8,1,1), Mmat(1:8,1,2), Mmat(1:8,1,3)) ; hold on 
-plot3(Mmat(1:8,1,1), Mmat(1:8,1,2), Mmat(1:8,1,3), 'b.') ; axis equal
+plot3d(Mmat(:,1:8,1)); hold on
+plot3d(Mmat(:,1:8,1), 'b.'); axis equal
 
     % Milieu M5 M6
-M5M6 = (Mmat(5,1,:)+Mmat(6,1,:))/2;
-plot3(M5M6(1), M5M6(2), M5M6(3), 'r.', 'markers', 12)
+M5M6 = (Mmat(:,5,:)+Mmat(:,6,:))/2;
+plot3d(M5M6(:,:,1), 'r.', 'markers', 12);
+    % milieu de la main
+main = (Mmat(:,9,:)+Mmat(:,10,:)+Mmat(:,11,:)+Mmat(:,12,:))/4;
+plot3d(main(:,1,1), 'g.',  'markersize', 15);
 
     % Axes
-X = squeeze(Mmat(3,1,:) - Mmat(4,1,:));
-X = X/norm(X);
-
-Z = squeeze(Mmat(1,1,:) - Mmat(3,1,:));
-Z = Z/norm(Z);
-
-Y = cross(Z,X);
-Y = Y/norm(Y);
-
-Z = cross(X,Y);
-Z = Z/norm(Z);
-
-    % Position du capteur
-capteur = squeeze(M5M6);
-capteur = capteur+78.5*Z;
-
-    % Matrice de rototranslation
-R       = [X Y Z];
-RT      = [R capteur];
-RT(4,:) = [0 0 0 1];
-    % plot des axes
+RT = defineAxis(Mmat(:,3,:) - Mmat(:,4,:), Mmat(:,1,:) - Mmat(:,3,:), 'xz', 'x',  M5M6);
+RT(1:3,4,:) = RT(1:3,3,:)*78.5+RT(1:3,4,:); % Translation de 78.5mm en z
 plotAxes(RT,'length', 20)
-
-
-    % Marqueurs dans le repère local
-% xi = invR(RT)*[squeeze(Mmat(:,1,:))';ones(1,8)];
+RT_Trans = invR(RT);
 
 %% Force et moment dans le global
     % matrix 6xn des voltages
@@ -147,13 +128,14 @@ matrixetal=[15.7377 -178.4176 172.9822 7.6998 -192.7411 174.1840;
                  5.6472 -0.7266 -0.3242 5.4650 -8.9705 -8.4179;
                  5.7700 6.7466 -6.9682 -4.1899 1.5741 -2.4571;
                  -1.2722 1.6912 -3.0543 5.1092 -5.6222 3.3049];
-   
 forcemoment    = matrixetal * voltage;
+forcemoment = reshape(forcemoment, [6, 1, size(forcemoment,2)]);
+
+
+   ratioFreq = size(forcemoment, 3) / size(RT,3);
     % Forces dans le global
-forcein0       = R*forcemoment(1:3,:);
+forcein0       = multiprod(RT_Trans(1:3,1:3,:), forcemoment(1:3,:,1:ratioFreq:end));
     % Moments dans le global (/!\ moment exprimés au centre du capteur /!\)
-momentin0      = R*forcemoment(4:6,:);
-    % Moments exprimés sur la main
-        % milieu de la main
-main = (Mmat(9,:,:)+Mmat(10,:,:)+Mmat(11,:,:)+Mmat(12,:,:))/4;         
-momentin0_main = momentin0 + cross((Capteur - Main), ForceIn0);
+momentin0      = multiprod(RT_Trans(1:3,1:3,:), forcemoment(4:6,:,1:ratioFreq:end));
+    % Moments exprimés dans le global     
+momentin0 = momentin0 + cross(RT(1:3,4,:), forcein0);
