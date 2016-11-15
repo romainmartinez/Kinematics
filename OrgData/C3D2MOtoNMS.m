@@ -81,7 +81,7 @@ end
 end
 
 %% Force
-    % marqueurs de la boite (markers*n*dim)
+    % marqueurs de la boite (dim*markers*time)
 Mmat(:,1,:) = btkmarkers.boite_arriere_droit';
 Mmat(:,2,:) = btkmarkers.boite_arriere_gauche';
 Mmat(:,3,:) = btkmarkers.boite_avant_droit';
@@ -90,27 +90,24 @@ Mmat(:,5,:) = btkmarkers.boite_droite_ext';
 Mmat(:,6,:) = btkmarkers.boite_droite_int';
 Mmat(:,7,:) = btkmarkers.boite_gauche_int';
 Mmat(:,8,:) = btkmarkers.boite_gauche_ext';
-    % marqueurs de la main (markers*n*dim)
+    % marqueurs de la main (dim*markers*time)
 Mmat(:,9,:) = btkmarkers.INDEX';
 Mmat(:,10,:) = btkmarkers.LASTC';
 Mmat(:,11,:) = btkmarkers.MEDH';
 Mmat(:,12,:) = btkmarkers.LATH';
 
     % plot de la boite
-plot3d(Mmat(:,1:8,1)); hold on
-plot3d(Mmat(:,1:8,1), 'b.'); axis equal
+% plot3d(Mmat(:,1:8,1)); hold on
+% plot3d(Mmat(:,1:8,1), 'b.'); axis equal
 
     % Milieu M5 M6
 M5M6 = (Mmat(:,5,:)+Mmat(:,6,:))/2;
-plot3d(M5M6(:,:,1), 'r.', 'markers', 12);
-    % milieu de la main
-main = (Mmat(:,9,:)+Mmat(:,10,:)+Mmat(:,11,:)+Mmat(:,12,:))/4;
-plot3d(main(:,1,1), 'g.',  'markersize', 15);
+% plot3d(M5M6(:,:,1), 'r.', 'markers', 12);
 
     % Axes
 RT = defineAxis(Mmat(:,3,:) - Mmat(:,4,:), Mmat(:,1,:) - Mmat(:,3,:), 'xz', 'x',  M5M6);
 RT(1:3,4,:) = RT(1:3,3,:)*78.5+RT(1:3,4,:); % Translation de 78.5mm en z
-plotAxes(RT,'length', 20)
+% plotAxes(RT(:,:,1),'length', 20)
 RT_Trans = invR(RT);
 
 %% Force et moment dans le global
@@ -129,13 +126,36 @@ matrixetal=[15.7377 -178.4176 172.9822 7.6998 -192.7411 174.1840;
                  5.7700 6.7466 -6.9682 -4.1899 1.5741 -2.4571;
                  -1.2722 1.6912 -3.0543 5.1092 -5.6222 3.3049];
 forcemoment    = matrixetal * voltage;
+    % Reshape de la matrice de force
 forcemoment = reshape(forcemoment, [6, 1, size(forcemoment,2)]);
-
-
-   ratioFreq = size(forcemoment, 3) / size(RT,3);
+ratioFreq = size(forcemoment, 3) / size(RT,3);
     % Forces dans le global
 forcein0       = multiprod(RT_Trans(1:3,1:3,:), forcemoment(1:3,:,1:ratioFreq:end));
     % Moments dans le global (/!\ moment exprimés au centre du capteur /!\)
 momentin0      = multiprod(RT_Trans(1:3,1:3,:), forcemoment(4:6,:,1:ratioFreq:end));
     % Moments exprimés dans le global     
 momentin0 = momentin0 + cross(RT(1:3,4,:), forcein0);
+
+%% Création de la force dans le C3D
+    % Matrice 3D vers 2D
+forcein0  = transpose(squeeze(forcein0));
+momentin0 = transpose(squeeze(momentin0));
+    % Interpolation pour que frame force = frame analog
+% for i = 1 : length(matfiles)
+%     oldframe = (1:size(data(i).EMGcut,1))./size(data(i).EMGcut,1)*100;
+%     newframe = linspace(oldframe(1,1),100,1000);
+%     data(i).EMGinterp = interp1(oldframe,data(i).EMGcut,newframe,'spline');
+% end
+x=1:3
+y=3:3:9
+X=magic(3)
+[M,N]=size(X)
+Y=interp1(x,y,X(:),'linear','extrap')
+Y=reshape(Y,M,N)
+
+    % Corners qui ne servent à rien (prit au hasard)
+corners =    [0.7060    0.0971    0.9502;
+              0.0318    0.8235    0.0344;
+              0.2769    0.6948    0.4387;
+              0.0462    0.3171    0.3816]
+btkAppendForcePlatformType2(btkc3d, forcein0, momentin0, corners)
