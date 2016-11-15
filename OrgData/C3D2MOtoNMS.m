@@ -7,7 +7,8 @@
 %                                                                                %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                             clc; clear; close all
-%% TODO : AC post et ant inutile , CLAV post manquaunt seulement sur Arst ?
+%% TODO : utiliser les q comme input C3D
+%AC post et ant inutile , CLAV post manquaunt seulement sur Arst ?
 %% Chargement des fonctions
     if isempty(strfind(path, '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab'))
         % Librairie S2M
@@ -141,21 +142,14 @@ momentin0 = momentin0 + cross(RT(1:3,4,:), forcein0);
 forcein0  = transpose(squeeze(forcein0));
 momentin0 = transpose(squeeze(momentin0));
     % Interpolation pour que frame force = frame analog
-% for i = 1 : length(matfiles)
-%     oldframe = (1:size(data(i).EMGcut,1))./size(data(i).EMGcut,1)*100;
-%     newframe = linspace(oldframe(1,1),100,1000);
-%     data(i).EMGinterp = interp1(oldframe,data(i).EMGcut,newframe,'spline');
-% end
-x=1:3
-y=3:3:9
-X=magic(3)
-[M,N]=size(X)
-Y=interp1(x,y,X(:),'linear','extrap')
-Y=reshape(Y,M,N)
-
+oldframe = (1:size(forcein0,1))./size(forcein0,1)*100;
+newframe = linspace(oldframe(1,1),100,length(btkanalog.Voltage_1));
+forcein0 = interp1(oldframe,forcein0,newframe,'spline');
+momentin0 = interp1(oldframe,momentin0,newframe,'spline');
     % Corners qui ne servent à rien (prit au hasard)
-corners =    [0.7060    0.0971    0.9502;
-              0.0318    0.8235    0.0344;
-              0.2769    0.6948    0.4387;
-              0.0462    0.3171    0.3816]
-btkAppendForcePlatformType2(btkc3d, forcein0, momentin0, corners)
+corners =    [0    0    0;
+              0    0    0;
+              0    0    0;
+              0    0    0]
+btkAppendForcePlatformType2_MARTINEZ(btkc3d, forcein0, momentin0, corners)
+[forceplates, forceplatesInfo] = btkGetForcePlatforms(btkc3d)
