@@ -90,16 +90,18 @@ Mmat(5,:,:) = btkmarkers.boite_droite_ext;
 Mmat(6,:,:) = btkmarkers.boite_droite_int;
 Mmat(7,:,:) = btkmarkers.boite_gauche_int;
 Mmat(8,:,:) = btkmarkers.boite_gauche_ext;
+    % marqueurs de la main
+Mmat(9,:,:) = btkmarkers.INDEX;
+Mmat(10,:,:) = btkmarkers.LASTC;
+Mmat(11,:,:) = btkmarkers.MEDH;
+Mmat(12,:,:) = btkmarkers.LATH;
 
     % plot de la boite
 plot3(Mmat(:,1,1), Mmat(:,1,2), Mmat(:,1,3)) ; hold on 
 plot3(Mmat(:,1,1), Mmat(:,1,2), Mmat(:,1,3), 'b.')
-    % Milieu boite
-Milieu = (Mmat(1,1,:)+Mmat(2,1,:)+Mmat(3,1,:)+Mmat(4,1,:))/4;    
-plot3(Milieu(1), Milieu(2), Milieu(3), 'r.', 'markers', 12)
 
     % Milieu M5 M6
-M5M6 = (Mmat(5,1,:)+Mmat(6,1,:))/2;
+M5M6   = (Mmat(5,1,:)+Mmat(6,1,:))/2;
 plot3(M5M6(1), M5M6(2), M5M6(3), 'r.', 'markers', 12)
 
     % Axes
@@ -115,34 +117,43 @@ Y = Y/norm(Y);
 Z = cross(X,Y);
 Z = Z/norm(Z);
 
+    % Position du capteur
 capteur = squeeze(M5M6);
 capteur = capteur+78.5*Z;
 
-
-R = [X Y Z];
-RT = [R capteur];
+    % Matrice de rototranslation
+R       = [X Y Z];
+RT      = [R capteur];
 RT(4,:) = [0 0 0 1];
-
+    % plot des axes
 plotAxes(RT,'length', 20)
 axis equal
 
-%% Test
-xi = invR(RT)*[squeeze(Mmat(:,1,:))';ones(1,8)]
+    % Marqueurs dans le repère local
+xi = invR(RT)*[squeeze(Mmat(:,1,:))';ones(1,8)];
 
-
-% matrix 6xn
+%% Force et moment dans le global
+    % matrix 6xn des voltages
 voltage(1,:) = btkanalog.Voltage_1;
-
-ForceMoment = MatrixEtal * voltages;
-ForceIn0 = R*ForcesInL(1:3,:);
-MomentIn0 = R*ForcesInL(4:6,:); % attention moment exprimé au centre du capteur
-
-%Main point sur la main
-%Capteur centre du capteur
-
-MomentIn0_Main = MomentIn0 + cross((Capteur - Main), ForceIn0);
-
-
-
-    % Position capteur
-plot3(capteur(1), capteur(2), capteur(3), 'b.', 'markers', 16)
+voltage(2,:) = btkanalog.Voltage_2;
+voltage(3,:) = btkanalog.Voltage_3;
+voltage(4,:) = btkanalog.Voltage_4;
+voltage(5,:) = btkanalog.Voltage_5;
+voltage(6,:) = btkanalog.Voltage_6;
+    % Étalonnage
+matrixetal=[15.7377 -178.4176 172.9822 7.6998 -192.7411 174.1840;
+                 208.3629 -109.1685 -110.3583  209.3269 -104.9032 -103.5278;
+                 227.6774 222.8613 219.1087 234.3732 217.1453 221.2831;
+                 5.6472 -0.7266 -0.3242 5.4650 -8.9705 -8.4179;
+                 5.7700 6.7466 -6.9682 -4.1899 1.5741 -2.4571;
+                 -1.2722 1.6912 -3.0543 5.1092 -5.6222 3.3049];
+   
+forcemoment    = matrixetal * voltage;
+    % Forces dans le global
+forcein0       = R*forcemoment(1:3,:);
+    % Moments dans le global (/!\ moment exprimés au centre du capteur /!\)
+momentin0      = R*forcemoment(4:6,:);
+    % Moments exprimés sur la main
+        % milieu de la main
+main = (Mmat(9,:,:)+Mmat(10,:,:)+Mmat(11,:,:)+Mmat(12,:,:))/4;         
+momentin0_main = momentin0 + cross((Capteur - Main), ForceIn0);
