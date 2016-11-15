@@ -101,7 +101,7 @@ plot3(Mmat(1:8,1,1), Mmat(1:8,1,2), Mmat(1:8,1,3)) ; hold on
 plot3(Mmat(1:8,1,1), Mmat(1:8,1,2), Mmat(1:8,1,3), 'b.') ; axis equal
 
     % Milieu M5 M6
-M5M6 = Mmat(5,1,:)+Mmat(6,1,:)/2;
+M5M6 = (Mmat(5,1,:)+Mmat(6,1,:))/2;
 plot3(M5M6(1), M5M6(2), M5M6(3), 'r.', 'markers', 12)
 
     % Axes
@@ -130,7 +130,7 @@ plotAxes(RT,'length', 20)
 
 
     % Marqueurs dans le repère local
-xi = invR(RT)*[squeeze(Mmat(:,1,:))';ones(1,8)];
+% xi = invR(RT)*[squeeze(Mmat(:,1,:))';ones(1,8)];
 
 %% Force et moment dans le global
     % matrix 6xn des voltages
