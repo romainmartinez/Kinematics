@@ -81,7 +81,7 @@ end
 end
 
 %% Force
-    % marqueurs de la boite
+    % marqueurs de la boite (markers*n*dim)
 Mmat(1,:,:) = btkmarkers.boite_arriere_droit;
 Mmat(2,:,:) = btkmarkers.boite_arriere_gauche;
 Mmat(3,:,:) = btkmarkers.boite_avant_droit;
@@ -90,18 +90,18 @@ Mmat(5,:,:) = btkmarkers.boite_droite_ext;
 Mmat(6,:,:) = btkmarkers.boite_droite_int;
 Mmat(7,:,:) = btkmarkers.boite_gauche_int;
 Mmat(8,:,:) = btkmarkers.boite_gauche_ext;
-    % marqueurs de la main
+    % marqueurs de la main (markers*n*dim)
 Mmat(9,:,:) = btkmarkers.INDEX;
 Mmat(10,:,:) = btkmarkers.LASTC;
 Mmat(11,:,:) = btkmarkers.MEDH;
 Mmat(12,:,:) = btkmarkers.LATH;
 
     % plot de la boite
-plot3(Mmat(:,1,1), Mmat(:,1,2), Mmat(:,1,3)) ; hold on 
-plot3(Mmat(:,1,1), Mmat(:,1,2), Mmat(:,1,3), 'b.')
+plot3(Mmat(1:8,1,1), Mmat(1:8,1,2), Mmat(1:8,1,3)) ; hold on 
+plot3(Mmat(1:8,1,1), Mmat(1:8,1,2), Mmat(1:8,1,3), 'b.') ; axis equal
 
     % Milieu M5 M6
-M5M6   = (Mmat(5,1,:)+Mmat(6,1,:))/2;
+M5M6 = Mmat(5,1,:)+Mmat(6,1,:)/2;
 plot3(M5M6(1), M5M6(2), M5M6(3), 'r.', 'markers', 12)
 
     % Axes
@@ -127,7 +127,7 @@ RT      = [R capteur];
 RT(4,:) = [0 0 0 1];
     % plot des axes
 plotAxes(RT,'length', 20)
-axis equal
+
 
     % Marqueurs dans le repère local
 xi = invR(RT)*[squeeze(Mmat(:,1,:))';ones(1,8)];
