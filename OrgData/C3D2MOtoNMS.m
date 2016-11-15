@@ -82,17 +82,6 @@ end
 
 %% Force
     % marqueurs de la boite
-% M1 = btkmarkers.boite_arriere_droit;
-% M2 = btkmarkers.boite_arriere_gauche;
-% M3 = btkmarkers.boite_avant_droit;
-% M4 = btkmarkers.boite_avant_gauche;
-% M5 = btkmarkers.boite_droite_ext;
-% M6 = btkmarkers.boite_droite_int;
-% M7 = btkmarkers.boite_gauche_int;
-% M8 = btkmarkers.boite_gauche_ext;
-% 
-% M = [M1 M2 M3 M4 M5 M6 M7 M8];
-
 Mmat(1,:,:) = btkmarkers.boite_arriere_droit;
 Mmat(2,:,:) = btkmarkers.boite_arriere_gauche;
 Mmat(3,:,:) = btkmarkers.boite_avant_droit;
