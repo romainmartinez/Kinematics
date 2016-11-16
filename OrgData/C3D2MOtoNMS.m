@@ -153,3 +153,28 @@ corners =    [0    0    0;
               0    0    0]
 btkAppendForcePlatformType2_MARTINEZ(btkc3d, forcein0, momentin0, corners)
 [forceplates, forceplatesInfo] = btkGetForcePlatforms(btkc3d)
+
+btkClearPoints(btkc3d)
+for f = 1 : length(Alias.nameTags)
+ btkAppendPoint(btkc3d, 'marker', char(Alias.nameTags(f)), transpose(squeeze(T(:,f,:))))
+end
+\\10.89.24.15\e\Projet_IRSST_LeverCaisse\InputData\davo\DavOH12H2_1.c3d
+'D:\Téléchargement\DavOH12H2_1.c3d'
+btkWriteAcquisition(btkc3d, 'D:\Téléchargement\DavOH12H2_1.c3d')
+
+find(strcmp(fieldnames(btkmarkers), char(oldlabelMarkers{u})))
+
+zi = fieldnames(btkmarkers)
+xi = [];
+for i = 1 : length(zi);
+   xi = [xi getfield(btkmarkers,zi{i})];
+end
+
+xi(xi==0) = nan;
+
+for i = 1 : 3 : size(xi,2)
+    figure;
+    plot(xi(:,i:i+2))
+end
+
+xi = btkmarkers.ARMm
