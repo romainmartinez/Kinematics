@@ -45,7 +45,7 @@ btkmarkers = btkGetMarkers(btkc3d);
 %% supprimer les analogues vides
 Names = fieldnames(btkanalog);
 delet = {};
-for loopIndex = numel(Names):-1:1  %1 : numel(Names) 
+for loopIndex = numel(Names):-1:1
     if sum(btkanalog.(Names{loopIndex})) == 0
         btkanalog = btkRemoveAnalog(btkc3d, find(strcmp(Names,char(Names(loopIndex))))); 
     end
@@ -154,16 +154,9 @@ corners =    [0    0    0;
 btkAppendForcePlatformType2_MARTINEZ(btkc3d, forcein0, momentin0, corners)
 [forceplates, forceplatesInfo] = btkGetForcePlatforms(btkc3d)
 
-btkClearPoints(btkc3d)
-for f = 1 : length(Alias.nameTags)
- btkAppendPoint(btkc3d, 'marker', char(Alias.nameTags(f)), transpose(squeeze(T(:,f,:))))
-end
-\\10.89.24.15\e\Projet_IRSST_LeverCaisse\InputData\davo\DavOH12H2_1.c3d
-'D:\Téléchargement\DavOH12H2_1.c3d'
 btkWriteAcquisition(btkc3d, 'D:\Téléchargement\DavOH12H2_1.c3d')
 
-find(strcmp(fieldnames(btkmarkers), char(oldlabelMarkers{u})))
-
+%% Test : gap filling
 zi = fieldnames(btkmarkers)
 xi = [];
 for i = 1 : length(zi);
@@ -177,4 +170,5 @@ for i = 1 : 3 : size(xi,2)
     plot(xi(:,i:i+2))
 end
 
-xi = btkmarkers.ARMm
+markers = btkmarkers.ARMm;
+[markers] = interpmakers(btkmarkers);
