@@ -7,8 +7,6 @@
 %                                                                                %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                             clc; clear; close all
-%% TODO : utiliser les q comme input C3D
-%AC post et ant inutile , CLAV post manquaunt seulement sur Arst ?
 %% Chargement des fonctions
     if isempty(strfind(path, '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab'))
         % Librairie S2M
@@ -42,6 +40,11 @@ fprintf('Traitement de %d (%s)\n', i, Alias.C3dfiles(i).name);
 btkc3d     = btkReadAcquisition(Filename);
 btkanalog  = btkGetAnalogs(btkc3d);
 btkmarkers = btkGetMarkers(btkc3d);
+%% Gap filling pour marqueurs 
+[markers]  = interpmakers(btkmarkers);
+for mk = 1 : length(markers)
+    btkSetPoint(btkc3d,mk,markers(mk).interp)
+end
 %% supprimer les analogues vides
 Names = fieldnames(btkanalog);
 delet = {};
@@ -50,34 +53,38 @@ for loopIndex = numel(Names):-1:1
         btkanalog = btkRemoveAnalog(btkc3d, find(strcmp(Names,char(Names(loopIndex))))); 
     end
 end
-% %% Renommer les fichiers EMG
-%     if i == 1;
-%         fields   = fieldnames(btkanalog);
-%         newlabel = xmlfile.EMGsProtocols.EMGsProtocol.MuscleList.Muscle;
-%         GUI_c3drename
-%         pause
-%         oldlabelEMG = oldlabel ;
-%     end
-% 
-% oldlabelEMG = oldlabelEMG(~cellfun('isempty',oldlabelEMG));
-%         for f = 1 : length(oldlabelEMG)
-%             btkSetAnalogLabel(btkc3d, find(strcmp(fieldnames(btkanalog),char(oldlabelEMG{f}))), Alias.Muscle{f}.Text);
-%         end
-% 
-% %% Renommer les marqueurs
-%     if i == 1;
-%         fields   = fieldnames(btkmarkers);
-%         newlabel = xmlfile.MarkersProtocols.MarkersProtocol.MarkersList.Marker;
-%         GUI_c3drename
-%         pause
-%         oldlabelMarkers = oldlabel ; 
-%     end
-%     
-% oldlabelMarkers = oldlabelMarkers(~cellfun('isempty',oldlabelMarkers)) ;    
-%         for u = 1 : length(oldlabelMarkers)
-%             btkSetPointLabel(btkc3d, find(strcmp(fieldnames(btkmarkers), char(oldlabelMarkers{u}))), Alias.Markers{u}.Text);
-%         end
-% 
+%% Renommer les fichiers EMG
+    if i == 1;
+        fields   = fieldnames(btkanalog);
+        newlabel = xmlfile.EMGsProtocols.EMGsProtocol.MuscleList.Muscle;
+        GUI_c3drename
+        pause
+        oldlabelEMG = oldlabel ;
+    end
+
+oldlabelEMG = oldlabelEMG(~cellfun('isempty',oldlabelEMG));
+        for f = 1 : length(oldlabelEMG)
+            btkSetAnalogLabel(btkc3d, find(strcmp(fieldnames(btkanalog),char(oldlabelEMG{f}))), Alias.Muscle{f}.Text);
+        end
+
+%% Renommer les marqueurs
+    if i == 1;
+        fields   = fieldnames(btkmarkers);
+        newlabel = xmlfile.MarkersProtocols.MarkersProtocol.MarkersList.Marker;
+        GUI_c3drename
+        pause
+        oldlabelMarkers = oldlabel ; 
+    end
+    
+oldlabelMarkers = oldlabelMarkers(~cellfun('isempty',oldlabelMarkers)) ;    
+        for u = 1 : length(oldlabelMarkers)
+            btkSetPointLabel(btkc3d, find(strcmp(fieldnames(btkmarkers), char(oldlabelMarkers{u}))), Alias.Markers{u}.Text);
+        end
+%% Transport des forces et moments dans le global
+btkanalog  = btkGetAnalogs(btkc3d);
+btkmarkers = btkGetMarkers(btkc3d);
+tagplot = 0;
+[ forcein0, momentin0, corners ] = forceinglobal( btkmarkers, btkanalog, tagplot);
 % btkWriteAcquisition(btkc3d, Filename)
 end
 
@@ -154,21 +161,10 @@ corners =    [0    0    0;
 btkAppendForcePlatformType2_MARTINEZ(btkc3d, forcein0, momentin0, corners)
 [forceplates, forceplatesInfo] = btkGetForcePlatforms(btkc3d)
 
+Forcerebase = [];
+    for j =1:3
+        Forcerebase(:,j) = forcein0(:,j)-mean(forcein0(1:100,j));
+    end  
+
 btkWriteAcquisition(btkc3d, 'D:\Téléchargement\DavOH12H2_1.c3d')
 
-%% Test : gap filling
-zi = fieldnames(btkmarkers)
-xi = [];
-for i = 1 : length(zi);
-   xi = [xi getfield(btkmarkers,zi{i})];
-end
-
-xi(xi==0) = nan;
-
-for i = 1 : 3 : size(xi,2)
-    figure;
-    plot(xi(:,i:i+2))
-end
-
-markers = btkmarkers.ARMm;
-[markers] = interpmakers(btkmarkers);
