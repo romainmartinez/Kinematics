@@ -83,8 +83,9 @@ oldlabelMarkers = oldlabelMarkers(~cellfun('isempty',oldlabelMarkers)) ;
 %% Transport des forces et moments dans le global
 btkanalog  = btkGetAnalogs(btkc3d);
 btkmarkers = btkGetMarkers(btkc3d);
-tagplot = 0;
+tagplot    = 0;
 [ forcein0, momentin0, corners ] = forceinglobal( btkmarkers, btkanalog, tagplot);
+btkAppendForcePlatformType2_MARTINEZ(btkc3d, forcein0, momentin0, corners)
 % btkWriteAcquisition(btkc3d, Filename)
 end
 
@@ -168,3 +169,9 @@ Forcerebase = [];
 
 btkWriteAcquisition(btkc3d, 'D:\Téléchargement\DavOH12H2_1.c3d')
 
+forcerebase  = [];
+momentrebase = [];
+    for j =1:3
+        forcein0(:,j)  = forcein0(:,j)  - mean(forcein0(1:100,j));
+        momentin0(:,j) = momentin0(:,j) - mean(momentin0(1:100,j));
+    end  
