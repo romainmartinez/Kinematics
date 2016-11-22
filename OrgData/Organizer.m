@@ -33,3 +33,14 @@
 %% Convertir les C3D en format Matlab
         cd('\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab\MOtoNMS\src\C3D2MAT_btk')
         run('\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab\MOtoNMS\src\C3D2MAT_btk\C3D2MAT.m')
+%% Traitement des données : préparation
+        cd('\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab\MOtoNMS\src\DataProcessing')
+        run('\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab\MOtoNMS\src\DataProcessing\ElaborationInterface.m')
+%% Traitement des données : exécution
+        runDataProcessing('\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\DavO\dynamicElaborations\Test_1')
+%% Élaboration de l'essai statique
+        cd('\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab\MOtoNMS\src\StaticElaboration')
+        run('\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab\MOtoNMS\src\StaticElaboration\StaticInterface.m')
+%% Traitement des données pour l'essai statique
+        cd('\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab\MOtoNMS\src\StaticElaboration')
+        run('\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab\MOtoNMS\src\StaticElaboration\runStaticElaboration.m')
