@@ -109,6 +109,7 @@ else
         for   u = 1 : length(oldlabelMarkers)
             btkSetPointLabel(btkc3d, find(strcmp(fieldnames(btkmarkers), char(oldlabelMarkers{u}))), Alias.Markers{u}.Text);
         end
+
 %% Transport des forces et moments dans le global
 btkanalog  = btkGetAnalogs(btkc3d);
 btkmarkers = btkGetMarkers(btkc3d);
