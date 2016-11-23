@@ -53,7 +53,7 @@ for loopIndex = numel(Names):-1:1
         btkanalog = btkRemoveAnalog(btkc3d, find(strcmp(Names,char(Names(loopIndex))))); 
     end
 end
-
+%%
     % Déterminer si l'essai est un lever de caisse
 if strfind(lower(Filename), lower(['IRSST_' Alias.subject 'd']) )
     %% L'essai est un SCoRE ou statique
