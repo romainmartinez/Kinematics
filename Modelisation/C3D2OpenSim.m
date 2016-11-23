@@ -130,3 +130,11 @@ end
 %% Édition du C3D
 btkWriteAcquisition(btkc3d, Filename)
 end
+
+% forces = btkGetForcePlatforms(btkc3d);
+% forcein0 = [forces.channels.Fx1 forces.channels.Fy1 forces.channels.Fz1 ...
+%             forces.channels.My1 forces.channels.My1 forces.channels.Mz1];
+%     % Interpolation pour que frame force = frame analog
+% oldframe  = (1:size(forcein0,1))./size(forcein0,1)*100;
+% newframe  = linspace(oldframe(1,1),100,length(btkmarkers.ACRO_tip));
+% forcein0  = interp1(oldframe,forcein0,newframe,'spline');
