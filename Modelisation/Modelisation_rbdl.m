@@ -55,6 +55,21 @@ end
 %% Condition de l'essai
 [Data] = getcondition(Data);
 
+%% Sélection des essais pour comparaison KIN6839
+Stuff.condition = 'H12H2';
+Stuff.index = [];
+for i = 1 : length(Data)
+    if strfind(Data(i).trialname, Stuff.condition)
+        Stuff.index = [Stuff.index i];
+    end
+end
+
+for i = 1 : length(Stuff.index)
+    RBDL(i).selected = transpose(Data(Stuff.index(i)).Qdata.Q2);
+    RBDL(i).header   = transpose(Alias.nameDof);
+end
+
+save(['\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\' Alias.sujet '\RBDL\IK.mat'], 'RBDL')
 %% Inverse Kinematics SEULKEMENT POUR UN ESSAI (boucle à faire)
     % Initialisation à 0.1 pour éviter blocage cardans
 Qinit = repmat(0.1,28,1); 
@@ -68,15 +83,3 @@ idx(i) = find(ismember(Alias.nameTags,Alias.nameTechnicalTags{i}));
 T = S2M_rbdl('Tags', Stuff.model, Data(1).Qdata.Q2);
     % Cinématique inverse
 IK = S2M_rbdl('ik',Stuff.model, T(:,idx,:) ,Qinit);
-
-%% Inverse Dynamics  
-Dyn = S2M_rbdl('inverseDynamics', Stuff.model, Data(1).Qdata.Q2, Data(1).Qdata.QDOT2, Data(1).Qdata.QDDOT2, F);
-    % rajouter les données de force (moments & forces dans le repère global)
-Data = getforcedata(Alias)
-    % Filtrer les données de force
-    % Indiquer dans quel segment force plate (force plate 0 main)
-
-    
-    
-    
-%% Static Optimisation
