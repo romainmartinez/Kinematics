@@ -31,18 +31,28 @@ Data = load([Path.importPath 'RBDL\' Alias.RBDLnames.name]);
     % OpenSim   
 for i = 1 : length(Alias.OSnames)
     Data.OpenSim(i).IK = importOSfile([Path.importPath 'OpenSim\IK\' Alias.OSnames(i).name], 8);
-    Data.OpenSim(i).header = {'SC_y','SC_z','SC_x','AC_y','AC_z','AC_x','GH_x','GH_y','GH_z','EL_x','PS_y','wrist_dev_r','wrist_flex_r'};
+    Data.OpenSim(i).header = {'Th_rotY', 'Th_rotX', 'Th_rotZ', 'Th_transX', 'Th_transY', 'Th_transZ','SC_y','SC_z','SC_x','AC_y','AC_z','AC_x','GH_x','GH_y','GH_z','EL_x','PS_y','wrist_dev_r','wrist_flex_r'};
 end
 
 %% Inverse Kinematic
-trial = 1;  
+trial = 1;
     % Traitement des données
+plot(Data.OpenSim(trial).IK)
+plot(Data.RBDL(trial).selected)
+
+        % Rebase
+    for j = 1 : size(Data.RBDL(trial).selected,2)
+        Data.RBDL(trial).selected(:,j) = Data.RBDL(trial).selected(:,j) - mean(Data.RBDL(trial).selected(1:30,j));
+        if j < 20
+            Data.OpenSim(trial).IK(:,j)    = Data.OpenSim(trial).IK(:,j)    - mean(Data.OpenSim(trial).IK(1:30,j));
+        end
+    end  
     
+Data.RBDL(trial).selected = rad2deg(Data.RBDL(trial).selected);
     % Sélection des DoF
-        % RBDL
-      
-Data.RBDL(trial).selected(:,[1:12 15 19:21]) = [];
-Data.RBDL(trial).header([1:12 15 19:21]) = [];
+        % RBDL    
+Data.RBDL(trial).selected(:,[1:6 15 19:21]) = [];
+Data.RBDL(trial).header([1:6 15 19:21]) = [];
 
 colors = distinguishable_colors(size(Data.OpenSim(trial).IK,2));
 
@@ -55,9 +65,7 @@ end
 title('RBDL')
 legend(Data.RBDL(trial).header)
 
-        % OpenSim
-Data.OpenSim(trial).IK(:,[1:6]) = [];     
-
+        % OpenSim    
 figure
 
 for i = 1 : size(Data.OpenSim(trial).IK,2)
