@@ -28,6 +28,7 @@ Path.pathModel  = [Path.DirModels 'Model.s2mMod'];
 Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\IRSST_' Alias.sujet 'd\Trials\'];
 % Noms des fichiers data
 Alias.Qnames    = dir([Path.importPath '*.Q2']);
+Alias.Qnames.name
 
 %% Ouverture et information du modèle
 % Ouverture du modèle
@@ -57,70 +58,73 @@ Alias.nameBody = S2M_rbdl('nameBody', Stuff.model);
         % SCAC
         Alias.segmentDoF.SCAC          = 13:18;
         % RoB
-        Alias.segmentDoF.RoB           = 1:12;    
+        Alias.segmentDoF.RoB           = 1:12;
 
-for trial = 1 : 3 %length(Alias.Qnames)
-    %% Importation des Q,QDOT,QDDOT
-    Data(trial).Qdata     = importdata([Path.importPath Alias.Qnames(trial).name]);
-    % Noms des essais
-    Data(trial).trialname = Alias.Qnames(trial).name(5:11);
-    
-    %% Contribution des articulation à la hauteur
-    % Initialisation des Q
-    q1 = Data(trial).Qdata.Q2;
-    
-    %% Articulation 1 : Poignet + coude
-    % Coordonnées des marqueurs dans le repère global
-    T = S2M_rbdl('Tags', Stuff.model, q1);
-    % Marqueurs du segment en cours ('3' correspond à Z car on s'intéresse à la hauteur)
-    H1 = squeeze(T(3,39,:));
-    % Blocage des q du segment
-    q1(Alias.segmentDoF.handelbow(1):Alias.segmentDoF.handelbow(end),:) = 0;
-    % Redefinition des marqueurs avec les q bloqués
-    T = S2M_rbdl('Tags', Stuff.model, q1);
-    % Marqueurs du segment en cours avec q bloqués
-    H2 = squeeze(T(3,39,:));
-    % Delta entre les deux matrices de marqueurs en Z
-    Data(trial).deltahand  = H1-H2;
-    
-    %% Articulation 2 : GH
-    % Blocage des q du segment
-    q1(Alias.segmentDoF.GH(1):Alias.segmentDoF.GH(end),:) = 0;
-    % Redefinition des marqueurs avec les q bloqués
-    T = S2M_rbdl('Tags', Stuff.model,q1);
-    % Marqueurs du segment en cours avec q bloqués
-    H3 = squeeze(T(3,39,:));
-    % Delta entre les deux matrices de marqueurs en Z
-    Data(trial).deltaGH  = H2-H3;
-    
-    %% Articulation 3 : GH
-    % Blocage des q du segment
-    q1(Alias.segmentDoF.SCAC(1):Alias.segmentDoF.SCAC(end),:) = 0;
-    % Redefinition des marqueurs avec les q bloqués
-    T = S2M_rbdl('Tags', Stuff.model, q1);
-    % Marqueurs du segment en cours avec q bloqués
-    H4 = squeeze(T(3,39,:));
-    % Delta entre les deux matrices de marqueurs en Z
-    Data(trial).deltaSCAC  = H3-H4;
-    
-    %% Articulation 4 : Reste du corps (pelvis + thorax)
-    % Blocage des q du segment
-    q1(Alias.segmentDoF.RoB(1):Alias.segmentDoF.RoB(end),:) = 0;
-    % Redefinition des marqueurs avec les q bloqués
-    T = S2M_rbdl('Tags', Stuff.model, q1);
-    % Marqueurs du segment en cours avec q bloqués
-    H5 = squeeze(T(3,39,:));
-    % Delta entre les deux matrices de marqueurs en Z
-    Data(trial).deltaRoB  = H4-H5;
-    
-    %% Nettoyage du workspace
-    % clearvars H1 H2 H3 H4 H5 q1 T
+for trial = 1 : length(Alias.Qnames)
+    if Alias.Qnames(trial).name(1:4) == Alias.sujet
+        %% Importation des Q,QDOT,QDDOT
+        Data(trial).Qdata     = importdata([Path.importPath Alias.Qnames(trial).name]);
+        % Noms des essais
+        Data(trial).trialname = Alias.Qnames(trial).name(5:11);
+        
+        %% Contribution des articulation à la hauteur
+        % Initialisation des Q
+        q1 = Data(trial).Qdata.Q2;
+        
+        %% Articulation 1 : Poignet + coude
+        % Coordonnées des marqueurs dans le repère global
+        T = S2M_rbdl('Tags', Stuff.model, q1);
+        % Marqueurs du segment en cours ('3' correspond à Z car on s'intéresse à la hauteur)
+        H1 = squeeze(T(3,39,:));
+        % Blocage des q du segment
+        q1(Alias.segmentDoF.handelbow(1):Alias.segmentDoF.handelbow(end),:) = 0;
+        % Redefinition des marqueurs avec les q bloqués
+        T = S2M_rbdl('Tags', Stuff.model, q1);
+        % Marqueurs du segment en cours avec q bloqués
+        H2 = squeeze(T(3,39,:));
+        % Delta entre les deux matrices de marqueurs en Z
+        Data(trial).deltahand  = H1-H2;
+        
+        %% Articulation 2 : GH
+        % Blocage des q du segment
+        q1(Alias.segmentDoF.GH(1):Alias.segmentDoF.GH(end),:) = 0;
+        % Redefinition des marqueurs avec les q bloqués
+        T = S2M_rbdl('Tags', Stuff.model,q1);
+        % Marqueurs du segment en cours avec q bloqués
+        H3 = squeeze(T(3,39,:));
+        % Delta entre les deux matrices de marqueurs en Z
+        Data(trial).deltaGH  = H2-H3;
+        
+        %% Articulation 3 : GH
+        % Blocage des q du segment
+        q1(Alias.segmentDoF.SCAC(1):Alias.segmentDoF.SCAC(end),:) = 0;
+        % Redefinition des marqueurs avec les q bloqués
+        T = S2M_rbdl('Tags', Stuff.model, q1);
+        % Marqueurs du segment en cours avec q bloqués
+        H4 = squeeze(T(3,39,:));
+        % Delta entre les deux matrices de marqueurs en Z
+        Data(trial).deltaSCAC  = H3-H4;
+        
+        %% Articulation 4 : Reste du corps (pelvis + thorax)
+        % Blocage des q du segment
+        q1(Alias.segmentDoF.RoB(1):Alias.segmentDoF.RoB(end),:) = 0;
+        % Redefinition des marqueurs avec les q bloqués
+        T = S2M_rbdl('Tags', Stuff.model, q1);
+        % Marqueurs du segment en cours avec q bloqués
+        H5 = squeeze(T(3,39,:));
+        % Delta entre les deux matrices de marqueurs en Z
+        Data(trial).deltaRoB  = H4-H5;
+        
+        %% Nettoyage du workspace
+        % clearvars H1 H2 H3 H4 H5 q1 T
+    end
 end
 
 %% Condition de l'essai
 [Data] = getcondition(Data);
 
-%% Déterminer la phase du mouvement
+
+%% Déterminer les phases du mouvement
     % Obtenir les onset et offset de force
 [forceindex] = getforcedata(Alias.sujet);
     % Obtenir la vitesse verticale du marqueur WRIST
@@ -155,6 +159,6 @@ plot(Data(1).deltaSCAC')
 plot(Data(1).deltaRoB')
 legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
 
-    hauteur= Data(3).deltahand+Data(3).deltaGH+Data(3).deltaSCAC+Data(3).deltaRoB
+    hauteur= Data(3).deltahand+Data(3).deltaGH+Data(3).deltaSCAC+Data(3).deltaRoB;
 
 toc;
