@@ -1,12 +1,17 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  ____                       _         __  __            _   _                  %
-% |  _ \ ___  _ __ ___   __ _(_)_ __   |  \/  | __ _ _ __| |_(_)_ __   ___ ____  %
-% | |_) / _ \| '_ ` _ \ / _` | | '_ \  | |\/| |/ _` | '__| __| | '_ \ / _ \_  /  %
-% |  _ < (_) | | | | | | (_| | | | | | | |  | | (_| | |  | |_| | | | |  __// /   %
-% |_| \_\___/|_| |_| |_|\__,_|_|_| |_| |_|  |_|\__,_|_|   \__|_|_| |_|\___/___|  %
-%                                                                                %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-clc; clear; close all;tic
+%% CONTRIBUTION_HAUTEUR - One line description of what the script performs
+%   Description:
+%       CONTRIBUTION_HAUTEUR is used to
+%   Output:
+%       CONTRIBUTION_HAUTEUR give
+%
+%   Author:       Romain Martinez
+%   Organization: Laboratoire de Simulation et Modélisation du Mouvement (S2M)
+%   email:        martinez.staps@gmail.com
+%   Website:      https://github.com/romainmartinez
+%   Date:         25-Nov-2016; Last revision: 25-Nov-2016
+%%
+clear all; close all; clc
+
 %% Chargement des fonctions
 if isempty(strfind(path, '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab'))
     % Librairie S2M
@@ -57,8 +62,12 @@ Alias.nameBody = S2M_rbdl('nameBody', Stuff.model);
         % SCAC
         Alias.segmentDoF.SCAC          = 13:18;
         % RoB
-        Alias.segmentDoF.RoB           = 1:12;    
+        Alias.segmentDoF.RoB           = 1:12;
         
+% Bar de progression
+h = waitbar(0,'Please wait...');
+steps = 54;
+
 for trial = 1 : length(Alias.Qnames)
     if lower(Alias.Qnames(trial).name(1:4)) == lower(Alias.sujet)
         %% Importation des Q,QDOT,QDDOT
@@ -114,9 +123,11 @@ for trial = 1 : length(Alias.Qnames)
         % Delta entre les deux matrices de marqueurs en Z
         Data(trial).deltaRoB  = Data(trial).H4 - Data(trial).H5;
         
+        waitbar(trial / steps);
     end
 end
-toc
+close(h)
+
 
 %% Condition de l'essai
 [Data]    = getcondition(Data);
@@ -134,7 +145,7 @@ for i = 1 : length(Data)
     Data(i).start = forceindex{row,1};
     Data(i).end = forceindex{row,2};
 end
-clearvars forceindex logical_cells row cellfind
+clearvars forceindex logical_cells row cellfind h
 
     % Obtenir la vitesse verticale du marqueur WRIST
 
@@ -165,9 +176,7 @@ plot(Data(1).deltahand') ; hold on
 plot(Data(1).deltaGH')
 plot(Data(1).deltaSCAC')
 plot(Data(1).deltaRoB')
-vline([Force(trial).onsetensec*100 Force(trial).offsetensec*100],{'g','r'},{'Début','Fin'})
+vline([Data(trial).start/20 Data(trial).end/20],{'g','r'},{'Début','Fin'})
 legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
 
     hauteur= Data(3).deltahand+Data(3).deltaGH+Data(3).deltaSCAC+Data(3).deltaRoB;
-
-toc;
