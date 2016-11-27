@@ -9,7 +9,8 @@
 %   email:        martinez.staps@gmail.com
 %   Website:      https://github.com/romainmartinez
 %   Date:         25-Nov-2016; Last revision: 25-Nov-2016
-%%
+%_____________________________________________________________________________
+
 clear all; close all; clc
 
 %% Chargement des fonctions
