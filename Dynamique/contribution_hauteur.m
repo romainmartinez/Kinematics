@@ -23,8 +23,8 @@ if isempty(strfind(path, '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functio
 end
 
 %% Nom du sujet
-% Alias.sujet = input('Enter subject name : ','s');
-Alias.sujet = 'davo';
+Alias.sujet = input('Enter subject name : ','s');
+% Alias.sujet = 'davo';
 
 %% Chemin des fichiers
 % Dossier du sujet
@@ -142,18 +142,25 @@ close(h)
 % Obtenir les onset et offset de force
 [forceindex] = getforcedata(Alias.sujet);
 
-% Identifier les onset et offset des data déjà loadées
+% Identifier les onset et offset des data déjà loadées et déclarer le sexe
 for i = 1 : length(Data)
     cellfind      = @(string)(@(cell_contents)(strcmp(string,cell_contents)));
     logical_cells = cellfun(cellfind(Data(i).trialname),forceindex);
     [row,~]       = find(logical_cells == 1);
     Data(i).start = forceindex{row,1};
     Data(i).end   = forceindex{row,2};
+    
+    % sexe
+    if length(Data) == 54
+        Data(i).sexe = 'H';
+    elseif length(Data) == 36
+        Data(i).sexe = 'F';
+    end
 end
 clearvars forceindex logical_cells row h cellfind
 
 %% Sauvegarde de la matrice
-save([Path.exportPath Alias.sujet '.mat'],'-struct','Data','H1')
+save([Path.exportPath Alias.sujet '.mat'],'Data')
 
 %% Zone de test
 
