@@ -19,7 +19,7 @@ if isempty(strfind(path, '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functio
     % Librairie S2M
     loadS2MLib;
     % Fonctions perso
-    addpath(genpath('\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab'));
+%     addpath(genpath('\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab'));
 end
 
 %% Nom du sujet
@@ -33,8 +33,11 @@ Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\IRSST_' Alias.sujet 'd\Mod
 Path.pathModel  = [Path.DirModels 'Model.s2mMod'];
 % Dossier des data
 Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\IRSST_' Alias.sujet 'd\Trials\'];
+% Dossier d'exportation
+Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
 % Noms des fichiers data
 Alias.Qnames    = dir([Path.importPath '*.Q2']);
+
 
 %% Ouverture et information du modèle
 % Ouverture du modèle
@@ -141,44 +144,63 @@ close(h)
 
 % Identifier les onset et offset des data déjà loadées
 for i = 1 : length(Data)
-    cellfind = @(string)(@(cell_contents)(strcmp(string,cell_contents)));
+    cellfind      = @(string)(@(cell_contents)(strcmp(string,cell_contents)));
     logical_cells = cellfun(cellfind(Data(i).trialname),forceindex);
-    [row,~] =  find(logical_cells == 1);
+    [row,~]       = find(logical_cells == 1);
     Data(i).start = forceindex{row,1};
-    Data(i).end = forceindex{row,2};
+    Data(i).end   = forceindex{row,2};
 end
-clearvars forceindex logical_cells row cellfind h
+clearvars forceindex logical_cells row h cellfind
 
-    % Obtenir la vitesse verticale du marqueur WRIST
+%% Sauvegarde de la matrice
+save([Path.exportPath Alias.sujet '.mat'],'-struct','Data','H1')
 
-T = S2M_rbdl('Tags', Stuff.model, Data(trial).Qdata.Q2);
-TJ = S2M_rbdl('TagsJacobian', Stuff.model, Data(trial).Qdata.Q2);
-xpoint = TJ*Data(trial).Qdata.QDOT2;
+%% Zone de test
 
-
-plot(xpoint(125,:)); hold on
-vline([Force(trial).onsetensec*100 Force(trial).offsetensec*100],{'g','r'},{'Début','Fin'})
-
-
-
-    % début essai : time = 0                                OK
-    % arraché : force start                                 OK
-    % transfert : marqueur main avec vitesse verticale
-    % dépôt : fin vitesse verticale
-    % fin dépôt : force end                                 OK
-
-%% Plot
-trial = 24;
-subplot(1,2,1)
-plot([Data(trial).H1 Data(trial).H2 Data(trial).H3 Data(trial).H4 Data(trial).H5])
-vline([Data(trial).start/20 Data(trial).end/20],{'g','r'},{'Début','Fin'})
-legend('normal','without hand','without GH','without SCAC','without RoB')
-subplot(1,2,2)
-plot(Data(1).deltahand') ; hold on
-plot(Data(1).deltaGH')
-plot(Data(1).deltaSCAC')
-plot(Data(1).deltaRoB')
-vline([Data(trial).start/20 Data(trial).end/20],{'g','r'},{'Début','Fin'})
-legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
-
-    hauteur= Data(3).deltahand+Data(3).deltaGH+Data(3).deltaSCAC+Data(3).deltaRoB;
+% % Identifier début transfert et début dépôt avec position en Z
+% framerate  = 100; 
+% index      = find(strcmp(Alias.nameTags, 'WRIST'));
+% start      = round(Data(trial).start/20);
+% finish     = round(Data(trial).end  /20);
+% markerZ    = squeeze(T(3,index,:));
+% 
+% etagere_depart   = max(markerZ(1:start));
+% transfert = find(markerZ(start:end) > etagere_depart,1)+start;
+% etagere_arrivee  = max(markerZ(start:end));
+% depot     = find(markerZ(start:end) > etagere_arrivee-0.05*etagere_arrivee,1)+start
+% 
+% 
+% plot(markerZ);
+% vline([start finish],{'g','r'},{'Début','Fin'})
+% vline(transfert)
+% vline(depot)
+% 
+%     % début essai : time = 0                                OK
+%     %     arraché : force start                             OK
+%     %   transfert : marqueur main avec position verticale   à vérifier
+%     %       dépôt : marqueur main avec position verticale   à vérifier
+%     %   fin dépôt : force end                               OK
+% 
+% %% Plot
+% trial = 24;
+% subplot(1,2,1)
+% plot([Data(trial).H1 Data(trial).H2 Data(trial).H3 Data(trial).H4 Data(trial).H5])
+% vline([Data(trial).start/20 Data(trial).end/20],{'g','r'},{'Début','Fin'})
+% legend('normal','without hand','without GH','without SCAC','without RoB')
+% subplot(1,2,2)
+% plot(Data(1).deltahand') ; hold on
+% plot(Data(1).deltaGH')
+% plot(Data(1).deltaSCAC')
+% plot(Data(1).deltaRoB')
+% vline([Data(trial).start/20 Data(trial).end/20],{'g','r'},{'Début','Fin'})
+% legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
+% 
+% for i = 1 : length(Data)
+% plot(Data(i).deltahand') ; hold on
+% plot(Data(i).deltaGH')
+% plot(Data(i).deltaSCAC')
+% plot(Data(i).deltaRoB')
+% vline([Data(i).start/20 Data(i).end/20],{'g','r'},{'Début','Fin'})
+% legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
+% figure
+% end
