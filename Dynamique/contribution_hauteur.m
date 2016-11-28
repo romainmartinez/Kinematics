@@ -160,8 +160,8 @@ end
 clearvars forceindex logical_cells row h cellfind
 
 %% Sauvegarde de la matrice
-save([Path.exportPath Alias.sujet '.mat'],'Data')
-
+data = rmfield(Data, 'Qdata');
+save([Path.exportPath Alias.sujet '.mat'],'data')
 %% Zone de test
 
 % % Identifier début transfert et début dépôt avec position en Z
