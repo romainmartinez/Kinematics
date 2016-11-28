@@ -1,14 +1,15 @@
-%% CONTRIBUTION_HAUTEUR - One line description of what the script performs
 %   Description:
-%       CONTRIBUTION_HAUTEUR is used to
+%       contribution_hauteur is used to compute the contribution of each
+%       articulation to the height
 %   Output:
-%       CONTRIBUTION_HAUTEUR give
+%       contribution_hauteur give matrix for input in SPM1D
+%   Functions:
+%       contribution_hauteur uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
 %
-%   Author:       Romain Martinez
-%   Organization: Laboratoire de Simulation et Modélisation du Mouvement (S2M)
-%   email:        martinez.staps@gmail.com
-%   Website:      https://github.com/romainmartinez
-%   Date:         25-Nov-2016; Last revision: 25-Nov-2016
+%   Author:  Romain Martinez
+%   email:   martinez.staps@gmail.com
+%   Website: https://github.com/romainmartinez
+%   Date:    26-Nov-2016; Last revision: 28-Nov-2016
 %_____________________________________________________________________________
 
 clear all; close all; clc
