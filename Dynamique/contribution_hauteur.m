@@ -2,7 +2,7 @@
 %       contribution_hauteur is used to compute the contribution of each
 %       articulation to the height
 %   Output:
-%       contribution_hauteur give matrix for input in SPM1D
+%       contribution_hauteur give matrix for input in SPM1D and GRAMM
 %   Functions:
 %       contribution_hauteur uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
 %
@@ -15,16 +15,13 @@
 clear all; close all; clc
 
 %% Chargement des fonctions
-if isempty(strfind(path, '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab'))
+if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
     % Librairie S2M
     loadS2MLib;
-    % Fonctions perso
-%     addpath(genpath('\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab'));
 end
 
 %% Nom du sujet
-Alias.sujet = input('Enter subject name : ','s');
-% Alias.sujet = 'davo';
+Alias.sujet = myinput('Enter Subject Name');
 
 %% Chemin des fichiers
 % Dossier du sujet
