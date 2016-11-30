@@ -2,7 +2,7 @@
 %       contribution_hauteur_preparation is used to compute the contribution of each
 %       articulation to the height
 %   Output:
-%       contribution_hauteur_preparation give matrix for input in SPM1D and GRAMM
+%       contribution_hauteur_preparation gives matrix for input in SPM1D and GRAMM
 %   Functions:
 %       contribution_hauteur_preparation uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
 %
