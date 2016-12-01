@@ -226,7 +226,7 @@ title('AnyBody')
 legend(Data.AnyBody(trial).header)
 
 %% RBDL
-trial=3;
+trial=1;
 
 figure
 for i = 1 : size(RAW.RBDL(trial).selected,2)
