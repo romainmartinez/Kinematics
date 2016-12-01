@@ -86,12 +86,18 @@ for trial = 1 : length(Alias.Qnames)
         T = S2M_rbdl('Tags', Stuff.model, q1);
         % Marqueurs du segment en cours ('3' correspond à Z car on s'intéresse à la hauteur)
         Data(trial).H1 = squeeze(T(3,39,:));
+        % Hauteur max
+        hmax = max(Data(trial).H1);
+        % normalisation avec 100 = max de H1
+        Data(trial).H1 = (Data(trial).H1*100)/hmax;
         % Blocage des q du segment
         q1(Alias.segmentDoF.handelbow(1):Alias.segmentDoF.handelbow(end),:) = 0;
         % Redefinition des marqueurs avec les q bloqués
         T = S2M_rbdl('Tags', Stuff.model, q1);
         % Marqueurs du segment en cours avec q bloqués
         Data(trial).H2 = squeeze(T(3,39,:));
+        % normalisation avec 100 = max de H1
+        Data(trial).H2 = (Data(trial).H2*100)/hmax;
         % Delta entre les deux matrices de marqueurs en Z
         Data(trial).deltahand  = Data(trial).H1 - Data(trial).H2;
         
@@ -102,6 +108,8 @@ for trial = 1 : length(Alias.Qnames)
         T = S2M_rbdl('Tags', Stuff.model,q1);
         % Marqueurs du segment en cours avec q bloqués
         Data(trial).H3 = squeeze(T(3,39,:));
+        % normalisation avec 100 = max de H1
+        Data(trial).H3 = (Data(trial).H3*100)/hmax;
         % Delta entre les deux matrices de marqueurs en Z
         Data(trial).deltaGH  = Data(trial).H2 - Data(trial).H3;
         
@@ -112,6 +120,8 @@ for trial = 1 : length(Alias.Qnames)
         T = S2M_rbdl('Tags', Stuff.model, q1);
         % Marqueurs du segment en cours avec q bloqués
         Data(trial).H4 = squeeze(T(3,39,:));
+        % normalisation avec 100 = max de H1
+        Data(trial).H4 = (Data(trial).H4*100)/hmax;
         % Delta entre les deux matrices de marqueurs en Z
         Data(trial).deltaSCAC  = Data(trial).H3 - Data(trial).H4;
         
@@ -122,6 +132,8 @@ for trial = 1 : length(Alias.Qnames)
         T = S2M_rbdl('Tags', Stuff.model, q1);
         % Marqueurs du segment en cours avec q bloqués
         Data(trial).H5 = squeeze(T(3,39,:));
+        % normalisation avec 100 = max de H1
+        Data(trial).H5 = (Data(trial).H5*100)/hmax;
         % Delta entre les deux matrices de marqueurs en Z
         Data(trial).deltaRoB  = Data(trial).H4 - Data(trial).H5;
         
@@ -185,7 +197,7 @@ save([Path.exportPath Alias.sujet '.mat'],'data')
 %     %       dépôt : marqueur main avec position verticale   à vérifier
 %     %   fin dépôt : force end                               OK
 % 
-% %% Plot
+%% Plot
 % trial = 24;
 % subplot(1,2,1)
 % plot([Data(trial).H1 Data(trial).H2 Data(trial).H3 Data(trial).H4 Data(trial).H5])
@@ -199,7 +211,7 @@ save([Path.exportPath Alias.sujet '.mat'],'data')
 % vline([Data(trial).start/20 Data(trial).end/20],{'g','r'},{'Début','Fin'})
 % legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
 % 
-% for i = 1 : length(Data)
+% for i = 1 : 1
 % plot(Data(i).deltahand') ; hold on
 % plot(Data(i).deltaGH')
 % plot(Data(i).deltaSCAC')
