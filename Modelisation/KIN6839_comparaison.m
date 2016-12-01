@@ -97,51 +97,143 @@ for i = 1 : length(data)
     data{i,1} = ScaleTime(data{i,1}, 1, length(data{i,1}), 500);
 end
 %% Plot
-g(1)=gramm('x',x,'y',data,'color',model,'subset',dof ~= 1 & dof ~= 2 & dof ~= 3 & dof ~= 4 & dof ~= 5 & dof ~= 6);
+figure('unit','normalized','Position',[0 0 1 1]);
+%% Wrist
+g(1,1)=gramm('x',x,'y',data,'color',model,'subset',dof == 13);
+g(1,1).geom_line();
+g(1,1).set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
+g(1,1).set_title('Comparison of wrist abduction');
 
-g(1).geom_line();
+g(2,1)=gramm('x',x,'y',data,'color',model,'subset',dof == 12);
+g(2,1).geom_line();
+g(2,1).set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
+g(2,1).set_title('Comparison of wrist flexion');
 
-g(1).facet_grid([],dof);
+g.draw();
+%% Elbow
+figure('unit','normalized','Position',[0 0 1 1]);
+g(1,1)=gramm('x',x,'y',data,'color',model,'subset',dof == 11);
+g(1,1).geom_line();
+g(1,1).set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
+g(1,1).set_title('Comparison of elbow pronation');
 
-% g(1).stat_smooth()
+g(2,1)=gramm('x',x,'y',data,'color',model,'subset',dof == 10);
+g(2,1).geom_line();
+g(2,1).set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
+g(2,1).set_title('Comparison of elbow flexion');
 
-% g(1).stat_summary('type','std');
+g.draw();
+%% GH
+figure('unit','normalized','Position',[0 0 1 1]);
+g(1,1)=gramm('x',x,'y',data,'color',model,'subset',dof == 9);
+g(1,1).geom_line();
+g(1,1).set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
+g(1,1).set_title('Comparison of glenohumeral flexion');
+
+g(2,1)=gramm('x',x,'y',data,'color',model,'subset',dof == 8);
+g(2,1).geom_line();
+g(2,1).set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
+g(2,1).set_title('Comparison of glenohumeral external rotation');
+
+g(3,1)=gramm('x',x,'y',data,'color',model,'subset',dof == 7);
+g(3,1).geom_line();
+g(3,1).set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
+g(3,1).set_title('Comparison of glenohumeral flexion');
 
 g.draw();
 
-% %% Plot
-% % Couleurs
-% colors = distinguishable_colors(28);
-% 
-% %% OpenSim    
-% for i = 1 : size(Data.OpenSim(trial).IK,2)
-% plot(Data.OpenSim(trial).IK(:,i),...
-%         'Linewidth',2,...
-%         'Color', colors(i,:)); 
-% hold on
-% end
-% title('OpenSim')
-% legend(Data.OpenSim(trial).header)
-% 
-% %% AnyBody
-% figure
-% 
-% for i = 1 : size(Data.AnyBody(trial).IK,2)
-% plot(Data.AnyBody(trial).IK(:,i),...
-%         'Linewidth',2,...
-%         'Color', colors(i,:)); 
-% hold on
-% end
-% title('AnyBody')
-% legend(Data.AnyBody(trial).header)
-% 
-% %% RBDL
-% figure
-% for i = 1 : size(Data.RBDL(trial).selected,2)
-% plot(Data.RBDL(trial).selected(:,i),...
-%         'Linewidth',2,...
-%         'Color', colors(i,:)); 
-% hold on
-% end
-% title('RBDL')
-% legend(Data.RBDL(trial).header)
+%% AC
+figure('unit','normalized','Position',[0 0 1 1]);
+g(1,1)=gramm('x',x,'y',data,'color',model,'subset',dof == 6);
+g(1,1).geom_line();
+g(1,1).set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
+g(1,1).set_title('Comparison of acromioclavicular axial rotation');
+
+g(2,1)=gramm('x',x,'y',data,'color',model,'subset',dof == 5);
+g(2,1).geom_line();
+g(2,1).set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
+g(2,1).set_title('Comparison of acromioclavicular elevation');
+
+g(3,1)=gramm('x',x,'y',data,'color',model,'subset',dof == 4);
+g(3,1).geom_line();
+g(3,1).set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
+g(3,1).set_title('Comparison of acromioclavicular protraction');
+
+g.draw();
+
+%% ST
+figure('unit','normalized','Position',[0 0 1 1]);
+g(1,1)=gramm('x',x,'y',data,'color',model,'subset',dof == 3);
+g(1,1).geom_line();
+g(1,1).set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
+g(1,1).set_title('Comparison of sternoclavicular axial rotation');
+
+g(2,1)=gramm('x',x,'y',data,'color',model,'subset',dof == 2);
+g(2,1).geom_line();
+g(2,1).set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
+g(2,1).set_title('Comparison of sternoclavicular elevation');
+
+g(3,1)=gramm('x',x,'y',data,'color',model,'subset',dof == 1);
+g(3,1).geom_line();
+g(3,1).set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
+g(3,1).set_title('Comparison of sternoclavicular protraction');
+
+g.draw();
+%%
+% AES
+g(1)=gramm('x',x,'y',data,'color',model,'subset',dof ~= 1 & dof ~= 2 & dof ~= 3 & dof ~= 4 & dof ~= 5 & dof ~= 6);
+% g(1,1)=gramm('x',x,'y',data,'color',model,'subset',dof == 13);
+
+% Geom
+g(1).geom_line();
+% g(1).stat_smooth()
+% g(1).stat_summary('type','std');
+
+% Facet
+g(1).facet_grid([],dof);
+
+% Customization of gramm figures
+g.set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
+g.set_title('Comparison of elbow flexion');
+
+
+g.draw();
+
+%% Plot
+% Couleurs
+colors = distinguishable_colors(28);
+
+%% OpenSim    
+for i = 1 : size(RAW.OpenSim(trial).IK,2)
+plot(RAW.OpenSim(trial).IK(:,i),...
+        'Linewidth',2,...
+        'Color', colors(i,:)); 
+hold on
+end
+title('OpenSim')
+legend(RAW.OpenSim(trial).header)
+
+%% AnyBody
+figure
+
+for i = 1 : size(Data.AnyBody(trial).IK,2)
+plot(Data.AnyBody(trial).IK(:,i),...
+        'Linewidth',2,...
+        'Color', colors(i,:)); 
+hold on
+end
+title('AnyBody')
+legend(Data.AnyBody(trial).header)
+
+%% RBDL
+trial=3;
+
+figure
+for i = 1 : size(RAW.RBDL(trial).selected,2)
+plot(RAW.RBDL(trial).selected(:,i),...
+        'Linewidth',2,...
+        'Color', colors(i,:)); 
+hold on
+end
+title('RBDL')
+legend(RAW.RBDL(trial).header)
