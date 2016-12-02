@@ -41,27 +41,29 @@ hauteur = vertcat(bigstruct(:).hauteur);
 poids   = vertcat(bigstruct(:).poids);
 
 %% Variables
+% nombre de frames désirés pour interpolation
+nbframe = 200;
 for i = 1 : length(bigstruct)
     % Transformation en cellules (pour input SPM et gramm)
     % Les essais sont découpés avec le capteur de force
-    delta_hand{i,1} = bigstruct(i).deltahand(round(bigstruct(i).start):round(bigstruct(i).end,1));
-    delta_GH{i,1}   = bigstruct(i).deltaGH(round(bigstruct(i).start):round(bigstruct(i).end,1));
-    delta_SCAC{i,1} = bigstruct(i).deltaSCAC(round(bigstruct(i).start):round(bigstruct(i).end,1));
-    delta_RoB{i,1}  = bigstruct(i).deltaRoB(round(bigstruct(i).start):round(bigstruct(i).end,1));
+    delta_hand{i,1} = bigstruct(i).deltahand(round(bigstruct(i).start):round(bigstruct(i).end));
+    delta_GH{i,1}   = bigstruct(i).deltaGH(round(bigstruct(i).start):round(bigstruct(i).end));
+    delta_SCAC{i,1} = bigstruct(i).deltaSCAC(round(bigstruct(i).start):round(bigstruct(i).end));
+    delta_RoB{i,1}  = bigstruct(i).deltaRoB(round(bigstruct(i).start):round(bigstruct(i).end));
     
     % Interpolation (pour avoir même nombre de frames)
-%     nbframe         = 500;
-%     delta_hand{i,1} = ScaleTime(delta_hand{i,1}, 1, length(delta_hand{i,1}), 500);
-%     delta_GH{i,1}   = ScaleTime(delta_GH{i,1}, 1, length(delta_GH{i,1}), 500);
-%     delta_SCAC{i,1} = ScaleTime(delta_SCAC{i,1}, 1, length(delta_SCAC{i,1}), 500);
-%     delta_RoB{i,1}  = ScaleTime(delta_RoB{i,1}, 1, length(delta_RoB{i,1}), 500);
+    delta_hand{i,1} = ScaleTime(delta_hand{i,1}, 1, length(delta_hand{i,1}), nbframe);
+    delta_GH{i,1}   = ScaleTime(delta_GH{i,1}, 1, length(delta_GH{i,1}), nbframe);
+    delta_SCAC{i,1} = ScaleTime(delta_SCAC{i,1}, 1, length(delta_SCAC{i,1}), nbframe);
+    delta_RoB{i,1}  = ScaleTime(delta_RoB{i,1}, 1, length(delta_RoB{i,1}), nbframe);
 end
 
 % Vecteur X (temps en %)
-time = linspace(0,100,500);
+time = linspace(0,100,nbframe);
 
-g(1)=gramm('x',time,'y',delta_hand,'color',sexe,'subset',poids == 6);
-g(1).geom_line();
+g(1)=gramm('x',time,'y',delta_RoB,'color',sexe);
+% g(1).geom_line();
+g(1).stat_summary('type','std');
 g(1).set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
 g(1).set_title('Comparison of wrist abduction');
 g.draw();
