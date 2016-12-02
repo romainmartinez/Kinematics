@@ -9,7 +9,7 @@
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
 %   Website: https://github.com/romainmartinez
-%   Date:    29-Nov-2016; Last revision: 29-Nov-2016
+%   Date:    29-Nov-2016; Last revision: 1-Dec-2016
 %_____________________________________________________________________________
 
 clear all; close all; clc
@@ -27,23 +27,55 @@ path.datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contri
 alias.matname = dir([path.datapath '*mat']);
 
 for i = 1 : length(alias.matname)
-sujets(i) = load([path.datapath alias.matname(i).name]);
+    RAW(i) = load([path.datapath alias.matname(i).name]);
 end
 
+% Grande structure de données
+bigstruct    = struct2array(RAW);
 %% Facteurs
-for s = 1 : length(sujets)
-sexe(1,i)
+% Sexe
+sexe    = cellstr(vertcat(bigstruct(:).sexe));
+% Hauteur
+hauteur = vertcat(bigstruct(:).hauteur);
+% Poids
+poids   = vertcat(bigstruct(:).poids);
+
+%% Variables
+for i = 1 : length(bigstruct)
+    % Transformation en cellules (pour input SPM et gramm)
+    % Les essais sont découpés avec le capteur de force
+    delta_hand{i,1} = bigstruct(i).deltahand(round(bigstruct(i).start):round(bigstruct(i).end,1));
+    delta_GH{i,1}   = bigstruct(i).deltaGH(round(bigstruct(i).start):round(bigstruct(i).end,1));
+    delta_SCAC{i,1} = bigstruct(i).deltaSCAC(round(bigstruct(i).start):round(bigstruct(i).end,1));
+    delta_RoB{i,1}  = bigstruct(i).deltaRoB(round(bigstruct(i).start):round(bigstruct(i).end,1));
+    
+    % Interpolation (pour avoir même nombre de frames)
+%     nbframe         = 500;
+%     delta_hand{i,1} = ScaleTime(delta_hand{i,1}, 1, length(delta_hand{i,1}), 500);
+%     delta_GH{i,1}   = ScaleTime(delta_GH{i,1}, 1, length(delta_GH{i,1}), 500);
+%     delta_SCAC{i,1} = ScaleTime(delta_SCAC{i,1}, 1, length(delta_SCAC{i,1}), 500);
+%     delta_RoB{i,1}  = ScaleTime(delta_RoB{i,1}, 1, length(delta_RoB{i,1}), 500);
 end
 
-subject = 4;
+% Vecteur X (temps en %)
+time = linspace(0,100,500);
 
-sujets(subject).data(1).deltahand
+g(1)=gramm('x',time,'y',delta_hand,'color',sexe,'subset',poids == 6);
+g(1).geom_line();
+g(1).set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
+g(1).set_title('Comparison of wrist abduction');
+g.draw();
 
+
+clearvars bigstruct i 
+%% test
+subject = 25;
+for subject = 1 : length(sujets)
+    figure
 plot(sujets(subject).data(1).deltahand') ; hold on
 plot(sujets(subject).data(1).deltaGH')
 plot(sujets(subject).data(1).deltaSCAC')
 plot(sujets(subject).data(1).deltaRoB')
-vline([Data(i).start/20 Data(i).end/20],{'g','r'},{'Début','Fin'})
+vline([sujets(subject).data(1).start sujets(subject).data(1).end],{'g','r'},{'Début','Fin'})
 legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
-figure
-
+end
