@@ -20,8 +20,9 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
     loadS2MLib;
 end
 %% Interrupteur
-plot = 0;
-poids = 'absolu'
+plot  = 0;                   % 0 ou 1
+stat  = 1;                   % 0 ou 1 
+comparaison = 'absolu';      % absolu ou relatif
 %% Dossiers
 path.datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
 
@@ -34,6 +35,18 @@ end
 
 % Grande structure de données
 bigstruct    = struct2array(RAW);
+
+%% Choix de la comparaison (absolu ou relatif)
+if     comparaison == 'absolu'
+    for i = length(bigstruct):-1:1
+        if bigstruct(i).poids == 18
+            bigstruct(i) = [];
+        end
+    end
+elseif comparaison == 'relatif'
+    
+end
+
 %% Facteurs
 % Sexe
 sexe    = cellstr(vertcat(bigstruct(:).sexe));
@@ -101,32 +114,34 @@ if plot == 1
     g.draw();
 end
 %% SPM
-% Transformation des données
-for i = 1 : length(delta_hand)
-    % Variables en colonnes
-    SPM.delta_hand(i,:) = delta_hand{i,1}';
-    SPM.delta_GH(i,:)   = delta_GH{i,1}';
-    SPM.delta_SCAC(i,:) = delta_SCAC{i,1}';
-    SPM.delta_RoB(i,:)  = delta_RoB{i,1}';
-    
-    % Facteurs
-    if     sexe{i,1} == 'H'
-        SPM.sexe(1,i) = 0;
-    elseif sexe{i,1} == 'F'
-        SPM.sexe(1,i) = 1;
+if stat == 1
+    % Transformation des données
+    for i = 1 : length(delta_hand)
+        % Variables en colonnes
+        SPM.delta_hand(i,:) = delta_hand{i,1}';
+        SPM.delta_GH(i,:)   = delta_GH{i,1}';
+        SPM.delta_SCAC(i,:) = delta_SCAC{i,1}';
+        SPM.delta_RoB(i,:)  = delta_RoB{i,1}';
+        
+        % Facteurs
+        if     sexe{i,1} == 'H'
+            SPM.sexe(1,i) = 0;
+        elseif sexe{i,1} == 'F'
+            SPM.sexe(1,i) = 1;
+        end
     end
+    
+    SPM.hauteur = hauteur';
+    SPM.poids   = poids';
+    
+    % Tests statistiques
+    %(1) Conduct SPM analysis:
+    spmlist   = spm1d.stats.anova3(SPM.delta_hand, SPM.sexe, SPM.hauteur, SPM.poids);
+    spmilist  = spmlist.inference(0.05);
+    disp_summ(spmilist)
+    
+    
+    %(2) Plot:
+    close all
+    spmilist.plot('plot_threshold_label',false, 'plot_p_values',true, 'autoset_ylim',true);
 end
-
-SPM.hauteur = hauteur';
-SPM.poids   = poids';
-
-% Tests statistiques
-%(1) Conduct SPM analysis:
-spmlist   = spm1d.stats.anova3(SPM.delta_hand, SPM.sexe, SPM.hauteur, SPM.poids);
-spmilist  = spmlist.inference(0.05);
-disp_summ(spmilist)
-
-
-%(2) Plot:
-close all
-spmilist.plot('plot_threshold_label',false, 'plot_p_values',true, 'autoset_ylim',true);
