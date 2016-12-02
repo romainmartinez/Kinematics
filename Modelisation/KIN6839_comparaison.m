@@ -92,9 +92,9 @@ model              = [model ; cellstr(repmat('RBDL',length(selectedcolon),1))];
 dof                = [dof ; correspondingcolon'];
 end
 
+nbframe = 500;
 for i = 1 : length(data)
-    nbframe = 500;
-    data{i,1} = ScaleTime(data{i,1}, 1, length(data{i,1}), 500);
+    data{i,1} = ScaleTime(data{i,1}, 1, length(data{i,1}), nbframe);
 end
 %% Plot
 figure('unit','normalized','Position',[0 0 1 1]);
