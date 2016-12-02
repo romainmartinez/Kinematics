@@ -61,23 +61,37 @@ end
 % Vecteur X (temps en %)
 time = linspace(0,100,nbframe);
 
-g(1)=gramm('x',time,'y',delta_RoB,'color',sexe);
-% g(1).geom_line();
-g(1).stat_summary('type','std');
-g(1).set_names('x','Normalized time (% of trial)','y','Amplitude of movement (degrees)','color','Model used');
-g(1).set_title('Comparison of wrist abduction');
+clearvars bigstruct i 
+%% Plot
+% Delta hand
+g(1,1)=gramm('x',time,'y',delta_hand,'color',sexe);
+g(1,1).geom_line();
+% g(1,1).stat_summary('type','std');
+g(1,1).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
+g(1,1).set_title('Contribution of the hand on the height');
+
+% Delta GH
+g(1,2)=gramm('x',time,'y',delta_GH,'color',sexe);
+g(1,2).geom_line();
+% g(1,2).stat_summary('type','std');
+g(1,2).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
+g(1,2).set_title('Comparison of GH on the height');
+
+% Delta SCAC
+g(2,1)=gramm('x',time,'y',delta_SCAC,'color',sexe);
+g(2,1).geom_line();
+% g(2,1).stat_summary('type','std');
+g(2,1).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
+g(2,1).set_title('Comparison of SC & AC on the height');
+
+% Delta RoB
+g(2,2)=gramm('x',time,'y',delta_RoB,'color',sexe);
+g(2,2).geom_line();
+% g(2,2).stat_summary('type','std');
+g(2,2).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
+g(2,2).set_title('Comparison of the rest of the body on the height');
+
 g.draw();
 
-
-clearvars bigstruct i 
 %% test
-subject = 25;
-for subject = 1 : length(sujets)
-    figure
-plot(sujets(subject).data(1).deltahand') ; hold on
-plot(sujets(subject).data(1).deltaGH')
-plot(sujets(subject).data(1).deltaSCAC')
-plot(sujets(subject).data(1).deltaRoB')
-vline([sujets(subject).data(1).start sujets(subject).data(1).end],{'g','r'},{'Début','Fin'})
-legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
-end
+
