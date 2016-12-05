@@ -91,7 +91,7 @@ for trial = 1 : length(Alias.Qnames)
         % normalisation avec 100 = max de H1
         Data(trial).H1 = (Data(trial).H1*100)/hmax;
         % Blocage des q du segment
-        q1(Alias.segmentDoF.handelbow(1):Alias.segmentDoF.handelbow(end),:) = 0;
+        q1(Alias.segmentDoF.handelbow,:) = 0;
         % Redefinition des marqueurs avec les q bloqués
         T = S2M_rbdl('Tags', Stuff.model, q1);
         % Marqueurs du segment en cours avec q bloqués
@@ -141,6 +141,15 @@ for trial = 1 : length(Alias.Qnames)
     end
 end
 close(h)
+
+%% test
+    % low pass à 30 Hz
+xi = Data(30).Qdata.Q2;
+yi = lpfilter(xi',6,100);
+    % avant filtre
+S2M_rbdl_AnimateModel(Stuff.model,xi);
+% Après filtre
+S2M_rbdl_AnimateModel(Stuff.model,yi');
 
 
 %% Condition de l'essai
@@ -204,10 +213,10 @@ clearvars forceindex logical_cells row h cellfind
 % vline([Data(trial).start Data(trial).end],{'g','r'},{'Début','Fin'})
 % legend('normal','without hand','without GH','without SCAC','without RoB')
 % subplot(1,2,2)
-% plot(Data(1).deltahand') ; hold on
-% plot(Data(1).deltaGH')
-% plot(Data(1).deltaSCAC')
-% plot(Data(1).deltaRoB')
+% plot(Data(trial).deltahand') ; hold on
+% plot(Data(trial).deltaGH')
+% plot(Data(trial).deltaSCAC')
+% plot(Data(trial).deltaRoB')
 % vline([Data(trial).start Data(trial).end],{'g','r'},{'Début','Fin'})
 % legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
 % 
