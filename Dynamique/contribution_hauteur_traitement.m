@@ -20,8 +20,8 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
     loadS2MLib;
 end
 %% Interrupteur
-plot        =  0;                   % 0 ou 1
-stat        =  1;                   % 0 ou 1 
+plot        =  1;                   % 0 ou 1
+stat        =  0;                   % 0 ou 1 
 comparaison = '%';                 % = (absolu) ou % (relatif)
 %% Dossiers
 path.datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
@@ -48,13 +48,13 @@ elseif comparaison == '%'
         if bigstruct(i).poids == 6 && bigstruct(i).sexe == 'H'
             bigstruct(i) = [];
         elseif bigstruct(i).poids == 12 && bigstruct(i).sexe == 'H'
-            bigstruct(i).poids = 0;
+            bigstruct(i).poids = 1;
         elseif bigstruct(i).poids == 18 && bigstruct(i).sexe == 'H'
-            bigstruct(i).poids = 1;
+            bigstruct(i).poids = 2;
         elseif bigstruct(i).poids == 6 && bigstruct(i).sexe == 'F'
-            bigstruct(i).poids = 0;
-        elseif bigstruct(i).poids == 12 && bigstruct(i).sexe == 'F'
             bigstruct(i).poids = 1;
+        elseif bigstruct(i).poids == 12 && bigstruct(i).sexe == 'F'
+            bigstruct(i).poids = 2;
         end
     end
 end
@@ -91,33 +91,32 @@ end
 % Vecteur X (temps en %)
 time  = linspace(0,100,nbframe);
 
-
 clearvars bigstruct i 
 %% Plot
 if plot == 1
     % Delta hand
-    g(1,1)=gramm('x',time,'y',delta_hand,'color',sexe);
+    g(1,1) = gramm('x',time,'y',delta_hand,'color',sexe);
     g(1,1).geom_line();
     % g(1,1).stat_summary('type','std');
     g(1,1).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
     g(1,1).set_title('Contribution of the hand on the height');
     
     % Delta GH
-    g(1,2)=gramm('x',time,'y',delta_GH,'color',sexe);
+    g(1,2) = gramm('x',time,'y',delta_GH,'color',sexe);
     g(1,2).geom_line();
     % g(1,2).stat_summary('type','std');
     g(1,2).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
     g(1,2).set_title('Comparison of GH on the height');
     
     % Delta SCAC
-    g(2,1)=gramm('x',time,'y',delta_SCAC,'color',sexe);
+    g(2,1) = gramm('x',time,'y',delta_SCAC,'color',sexe);
     g(2,1).geom_line();
     % g(2,1).stat_summary('type','std');
     g(2,1).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
     g(2,1).set_title('Comparison of SC & AC on the height');
     
     % Delta RoB
-    g(2,2)=gramm('x',time,'y',delta_RoB,'color',sexe);
+    g(2,2) = gramm('x',time,'y',delta_RoB,'color',sexe);
     g(2,2).geom_line();
     % g(2,2).stat_summary('type','std');
     g(2,2).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
