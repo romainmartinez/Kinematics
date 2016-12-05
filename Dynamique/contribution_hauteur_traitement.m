@@ -20,9 +20,9 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
     loadS2MLib;
 end
 %% Interrupteur
-plot  = 0;                   % 0 ou 1
-stat  = 1;                   % 0 ou 1 
-comparaison = 'absolu';      % absolu ou relatif
+plot        =  0;                   % 0 ou 1
+stat        =  1;                   % 0 ou 1 
+comparaison = '%';                 % = (absolu) ou % (relatif)
 %% Dossiers
 path.datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
 
@@ -37,14 +37,26 @@ end
 bigstruct    = struct2array(RAW);
 
 %% Choix de la comparaison (absolu ou relatif)
-if     comparaison == 'absolu'
+if     comparaison == '='
     for i = length(bigstruct):-1:1
         if bigstruct(i).poids == 18
             bigstruct(i) = [];
         end
     end
-elseif comparaison == 'relatif'
-    
+elseif comparaison == '%'
+    for i = length(bigstruct):-1:1
+        if bigstruct(i).poids == 6 && bigstruct(i).sexe == 'H'
+            bigstruct(i) = [];
+        elseif bigstruct(i).poids == 12 && bigstruct(i).sexe == 'H'
+            bigstruct(i).poids = 0;
+        elseif bigstruct(i).poids == 18 && bigstruct(i).sexe == 'H'
+            bigstruct(i).poids = 1;
+        elseif bigstruct(i).poids == 6 && bigstruct(i).sexe == 'F'
+            bigstruct(i).poids = 0;
+        elseif bigstruct(i).poids == 12 && bigstruct(i).sexe == 'F'
+            bigstruct(i).poids = 1;
+        end
+    end
 end
 
 %% Facteurs
