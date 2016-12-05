@@ -169,8 +169,8 @@ end
 clearvars forceindex logical_cells row h cellfind
 
 %% Sauvegarde de la matrice
-data = rmfield(Data, 'Qdata');
-save([Path.exportPath Alias.sujet '.mat'],'data')
+% data = rmfield(Data, 'Qdata');
+% save([Path.exportPath Alias.sujet '.mat'],'data')
 %% Zone de test
 
 % % Identifier début transfert et début dépôt avec position en Z
@@ -198,17 +198,17 @@ save([Path.exportPath Alias.sujet '.mat'],'data')
 %     %   fin dépôt : force end                               OK
 % 
 %% Plot
-% trial = 24;
+% trial = 30;
 % subplot(1,2,1)
 % plot([Data(trial).H1 Data(trial).H2 Data(trial).H3 Data(trial).H4 Data(trial).H5])
-% vline([Data(trial).start/20 Data(trial).end/20],{'g','r'},{'Début','Fin'})
+% vline([Data(trial).start Data(trial).end],{'g','r'},{'Début','Fin'})
 % legend('normal','without hand','without GH','without SCAC','without RoB')
 % subplot(1,2,2)
 % plot(Data(1).deltahand') ; hold on
 % plot(Data(1).deltaGH')
 % plot(Data(1).deltaSCAC')
 % plot(Data(1).deltaRoB')
-% vline([Data(trial).start/20 Data(trial).end/20],{'g','r'},{'Début','Fin'})
+% vline([Data(trial).start Data(trial).end],{'g','r'},{'Début','Fin'})
 % legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
 % 
 % for i = 1 : 1
