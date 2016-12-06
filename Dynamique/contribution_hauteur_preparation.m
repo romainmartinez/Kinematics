@@ -67,8 +67,8 @@ Alias.nameBody = S2M_rbdl('nameBody', Stuff.model);
         Alias.segmentDoF.RoB           = 1:12;
         
 % Bar de progression
-h = waitbar(0,'Please wait...');
-steps = 54;
+% h = waitbar(0,'Please wait...');
+
 
 for trial = 1 : length(Alias.Qnames)
     if lower(Alias.Qnames(trial).name(1:4)) == lower(Alias.sujet)
@@ -137,6 +137,8 @@ for trial = 1 : length(Alias.Qnames)
         % Delta entre les deux matrices de marqueurs en Z
         Data(trial).deltaRoB  = Data(trial).H4 - Data(trial).H5;
         
+        %% Wait bar
+        steps = length(Data)
         waitbar(trial / steps);
     end
 end
