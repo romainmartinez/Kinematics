@@ -1,23 +1,30 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  ____                       _         __  __            _   _                  %
-% |  _ \ ___  _ __ ___   __ _(_)_ __   |  \/  | __ _ _ __| |_(_)_ __   ___ ____  %
-% | |_) / _ \| '_ ` _ \ / _` | | '_ \  | |\/| |/ _` | '__| __| | '_ \ / _ \_  /  %
-% |  _ < (_) | | | | | | (_| | | | | | | |  | | (_| | |  | |_| | | | |  __// /   %
-% |_| \_\___/|_| |_| |_|\__,_|_|_| |_| |_|  |_|\__,_|_|   \__|_|_| |_|\___/___|  %
-%                                                                                %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                            clc; clear; close all
+%   Description:
+%       cleanC3D is used to clean and edit c3d
+%       files
+%   Output:
+%       cleanC3D gives clean c3d (appropriate
+%       names, events, force plate)
+%   Functions:
+%       cleanC3D uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
+%
+%   Author:  Romain Martinez
+%   email:   martinez.staps@gmail.com
+%   Website: https://github.com/romainmartinez
+%   Date:    02-Nov-2016; Last revision: 15-Nov-2016
+%_____________________________________________________________________________
+
+clear all; close all; clc
+
 %% Chargement des fonctions
-    if isempty(strfind(path, '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab'))
-        % Librairie S2M
-            loadS2MLib;
-        % Fonctions perso
-            addpath(genpath('\\10.89.24.15\e\Projet_IRSST_LeverCaisse\Codes\Functions_Matlab'));
-    end
+if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
+    % Librairie S2M
+    loadS2MLib;
+end
     
 %% Chemin des essais
     % Nom du sujet
-Alias.subject  = input('Enter subject name : ','s');
+Alias.subject  = myinput('Enter Subject Name');
+
     % Chemin des essais
 Path.trials    = ['\\10.89.24.15\e\Projet_IRSST_LeverCaisse\InputData\' Alias.subject '\'];
 Alias.C3dfiles = dir([Path.trials '*.c3d']); 

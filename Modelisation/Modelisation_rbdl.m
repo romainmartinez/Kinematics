@@ -1,14 +1,26 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  ____                       _         __  __            _   _                  %
-% |  _ \ ___  _ __ ___   __ _(_)_ __   |  \/  | __ _ _ __| |_(_)_ __   ___ ____  %
-% | |_) / _ \| '_ ` _ \ / _` | | '_ \  | |\/| |/ _` | '__| __| | '_ \ / _ \_  /  %
-% |  _ < (_) | | | | | | (_| | | | | | | |  | | (_| | |  | |_| | | | |  __// /   %
-% |_| \_\___/|_| |_| |_|\__,_|_|_| |_| |_|  |_|\__,_|_|   \__|_|_| |_|\___/___|  %
-%                                                                                %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                            clc; clear; close all 
+%   Description:
+%       Modelisation_rbdl is used to compute the inverse kinematic with
+%       RBDL model
+%   Output:
+%       Modelisation_rbdl gives IK results
+%   Functions:
+%       Modelisation_rbdl uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
+%
+%   Author:  Romain Martinez
+%   email:   martinez.staps@gmail.com
+%   Website: https://github.com/romainmartinez
+%   Date:    19-Oct-2016; Last revision: 09-Nov-2016
+%_____________________________________________________________________________
+
+clear all; close all; clc
+
+%% Chargement des fonctions
+if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
+    % Librairie S2M
+    loadS2MLib;
+end
 %% Informations sur le sujet et l'essai                            
-Alias.sujet = input('Enter subjet name : ','s'); ;
+Alias.sujet = myinput('Enter Subject Name');
 
 %% Chemin de la librairie et des fichiers
     % Chargement des fonctions
