@@ -20,10 +20,10 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
     loadS2MLib;
 end
 %% Interrupteur
-plot         =   1;                  % 0 ou 1
-% verification =   1;                  % 0 ou 1
-stat         =   0;                  % 0 ou 1 
-comparaison  =  '=';                 % = (absolu) ou % (relatif)
+gramm       =   1;                  % 0 ou 1
+verif       =   1;                  % 0 ou 1
+stat        =   0;                  % 0 ou 1 
+comparaison =  '=';                 % = (absolu) ou % (relatif)
 %% Dossiers
 path.datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
 
@@ -32,6 +32,10 @@ alias.matname = dir([path.datapath '*mat']);
 
 for i = 1 : length(alias.matname)
     RAW(i) = load([path.datapath alias.matname(i).name]);
+    
+    for u = 1 : length(RAW(i).data)
+        RAW(i).data(u).sujet = alias.matname(i).name(1:end-4);
+    end
 end
 
 % Grande structure de données
@@ -67,7 +71,8 @@ sexe    = cellstr(vertcat(bigstruct(:).sexe));
 hauteur = vertcat(bigstruct(:).hauteur);
 % Poids
 poids   = vertcat(bigstruct(:).poids);
-
+% Poids
+sujet   = cellstr(vertcat(bigstruct(:).sujet));
 %% Variables
 % nombre de frames désirés pour interpolation
 nbframe = 200;
@@ -99,40 +104,50 @@ end
 time  = linspace(0,100,nbframe);
 
 %% Plot
-if plot == 1
-    height = 2;
+if gramm == 1
+    for i = 1 : 6
+    figure('units','normalized','outerposition',[0 0 1 1])
     % Delta hand
-    g(1,1) = gramm('x',time,'y',delta_hand,'color',sexe, 'subset', hauteur == height);
+    g(1,1) = gramm('x',time,'y',delta_hand,'color',sujet, 'subset', hauteur == i);
     g(1,1).geom_line();
 %     g(1,1).stat_summary('type','std');
     g(1,1).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
     g(1,1).set_title('Contribution of the hand and elbow');
     
     % Delta GH
-    g(1,2) = gramm('x',time,'y',delta_GH,'color',sexe, 'subset', hauteur == height);
+    g(1,2) = gramm('x',time,'y',delta_GH,'color',sujet, 'subset', hauteur == i);
     g(1,2).geom_line();
 %     g(1,2).stat_summary('type','std');
     g(1,2).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
     g(1,2).set_title('Contribution of GH');
     
     % Delta SCAC
-    g(2,1) = gramm('x',time,'y',delta_SCAC,'color',sexe, 'subset', hauteur == height);
+    g(2,1) = gramm('x',time,'y',delta_SCAC,'color',sujet, 'subset', hauteur == i);
     g(2,1).geom_line();
 %     g(2,1).stat_summary('type','std');
     g(2,1).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
     g(2,1).set_title('Contribution of SC & AC');
     
     % Delta RoB
-    g(2,2) = gramm('x',time,'y',delta_RoB,'color',sexe, 'subset', hauteur == height);
+    g(2,2) = gramm('x',time,'y',delta_RoB,'color',sujet, 'subset', hauteur == i);
     g(2,2).geom_line();
 %     g(2,2).stat_summary('type','std');
     g(2,2).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
     g(2,2).set_title('Contribution of the rest of the body');
     
+    g.set_title(['Height num ' num2str(i)]);
     g.draw();
+    end
 end
 
 %% Vérification
+for i = 1 : length(delta_GH)
+    plot(delta_GH{i,1},'DisplayName',num2str(i));
+    hold on
+end
+
+
+
 value  = round(-28.91);
 c      = cellfun(@(x)(ismember(value,round(x))),delta_hand,'UniformOutput',false);
 [YS,~] = find(reshape([c{:}],numel(value),[])');

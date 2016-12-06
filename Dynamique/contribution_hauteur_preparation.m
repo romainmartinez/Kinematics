@@ -67,8 +67,12 @@ Alias.nameBody = S2M_rbdl('nameBody', Stuff.model);
         Alias.segmentDoF.RoB           = 1:12;
         
 % Bar de progression
-% h = waitbar(0,'Please wait...');
-
+h = waitbar(0,'Please wait...');
+if Alias.Qnames(1).name(5) == 'F'
+    steps = 36;
+else
+    steps = 54
+end
 
 for trial = 1 : length(Alias.Qnames)
     if lower(Alias.Qnames(trial).name(1:4)) == lower(Alias.sujet)
@@ -138,7 +142,6 @@ for trial = 1 : length(Alias.Qnames)
         Data(trial).deltaRoB  = Data(trial).H4 - Data(trial).H5;
         
         %% Wait bar
-        steps = length(Data)
         waitbar(trial / steps);
     end
 end
@@ -161,7 +164,7 @@ for i = 1 : length(Data)
     Data(i).end   = forceindex{row,2};
     
     % sexe
-    if length(Data) == 54
+    if     length(Data) == 54
         Data(i).sexe = 'H';
     elseif length(Data) == 36
         Data(i).sexe = 'F';
