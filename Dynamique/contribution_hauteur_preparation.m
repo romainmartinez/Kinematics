@@ -142,16 +142,6 @@ for trial = 1 : length(Alias.Qnames)
 end
 close(h)
 
-% %% test
-%     % low pass à 30 Hz
-% xi = Data(30).Qdata.Q2;
-% yi = lpfilter(xi',6,100);
-%     % avant filtre
-% S2M_rbdl_AnimateModel(Stuff.model,xi);
-% % Après filtre
-% S2M_rbdl_AnimateModel(Stuff.model,yi');
-
-
 %% Condition de l'essai
 [Data]    = getcondition(Data);
 [~,index] = sortrows([Data.condition].'); Data = Data(index); clear index
@@ -220,12 +210,12 @@ clearvars forceindex logical_cells row h cellfind
 % vline([Data(trial).start Data(trial).end],{'g','r'},{'Début','Fin'})
 % legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
 % 
-for i = 1 : length(Data)
-plot(Data(i).deltahand') ; hold on
-plot(Data(i).deltaGH')
-plot(Data(i).deltaSCAC')
-plot(Data(i).deltaRoB')
-vline([Data(i).start/20 Data(i).end/20],{'g','r'},{'Début','Fin'})
-legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
-figure
-end
+% for i = 1 : length(Data)
+% plot(Data(i).deltahand') ; hold on
+% plot(Data(i).deltaGH')
+% plot(Data(i).deltaSCAC')
+% plot(Data(i).deltaRoB')
+% vline([Data(i).start/20 Data(i).end/20],{'g','r'},{'Début','Fin'})
+% legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
+% figure
+% end
