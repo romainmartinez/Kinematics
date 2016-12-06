@@ -86,6 +86,12 @@ for i = 1 : length(bigstruct)
     delta_GH{i,1}   = ScaleTime(delta_GH{i,1}, 1, length(delta_GH{i,1}), nbframe);
     delta_SCAC{i,1} = ScaleTime(delta_SCAC{i,1}, 1, length(delta_SCAC{i,1}), nbframe);
     delta_RoB{i,1}  = ScaleTime(delta_RoB{i,1}, 1, length(delta_RoB{i,1}), nbframe);
+    
+    % Filtre passe-bas 25Hz
+    delta_hand{i,1} = lpfilter(delta_hand{i,1}, 25, 100);
+    delta_GH{i,1}   = lpfilter(delta_GH{i,1},   25, 100);
+    delta_SCAC{i,1} = lpfilter(delta_SCAC{i,1}, 25, 100);
+    delta_RoB{i,1}  = lpfilter(delta_RoB{i,1},  25, 100);
 end
 
 % Vecteur X (temps en %)
@@ -94,29 +100,30 @@ time  = linspace(0,100,nbframe);
 clearvars bigstruct i 
 %% Plot
 if plot == 1
+    height = 2;
     % Delta hand
-    g(1,1) = gramm('x',time,'y',delta_hand,'color',sexe, 'subset', hauteur == 1);
+    g(1,1) = gramm('x',time,'y',delta_hand,'color',sexe, 'subset', hauteur == height);
     g(1,1).geom_line();
 %     g(1,1).stat_summary('type','std');
     g(1,1).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
     g(1,1).set_title('Contribution of the hand');
     
     % Delta GH
-    g(1,2) = gramm('x',time,'y',delta_GH,'color',sexe, 'subset', hauteur == 1);
+    g(1,2) = gramm('x',time,'y',delta_GH,'color',sexe, 'subset', hauteur == height);
     g(1,2).geom_line();
 %     g(1,2).stat_summary('type','std');
     g(1,2).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
     g(1,2).set_title('Contribution of GH');
     
     % Delta SCAC
-    g(2,1) = gramm('x',time,'y',delta_SCAC,'color',sexe, 'subset', hauteur == 1);
+    g(2,1) = gramm('x',time,'y',delta_SCAC,'color',sexe, 'subset', hauteur == height);
     g(2,1).geom_line();
 %     g(2,1).stat_summary('type','std');
     g(2,1).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
     g(2,1).set_title('Contribution of SC & AC');
     
     % Delta RoB
-    g(2,2) = gramm('x',time,'y',delta_RoB,'color',sexe, 'subset', hauteur == 1);
+    g(2,2) = gramm('x',time,'y',delta_RoB,'color',sexe, 'subset', hauteur == height);
     g(2,2).geom_line();
 %     g(2,2).stat_summary('type','std');
     g(2,2).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
