@@ -103,7 +103,7 @@ for trial = 1 : length(Alias.Qnames)
         
         %% Articulation 2 : GH
         % Blocage des q du segment
-        q1(Alias.segmentDoF.GH(1):Alias.segmentDoF.GH(end),:) = 0;
+        q1(Alias.segmentDoF.GH,:) = 0;
         % Redefinition des marqueurs avec les q bloqués
         T = S2M_rbdl('Tags', Stuff.model,q1);
         % Marqueurs du segment en cours avec q bloqués
@@ -115,7 +115,7 @@ for trial = 1 : length(Alias.Qnames)
         
         %% Articulation 3 : GH
         % Blocage des q du segment
-        q1(Alias.segmentDoF.SCAC(1):Alias.segmentDoF.SCAC(end),:) = 0;
+        q1(Alias.segmentDoF.SCAC,:) = 0;
         % Redefinition des marqueurs avec les q bloqués
         T = S2M_rbdl('Tags', Stuff.model, q1);
         % Marqueurs du segment en cours avec q bloqués
@@ -127,7 +127,7 @@ for trial = 1 : length(Alias.Qnames)
         
         %% Articulation 4 : Reste du corps (pelvis + thorax)
         % Blocage des q du segment
-        q1(Alias.segmentDoF.RoB(1):Alias.segmentDoF.RoB(end),:) = 0;
+        q1(Alias.segmentDoF.RoB,:) = 0;
         % Redefinition des marqueurs avec les q bloqués
         T = S2M_rbdl('Tags', Stuff.model, q1);
         % Marqueurs du segment en cours avec q bloqués
@@ -142,14 +142,14 @@ for trial = 1 : length(Alias.Qnames)
 end
 close(h)
 
-%% test
-    % low pass à 30 Hz
-xi = Data(30).Qdata.Q2;
-yi = lpfilter(xi',6,100);
-    % avant filtre
-S2M_rbdl_AnimateModel(Stuff.model,xi);
-% Après filtre
-S2M_rbdl_AnimateModel(Stuff.model,yi');
+% %% test
+%     % low pass à 30 Hz
+% xi = Data(30).Qdata.Q2;
+% yi = lpfilter(xi',6,100);
+%     % avant filtre
+% S2M_rbdl_AnimateModel(Stuff.model,xi);
+% % Après filtre
+% S2M_rbdl_AnimateModel(Stuff.model,yi');
 
 
 %% Condition de l'essai
@@ -220,12 +220,12 @@ clearvars forceindex logical_cells row h cellfind
 % vline([Data(trial).start Data(trial).end],{'g','r'},{'Début','Fin'})
 % legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
 % 
-% for i = 1 : 1
-% plot(Data(i).deltahand') ; hold on
-% plot(Data(i).deltaGH')
-% plot(Data(i).deltaSCAC')
-% plot(Data(i).deltaRoB')
-% vline([Data(i).start/20 Data(i).end/20],{'g','r'},{'Début','Fin'})
-% legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
-% figure
-% end
+for i = 1 : length(Data)
+plot(Data(i).deltahand') ; hold on
+plot(Data(i).deltaGH')
+plot(Data(i).deltaSCAC')
+plot(Data(i).deltaRoB')
+vline([Data(i).start/20 Data(i).end/20],{'g','r'},{'Début','Fin'})
+legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
+figure
+end
