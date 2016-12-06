@@ -20,9 +20,10 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
     loadS2MLib;
 end
 %% Interrupteur
-plot        =  1;                   % 0 ou 1
-stat        =  0;                   % 0 ou 1 
-comparaison =  '=';                 % = (absolu) ou % (relatif)
+plot         =   1;                  % 0 ou 1
+% verification =   1;                  % 0 ou 1
+stat         =   0;                  % 0 ou 1 
+comparaison  =  '=';                 % = (absolu) ou % (relatif)
 %% Dossiers
 path.datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
 
@@ -97,7 +98,6 @@ end
 % Vecteur X (temps en %)
 time  = linspace(0,100,nbframe);
 
-clearvars bigstruct i 
 %% Plot
 if plot == 1
     height = 2;
@@ -106,7 +106,7 @@ if plot == 1
     g(1,1).geom_line();
 %     g(1,1).stat_summary('type','std');
     g(1,1).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
-    g(1,1).set_title('Contribution of the hand');
+    g(1,1).set_title('Contribution of the hand and elbow');
     
     % Delta GH
     g(1,2) = gramm('x',time,'y',delta_GH,'color',sexe, 'subset', hauteur == height);
@@ -131,6 +131,19 @@ if plot == 1
     
     g.draw();
 end
+
+%% Vérification
+value  = round(-28.91);
+c      = cellfun(@(x)(ismember(value,round(x))),delta_hand,'UniformOutput',false);
+[YS,~] = find(reshape([c{:}],numel(value),[])');
+sujets     = ceil(YS/36);
+for i = 1 : length(YS)
+% disp([bigstruct(YS(i)).trialname ' pour le sujet numero ' num2str(sujets(i)) ' (essais numéro: ' num2str(YS(i)) ')'])
+disp([alias.matname(i).name(1:end-4) ' ' bigstruct(YS(i)).trialname])
+end
+alias(1).matname.name
+
+clearvars bigstruct i 
 %% SPM
 if stat == 1
     % Transformation des données
