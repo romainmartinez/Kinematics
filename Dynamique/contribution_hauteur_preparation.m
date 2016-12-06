@@ -168,8 +168,41 @@ end
 clearvars forceindex logical_cells row h cellfind
 
 %% Sauvegarde de la matrice
-% data = rmfield(Data, 'Qdata');
-% save([Path.exportPath Alias.sujet '.mat'],'data')
+data = rmfield(Data, 'Qdata');
+save([Path.exportPath Alias.sujet '.mat'],'data')
+
+%% Plot
+% for i = 1 : length(Data)
+% subplot(2,2,1)
+% plot(Data(i).Qdata.Q2(Alias.segmentDoF.GH,:)')
+%     
+% end
+
+
+
+
+% trial = 30;
+% subplot(1,2,1)
+% plot([Data(trial).H1 Data(trial).H2 Data(trial).H3 Data(trial).H4 Data(trial).H5])
+% vline([Data(trial).start Data(trial).end],{'g','r'},{'Début','Fin'})
+% legend('normal','without hand','without GH','without SCAC','without RoB')
+% subplot(1,2,2)
+% plot(Data(trial).deltahand') ; hold on
+% plot(Data(trial).deltaGH')
+% plot(Data(trial).deltaSCAC')
+% plot(Data(trial).deltaRoB')
+% vline([Data(trial).start Data(trial).end],{'g','r'},{'Début','Fin'})
+% legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
+% 
+% for i = 1 : length(Data)
+% plot(Data(i).deltahand') ; hold on
+% plot(Data(i).deltaGH')
+% plot(Data(i).deltaSCAC')
+% plot(Data(i).deltaRoB')
+% vline([Data(i).start/20 Data(i).end/20],{'g','r'},{'Début','Fin'})
+% legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
+% figure
+% end
 %% Zone de test
 
 % % Identifier début transfert et début dépôt avec position en Z
@@ -196,26 +229,3 @@ clearvars forceindex logical_cells row h cellfind
 %     %       dépôt : marqueur main avec position verticale   à vérifier
 %     %   fin dépôt : force end                               OK
 % 
-%% Plot
-% trial = 30;
-% subplot(1,2,1)
-% plot([Data(trial).H1 Data(trial).H2 Data(trial).H3 Data(trial).H4 Data(trial).H5])
-% vline([Data(trial).start Data(trial).end],{'g','r'},{'Début','Fin'})
-% legend('normal','without hand','without GH','without SCAC','without RoB')
-% subplot(1,2,2)
-% plot(Data(trial).deltahand') ; hold on
-% plot(Data(trial).deltaGH')
-% plot(Data(trial).deltaSCAC')
-% plot(Data(trial).deltaRoB')
-% vline([Data(trial).start Data(trial).end],{'g','r'},{'Début','Fin'})
-% legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
-% 
-% for i = 1 : length(Data)
-% plot(Data(i).deltahand') ; hold on
-% plot(Data(i).deltaGH')
-% plot(Data(i).deltaSCAC')
-% plot(Data(i).deltaRoB')
-% vline([Data(i).start/20 Data(i).end/20],{'g','r'},{'Début','Fin'})
-% legend('contrib hand','contrib GH','contrib SCAC','contrib RoB')
-% figure
-% end
