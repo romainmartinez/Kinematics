@@ -76,20 +76,20 @@ end
 
 %% OpenSim
 for i = 1 : length(RAW.OpenSim)
-selectedcolon      = [10:17 19 18]; 
-correspondingcolon = 4 : 13;
-data               = [data ; num2cell(RAW.OpenSim(i).IK(:,selectedcolon),1)'];
-model              = [model ; cellstr(repmat('OpenSim',length(selectedcolon),1))];
-dof                = [dof ; correspondingcolon'];
+    selectedcolon      = [10:17 19 18]; 
+    correspondingcolon = 4 : 13;
+    data               = [data ; num2cell(RAW.OpenSim(i).IK(:,selectedcolon),1)'];
+    model              = [model ; cellstr(repmat('OpenSim',length(selectedcolon),1))];
+    dof                = [dof ; correspondingcolon'];
 end
 
 %% RBDL
 for i = 1 : length(RAW.RBDL)
-selectedcolon      = [23 25 26]; 
-correspondingcolon = [5 10 11];
-data               = [data ; num2cell(RAW.RBDL(i).selected(:,selectedcolon),1)'];
-model              = [model ; cellstr(repmat('RBDL',length(selectedcolon),1))];
-dof                = [dof ; correspondingcolon'];
+    selectedcolon      = [23 25 26]; 
+    correspondingcolon = [5 10 11];
+    data               = [data ; num2cell(RAW.RBDL(i).selected(:,selectedcolon),1)'];
+    model              = [model ; cellstr(repmat('RBDL',length(selectedcolon),1))];
+    dof                = [dof ; correspondingcolon'];
 end
 
 nbframe = 500;
