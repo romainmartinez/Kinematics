@@ -9,7 +9,7 @@
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
 %   Website: https://github.com/romainmartinez
-%   Date:    29-Nov-2016; Last revision: 1-Dec-2016
+%   Date:    29-Nov-2016; Last revision: 07-Dec-2016
 %_____________________________________________________________________________
 
 clear all; close all; clc
@@ -20,9 +20,9 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
     loadS2MLib;
 end
 %% Interrupteur
-grammplot   =   1;                  % 0 ou 1
+grammplot   =   0;                  % 0 ou 1
 verif       =   1;                  % 0 ou 1
-stat        =   0;                  % 0 ou 1 
+stat        =   0;                  % 0 ou 1
 comparaison =  '=';                 % = (absolu) ou % (relatif)
 %% Dossiers
 path.datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
@@ -141,12 +141,32 @@ if grammplot == 1
 end
 
 %% Vérification
-for i = 1 : length(delta_GH)
-    plot(delta_GH{i,1},'DisplayName',num2str(i));
-    hold on
+if verif == 1
+    figure('units','normalized','outerposition',[0 0 1 1])
+    for i = 1 : length(delta_hand)
+        plot(delta_hand{i,1},'DisplayName',num2str(i));
+        hold on
+    end
+    
+    figure('units','normalized','outerposition',[0 0 1 1])
+    for i = 1 : length(delta_GH)
+        plot(delta_GH{i,1},'DisplayName',num2str(i));
+        hold on
+    end
+    
+    figure('units','normalized','outerposition',[0 0 1 1])
+    for i = 1 : length(delta_SCAC)
+        plot(delta_SCAC{i,1},'DisplayName',num2str(i));
+        hold on
+    end
+    
+    figure('units','normalized','outerposition',[0 0 1 1])
+    for i = 1 : length(delta_RoB)
+        plot(delta_RoB{i,1},'DisplayName',num2str(i));
+        hold on
+    end
+    
 end
-
-clearvars bigstruct i 
 %% SPM
 if stat == 1
     % Transformation des données
