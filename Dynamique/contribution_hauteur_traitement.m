@@ -166,28 +166,24 @@ if verif == 1
     for i = 1 : length(delta_hand)
         plot(delta_hand{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
         hold on
-        plotbrowser('on')
     end
     
     figure('units','normalized','outerposition',[0 0 1 1])
     for i = 1 : length(delta_GH)
         plot(delta_GH{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
         hold on
-        plotbrowser('on')
     end
     
     figure('units','normalized','outerposition',[0 0 1 1])
     for i = 1 : length(delta_SCAC)
         plot(delta_SCAC{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
         hold on
-        plotbrowser('on')
     end
     
     figure('units','normalized','outerposition',[0 0 1 1])
     for i = 1 : length(delta_RoB)
         plot(delta_RoB{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
         hold on
-        plotbrowser('on')
     end
     
 end
