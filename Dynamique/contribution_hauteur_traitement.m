@@ -9,7 +9,7 @@
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
 %   Website: https://github.com/romainmartinez
-%   Date:    29-Nov-2016; Last revision: 07-Dec-2016
+%   Date:    29-Nov-2016; Last revision: 08-Dec-2016
 %_____________________________________________________________________________
 
 clear all; close all; clc
@@ -25,7 +25,7 @@ grammplot   =   0;                  % 0 ou 1
 plotmean    =   1;                  % 0 ou 1
 verif       =   1;                  % 0 ou 1
 stat        =   0;                  % 0 ou 1
-comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
+comparaison =  '=';                 % '=' (absolu) ou '%' (relatif)
 
 %% Dossiers
 path.datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
