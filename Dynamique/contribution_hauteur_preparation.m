@@ -9,7 +9,7 @@
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
 %   Website: https://github.com/romainmartinez
-%   Date:    26-Nov-2016; Last revision: 29-Nov-2016
+%   Date:    26-Nov-2016; Last revision: 08-Nov-2016
 %_____________________________________________________________________________
 
 clear all; close all; clc
