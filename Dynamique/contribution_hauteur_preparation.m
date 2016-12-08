@@ -21,7 +21,7 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
 end
 
 %% Interrupteurs
-saveresults = 0;
+saveresults = 1;
 plotforce   = 0;
 test        = 0;
 
@@ -202,29 +202,40 @@ if saveresults == 1
     save([Path.exportPath Alias.sujet '.mat'],'data')
 end
 
-%% Zone de test
+%% Zone de test 1
 if test == 1
-    for i = 1 : length(Data)
-        figure('units','normalized','outerposition',[0 0 1 1])
-        plot(Data(i).deltahand(round(Data(i).start):round(Data(i).end))) ; hold on
-        plot(Data(i).deltaGH(  round(Data(i).start):round(Data(i).end)))
-        plot(Data(i).deltaSCAC(round(Data(i).start):round(Data(i).end)))
-        plot(Data(i).deltaRoB( round(Data(i).start):round(Data(i).end)))
-        legend('contrib hand & elbow','contrib GH','contrib SCAC','contrib RoB')
-    end
+   
+    essai = 35;
     
-    for i = 1 : length(Data)
-        figure('units','normalized','outerposition',[0 0 1 1])
-        plot(Data(i).H1(round(Data(i).start):round(Data(i).end))) ; hold on
-        plot(Data(i).H2(round(Data(i).start):round(Data(i).end)))
-        plot(Data(i).H3(round(Data(i).start):round(Data(i).end)))
-        plot(Data(i).H4(round(Data(i).start):round(Data(i).end)))
-        plot(Data(i).H5(round(Data(i).start):round(Data(i).end)))
-        legend('normal','without hand & elbow','without GH','without SCAC','without RoB')
-    end
-    
+q1 = Data(essai).Qdata.Q2;
+q1(Alias.segmentDoF.handelbow,:) = 0;
+q1(Alias.segmentDoF.GH,:)        = 0;
+q1(Alias.segmentDoF.SCAC,:)      = 0;
+q1(Alias.segmentDoF.RoB,:)       = 0;
+
+S2M_rbdl_AnimateModel(Stuff.model, q1)
+
+%     for i = 1 : length(Data)
+%         figure('units','normalized','outerposition',[0 0 1 1])
+%         plot(Data(i).deltahand(round(Data(i).start):round(Data(i).end))) ; hold on
+%         plot(Data(i).deltaGH(  round(Data(i).start):round(Data(i).end)))
+%         plot(Data(i).deltaSCAC(round(Data(i).start):round(Data(i).end)))
+%         plot(Data(i).deltaRoB( round(Data(i).start):round(Data(i).end)))
+%         legend('contrib hand & elbow','contrib GH','contrib SCAC','contrib RoB')
+%     end
+%     
+%     for i = 1 : length(Data)
+%         figure('units','normalized','outerposition',[0 0 1 1])
+%         plot(Data(i).H1(round(Data(i).start):round(Data(i).end))) ; hold on
+%         plot(Data(i).H2(round(Data(i).start):round(Data(i).end)))
+%         plot(Data(i).H3(round(Data(i).start):round(Data(i).end)))
+%         plot(Data(i).H4(round(Data(i).start):round(Data(i).end)))
+%         plot(Data(i).H5(round(Data(i).start):round(Data(i).end)))
+%         legend('normal','without hand & elbow','without GH','without SCAC','without RoB')
+%     end
+%     
 end
-%% zone de test
+%% zone de test 2
 
 % % Identifier début transfert et début dépôt avec position en Z
 % framerate  = 100; 
