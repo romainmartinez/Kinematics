@@ -22,6 +22,7 @@ end
 
 %% Interrupteurs
 saveresults = 1;
+plotforce   = 0;
 test        = 0;
 
 %% Nom du sujet
@@ -71,9 +72,9 @@ Alias.nameBody = S2M_rbdl('nameBody', Stuff.model);
         
 %% Déterminer les phases du mouvement
 % Obtenir les onset et offset de force
-[forceindex] = getforcedata(Alias.sujet);
+[forceindex] = getforcedata(Alias.sujet, plotforce);
 %% Bar de progression
-steps = length(Alias.Qnames);
+steps   = length(Alias.Qnames);
 waitbar = textprogressbar(steps);
 
 for trial = 1 : length(Alias.Qnames)
@@ -87,6 +88,7 @@ for trial = 1 : length(Alias.Qnames)
     
     % Noms des essais
     Data(trial).trialname = Alias.Qnames(trial).name(5:11);
+    
     if Data(trial).trialname(end) == '_'
         Data(trial).trialname = Data(trial).trialname(1:end-1);
     end
@@ -211,8 +213,6 @@ if test == 1
         legend('contrib hand & elbow','contrib GH','contrib SCAC','contrib RoB')
     end
     
-    close all
-    
     for i = 1 : length(Data)
         figure('units','normalized','outerposition',[0 0 1 1])
         plot(Data(i).H1(round(Data(i).start):round(Data(i).end))) ; hold on
@@ -222,6 +222,7 @@ if test == 1
         plot(Data(i).H5(round(Data(i).start):round(Data(i).end)))
         legend('normal','without hand & elbow','without GH','without SCAC','without RoB')
     end
+    
 end
 %% zone de test
 
