@@ -20,10 +20,13 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
     loadS2MLib;
 end
 %% Interrupteur
+test        =   0;                  % 0 ou 1
 grammplot   =   0;                  % 0 ou 1
+plotmean    =   1;                  % 0 ou 1
 verif       =   1;                  % 0 ou 1
 stat        =   0;                  % 0 ou 1
-comparaison =  '=';                 % = (absolu) ou % (relatif)
+comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
+
 %% Dossiers
 path.datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
 
@@ -105,37 +108,54 @@ time  = linspace(0,100,nbframe);
 
 %% Plot
 if grammplot == 1
-    for i = 1 : 6
+    for i = 6 : -1 : 1
         figure('units','normalized','outerposition',[0 0 1 1])
         % Delta hand
         g(1,1) = gramm('x', time ,'y', delta_hand, 'color', sexe, 'subset', hauteur == 1);
-        g(1,1).geom_line();
-        %     g(1,1).stat_summary('type','std');
         g(1,1).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
         g(1,1).set_title('Contribution of the hand and elbow');
         
         % Delta GH
-        g(1,2) = gramm('x',time,'y',delta_GH,'color',sujet, 'subset', hauteur == i);
-        g(1,2).geom_line();
-        %     g(1,2).stat_summary('type','std');
+        g(1,2) = gramm('x',time,'y',delta_GH,'color',sexe, 'subset', hauteur == i);
         g(1,2).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
         g(1,2).set_title('Contribution of GH');
         
         % Delta SCAC
-        g(2,1) = gramm('x',time,'y',delta_SCAC,'color',sujet, 'subset', hauteur == i);
-        g(2,1).geom_line();
-        %     g(2,1).stat_summary('type','std');
+        g(2,1) = gramm('x',time,'y',delta_SCAC,'color',sexe, 'subset', hauteur == i);
         g(2,1).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
         g(2,1).set_title('Contribution of SC & AC');
         
         % Delta RoB
-        g(2,2) = gramm('x',time,'y',delta_RoB,'color',sujet, 'subset', hauteur == i);
-        g(2,2).geom_line();
-        %     g(2,2).stat_summary('type','std');
+        g(2,2) = gramm('x',time,'y',delta_RoB,'color',sexe, 'subset', hauteur == i);
         g(2,2).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
         g(2,2).set_title('Contribution of the rest of the body');
         
-        g.set_title(['Height num ' num2str(i)]);
+        if plotmean == 1
+            g(1,1).stat_summary('type','std');
+            g(1,2).stat_summary('type','std');
+            g(2,1).stat_summary('type','std');
+            g(2,2).stat_summary('type','std');
+        else
+            g(1,1).geom_line();
+            g(1,2).geom_line();
+            g(2,1).geom_line();
+            g(2,2).geom_line();
+        end
+        
+        switch i
+            case 1
+                g.set_title([' Hips - Shoulders (H' num2str(i) ')']);
+            case 2
+                g.set_title([' Hips - Eyes (H' num2str(i) ')']);
+            case 3
+                g.set_title([' Shoulders - Hips (H' num2str(i) ')']);
+            case 4
+                g.set_title([' Shoulders - Eyes (H' num2str(i) ')']);
+            case 5
+                g.set_title([' Eyes - Hips (H' num2str(i) ')']);
+            case 6
+                g.set_title([' Eyes - Shoulders (H' num2str(i) ')']);
+        end
         g.draw();
     end
 end
@@ -144,19 +164,20 @@ end
 if verif == 1
     figure('units','normalized','outerposition',[0 0 1 1])
     for i = 1 : length(delta_hand)
-        plot(delta_hand{i,1},'DisplayName',num2str(i));
+        plot(delta_hand{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
         hold on
+        plotbrowser('on')
     end
     
     figure('units','normalized','outerposition',[0 0 1 1])
     for i = 1 : length(delta_GH)
-        plot(delta_GH{i,1},'DisplayName',num2str(i));
+        plot(delta_GH{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
         hold on
     end
     
     figure('units','normalized','outerposition',[0 0 1 1])
     for i = 1 : length(delta_SCAC)
-        plot(delta_SCAC{i,1},'DisplayName',num2str(i));
+        plot(delta_SCAC{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
         hold on
     end
     
@@ -198,4 +219,14 @@ if stat == 1
     %(2) Plot:
     close all
     spmilist.plot('plot_threshold_label',false, 'plot_p_values',true, 'autoset_ylim',true);
+end
+
+%% Zone de test
+if test == 1
+    height = 6;
+    for i = 1 : length(bigstruct)
+        if bigstruct(i).hauteur == height
+            plot(bigstruct(i).H1(round(bigstruct(i).start):round(bigstruct(i).end))) ; hold on
+        end
+    end
 end
