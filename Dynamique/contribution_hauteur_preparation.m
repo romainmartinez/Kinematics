@@ -38,7 +38,7 @@ Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\IRSST_' A
 % Dossier d'exportation
 Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
 % Noms des fichiers data
-Alias.Qnames    = dir([Path.importPath '*.Q2']);
+Alias.Qnames    = dir([Path.importPath '*.Q*']);
 
 %% Ouverture et information du modèle
 % Ouverture du modèle
@@ -73,6 +73,7 @@ Alias.nameBody = S2M_rbdl('nameBody', Stuff.model);
 %% Déterminer les phases du mouvement
 % Obtenir les onset et offset de force
 [forceindex] = getforcedata(Alias.sujet, plotforce);
+
 %% Bar de progression
 steps   = length(Alias.Qnames);
 waitbar = textprogressbar(steps);
@@ -104,7 +105,11 @@ for trial = 1 : length(Alias.Qnames)
     
     %% Contribution des articulation à la hauteur
     % Initialisation des Q
-    q1 = Data(trial).Qdata.Q2;
+    if length(fieldnames(Data(trial).Qdata)) == 3
+        q1 = Data(trial).Qdata.Q2;
+    elseif length(fieldnames(Data(trial).Qdata)) == 1
+        q1 = Data(trial).Qdata.Q1;
+    end
     
     %% Articulation 1 : Poignet + coude
     % Coordonnées des marqueurs dans le repère global

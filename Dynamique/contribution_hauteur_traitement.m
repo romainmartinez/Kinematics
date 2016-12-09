@@ -22,7 +22,7 @@ end
 %% Interrupteur
 test        =   0;                  % 0 ou 1
 grammplot   =   0;                  % 0 ou 1
-plotmean    =   1;                  % 0 ou 1
+plotmean    =   0;                  % 0 ou 1
 verif       =   1;                  % 0 ou 1
 stat        =   0;                  % 0 ou 1
 comparaison =  '=';                 % '=' (absolu) ou '%' (relatif)
