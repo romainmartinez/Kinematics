@@ -1,10 +1,10 @@
 %   Description:
-%       contribution_hauteur_traitement is used replace a missing marker in
+%       MissingMarker is used replace a missing marker in
 %       the c3d file
 %   Output:
-%       contribution_hauteur gives new c3d with a replaced marker
+%       MissingMarker gives new c3d with a replaced marker
 %   Functions:
-%       contribution_hauteur uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
+%       MissingMarker uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
 %
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
@@ -20,19 +20,31 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
     loadS2MLib;
 end
 
-%% Nom du sujet
-Alias.sujet = myinput('Enter Subject Name');
+%% Caractéristique
+%Nom du sujet
+alias.subject = myinput('Enter Subject Name');
 
-% Chemin des essais
-Path.trials    = ['\\10.89.24.15\e\Projet_IRSST_LeverCaisse\InputData\' Alias.subject '\'];
-Alias.C3dfiles = dir([Path.trials '*.c3d']);
+% Dossier des essais
+path.folderPath = ['\\10.89.24.15\f\Data\Shoulder\RAW\IRSST_' alias.subject 'd\trials\'];
+
+% noms des fichiers c3d
+alias.C3dfiles   = dir([path.folderPath '*.c3d']);
+
+% Marqueur manquant
+missed = 'XIPH'
 
 %% Chargement des données
 
-for i = 1 : length(Alias.C3dfiles)
-    Filename   = [Path.trials Alias.C3dfiles(i).name];
-    fprintf('Traitement de %d (%s)\n', i, Alias.C3dfiles(i).name);
-    btkc3d     = btkReadAcquisition(Filename);
-    btkanalog  = btkGetAnalogs(btkc3d);
-    btkmarkers = btkGetMarkers(btkc3d);
+for i = 2 : length(alias.C3dfiles)
+    % Chargement des données
+    Filename   = [path.folderPath alias.C3dfiles(i).name];
+    fprintf('Traitement de %d (%s)\n', i, alias.C3dfiles(i).name);
+    btkc3d      = btkReadAcquisition(Filename);
+    btkmarker   = btkGetMarkers(btkc3d);
+    
+    pointlabel = ['Naudira_' missed];
+    
+    btkAppendPoint(btkc3d, 'marker', pointlabel, repmat([1 1 1], length(btkmarker.Naudira_ASISr),1))
+    
+    btkWriteAcquisition(btkc3d, Filename)
 end
