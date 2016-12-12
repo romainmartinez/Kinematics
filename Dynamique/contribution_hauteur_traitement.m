@@ -34,11 +34,12 @@ path.datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contri
 alias.matname = dir([path.datapath '*mat']);
 
 for i = 1 : length(alias.matname)
-    RAW(i) = load([path.datapath alias.matname(i).name]);
-    
-    for u = 1 : length(RAW(i).data)
-        RAW(i).data(u).sujet = alias.matname(i).name(1:end-4);
-    end
+        
+        RAW(i) = load([path.datapath alias.matname(i).name]);
+        
+        for u = 1 : length(RAW(i).data)
+            RAW(i).data(u).sujet = alias.matname(i).name(1:end-4);
+        end
 end
 
 % Grande structure de données
@@ -76,6 +77,16 @@ hauteur = vertcat(bigstruct(:).hauteur);
 poids   = vertcat(bigstruct(:).poids);
 % Poids
 sujet   = cellstr(vertcat(bigstruct(:).sujet));
+
+%% Compter le nombre d'hommes et de femmes
+% Nombre de femmes
+femmes = sum(cell2mat(sexe) == 'F')/36
+% Nombre d'hommes
+hommes = sum(cell2mat(sexe) == 'H')/36
+
+if femmes ~= hommes
+    disp('Number of participants is not balanced: please add names in the blacklist')
+end
 %% Variables
 % nombre de frames désirés pour interpolation
 nbframe = 200;
@@ -162,30 +173,60 @@ end
 
 %% Vérification
 if verif == 1
-    figure('units','normalized','outerposition',[0 0 1 1])
-    for i = 1 : length(delta_hand)
-        plot(delta_hand{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-        hold on
-    end
-    
-    figure('units','normalized','outerposition',[0 0 1 1])
-    for i = 1 : length(delta_GH)
-        plot(delta_GH{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-        hold on
-    end
-    
-    figure('units','normalized','outerposition',[0 0 1 1])
-    for i = 1 : length(delta_SCAC)
-        plot(delta_SCAC{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-        hold on
-    end
-    
-    figure('units','normalized','outerposition',[0 0 1 1])
-    for i = 1 : length(delta_RoB)
-        plot(delta_RoB{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-        hold on
-    end
-    
+%     figure('units','normalized','outerposition',[0 0 1 1])
+%     for i = 1 : length(delta_hand)
+%         plot(delta_hand{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
+%         hold on
+%     end
+%     
+%     figure('units','normalized','outerposition',[0 0 1 1])
+%     for i = 1 : length(delta_GH)
+%         plot(delta_GH{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
+%         hold on
+%     end
+%     
+%     figure('units','normalized','outerposition',[0 0 1 1])
+%     for i = 1 : length(delta_SCAC)
+%         plot(delta_SCAC{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
+%         hold on
+%     end
+%     
+%     figure('units','normalized','outerposition',[0 0 1 1])
+%     for i = 1 : length(delta_RoB)
+%         plot(delta_RoB{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
+%         hold on
+%     end
+
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+height = 3;
+
+idx    = find(hauteur == height);
+
+figure('units','normalized','outerposition',[0 0 1 1])
+for i = 1 : length(idx)
+    plot(delta_hand{idx(i),1},'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
+    hold on
+end
+
+figure('units','normalized','outerposition',[0 0 1 1])
+for i = 1 : length(idx)
+    plot(delta_GH{idx(i),1},'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
+    hold on
+end
+
+figure('units','normalized','outerposition',[0 0 1 1])
+for i = 1 : length(idx)
+    plot(delta_SCAC{idx(i),1},'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
+    hold on
+end
+
+figure('units','normalized','outerposition',[0 0 1 1])
+for i = 1 : length(idx)
+    plot(delta_RoB{idx(i),1},'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
+    hold on
+end
+
+
 end
 %% SPM
 if stat == 1
