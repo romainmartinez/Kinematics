@@ -21,7 +21,7 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
 end
 
 %% Interrupteurs
-saveresults = 0;
+saveresults = 1;
 plotforce   = 0;
 test        = 0;
 

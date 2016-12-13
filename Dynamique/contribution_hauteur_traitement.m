@@ -21,20 +21,18 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
 end
 %% Interrupteur
 test        =   0;                  % 0 ou 1
-grammplot   =   1;                  % 0 ou 1
-plotmean    =   1;                  % 0 ou 1
+grammplot   =   0;                  % 0 ou 1
+plotmean    =   0;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
-stat        =   0;                  % 0 ou 1
+stat        =   1;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 
 %% Dossiers
 path.datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
-
-%% Chargement des données
 alias.matname = dir([path.datapath '*mat']);
 
+%% Chargement des données
 for i = 1 : length(alias.matname)
-        
         RAW(i) = load([path.datapath alias.matname(i).name]);
         
         for u = 1 : length(RAW(i).data)
@@ -75,8 +73,6 @@ sexe    = cellstr(vertcat(bigstruct(:).sexe));
 hauteur = vertcat(bigstruct(:).hauteur);
 % Poids
 poids   = vertcat(bigstruct(:).poids);
-% Poids
-sujet   = cellstr(vertcat(bigstruct(:).sujet));
 
 %% Compter le nombre d'hommes et de femmes
 % Nombre de femmes
@@ -259,14 +255,4 @@ if stat == 1
     %(2) Plot:
     close all
     spmilist.plot('plot_threshold_label',false, 'plot_p_values',true, 'autoset_ylim',true);
-end
-
-%% Zone de test
-if test == 1
-    height = 6;
-    for i = 1 : length(bigstruct)
-        if bigstruct(i).hauteur == height
-            plot(bigstruct(i).H1(round(bigstruct(i).start):round(bigstruct(i).end))) ; hold on
-        end
-    end
 end
