@@ -21,11 +21,11 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
 end
 %% Interrupteur
 test        =   0;                  % 0 ou 1
-grammplot   =   0;                  % 0 ou 1
-plotmean    =   0;                  % 0 ou 1
-verif       =   1;                  % 0 ou 1
+grammplot   =   1;                  % 0 ou 1
+plotmean    =   1;                  % 0 ou 1
+verif       =   0;                  % 0 ou 1
 stat        =   0;                  % 0 ou 1
-comparaison =  '=';                 % '=' (absolu) ou '%' (relatif)
+comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 
 %% Dossiers
 path.datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
@@ -198,7 +198,7 @@ if verif == 1
 %     end
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-height = 3;
+height = 4;
 
 idx    = find(hauteur == height);
 
@@ -251,7 +251,7 @@ if stat == 1
     
     % Tests statistiques
     %(1) Conduct SPM analysis:
-    spmlist   = spm1d.stats.anova3(SPM.delta_RoB, SPM.sexe, SPM.hauteur, SPM.poids);
+    spmlist   = spm1d.stats.anova3(SPM.delta_GH, SPM.sexe, SPM.hauteur, SPM.poids);
     spmilist  = spmlist.inference(0.05);
     disp_summ(spmilist)
     

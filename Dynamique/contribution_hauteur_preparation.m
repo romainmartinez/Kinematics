@@ -22,7 +22,7 @@ end
 
 %% Interrupteurs
 saveresults = 1;
-plotforce   = 1;
+plotforce   = 0;
 test        = 0;
 
 %% Nom du sujet
