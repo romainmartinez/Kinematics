@@ -205,7 +205,7 @@ if stat == 1
     % Plotter les résultats
     spmilist.plot('plot_threshold_label',false, 'plot_p_values',true, 'autoset_ylim',false);
     %% Post-hoc
-    hauteur_SPM_posthoc
+    [export] = hauteur_SPM_posthoc(comparaison, SPM);
     
     
     spm = spm1d.stats.ttest2(SPM.delta_hand, SPM.delta_GH);
