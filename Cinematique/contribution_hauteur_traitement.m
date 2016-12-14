@@ -21,10 +21,10 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
 end
 %% Interrupteur
 test        =   0;                  % 0 ou 1
-grammplot   =   0;                  % 0 ou 1
+grammplot   =   1;                  % 0 ou 1
 plotmean    =   0;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
-stat        =   1;                  % 0 ou 1
+stat        =   0;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 
 %% Dossiers
@@ -73,6 +73,9 @@ sexe    = cellstr(vertcat(bigstruct(:).sexe));
 hauteur = vertcat(bigstruct(:).hauteur);
 % Poids
 poids   = vertcat(bigstruct(:).poids);
+
+% Comparaison
+condition = vertcat(bigstruct(:).condition);
 
 %% Compter le nombre d'hommes et de femmes
 % Nombre de femmes
@@ -167,6 +170,55 @@ if grammplot == 1
     end
 end
 
+
+%% SPM
+if stat == 1
+    % Transformation des données
+    for i = 1 : length(delta_hand)
+        % Variables en colonnes
+        SPM.delta_hand(i,:) = delta_hand{i,1}';
+        SPM.delta_GH(i,:)   = delta_GH{i,1}';
+        SPM.delta_SCAC(i,:) = delta_SCAC{i,1}';
+        SPM.delta_RoB(i,:)  = delta_RoB{i,1}';
+        
+        % Facteurs
+        if     sexe{i,1} == 'H'
+            SPM.sexe(1,i) = 0;
+        elseif sexe{i,1} == 'F'
+            SPM.sexe(1,i) = 1;
+        end
+    end
+    
+    SPM.hauteur = hauteur';
+    SPM.poids   = poids';
+    
+    %% ANOVA
+    % p est corrigé car on fait 4 ANOVA (pour chaque delta): 0.05/4
+    p_anova = spm1d.util.p_critical_bonf(0.05, 4);
+    
+    % Analyse SPM
+    spmlist   = spm1d.stats.anova3(SPM.delta_GH, SPM.sexe, SPM.hauteur, SPM.poids);
+    spmilist  = spmlist.inference(p_anova);
+    
+    % Afficher les résultats
+    disp_summ(spmilist)
+    
+    % Plotter les résultats
+    spmilist.plot('plot_threshold_label',false, 'plot_p_values',true, 'autoset_ylim',false);
+    %% Post-hoc
+    % p est corrigé car on fait 4 mesures répétés (4 delta) pour 12
+    % conditions (6 hauteurs x 2 poids) = 48 tests
+    p_ttest = spm1d.util.p_critical_bonf(0.05, 48);
+    
+    
+    spm = spm1d.stats.ttest2(SPM.delta_hand, SPM.delta_GH);
+    spmi = spm.inference(p_ttest, 'two_tailed', true);
+    disp(spmi)
+    spmi.plot();
+    spmi.plot_threshold_label();
+    spmi.plot_p_values();
+end
+
 %% Vérification
 if verif == 1
 %     figure('units','normalized','outerposition',[0 0 1 1])
@@ -194,7 +246,7 @@ if verif == 1
 %     end
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-height = 5;
+height = 4;
 
 idx    = find(hauteur == height);
 
@@ -223,36 +275,4 @@ for i = 1 : length(idx)
 end
 
 
-end
-%% SPM
-if stat == 1
-    % Transformation des données
-    for i = 1 : length(delta_hand)
-        % Variables en colonnes
-        SPM.delta_hand(i,:) = delta_hand{i,1}';
-        SPM.delta_GH(i,:)   = delta_GH{i,1}';
-        SPM.delta_SCAC(i,:) = delta_SCAC{i,1}';
-        SPM.delta_RoB(i,:)  = delta_RoB{i,1}';
-        
-        % Facteurs
-        if     sexe{i,1} == 'H'
-            SPM.sexe(1,i) = 0;
-        elseif sexe{i,1} == 'F'
-            SPM.sexe(1,i) = 1;
-        end
-    end
-    
-    SPM.hauteur = hauteur';
-    SPM.poids   = poids';
-    
-    % Tests statistiques
-    %(1) Conduct SPM analysis:
-    spmlist   = spm1d.stats.anova3(SPM.delta_GH, SPM.sexe, SPM.hauteur, SPM.poids);
-    spmilist  = spmlist.inference(0.05);
-    disp_summ(spmilist)
-    
-    
-    %(2) Plot:
-    close all
-    spmilist.plot('plot_threshold_label',false, 'plot_p_values',true, 'autoset_ylim',true);
 end
