@@ -18,13 +18,14 @@ clear all; close all; clc
 if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
     % Librairie S2M
     loadS2MLib;
+    cd('C:\Users\Romain\Google Drive\Codes\Kinematics\Cinematique\functions\')
 end
 %% Interrupteur
 test        =   0;                  % 0 ou 1
-grammplot   =   1;                  % 0 ou 1
+grammplot   =   0;                  % 0 ou 1
 plotmean    =   0;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
-stat        =   0;                  % 0 ou 1
+stat        =   1;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 
 %% Dossiers
@@ -73,9 +74,6 @@ sexe    = cellstr(vertcat(bigstruct(:).sexe));
 hauteur = vertcat(bigstruct(:).hauteur);
 % Poids
 poids   = vertcat(bigstruct(:).poids);
-
-% Comparaison
-condition = vertcat(bigstruct(:).condition);
 
 %% Compter le nombre d'hommes et de femmes
 % Nombre de femmes
@@ -189,8 +187,9 @@ if stat == 1
         end
     end
     
-    SPM.hauteur = hauteur';
-    SPM.poids   = poids';
+    SPM.hauteur   = hauteur';                          % hauteur
+    SPM.poids     = poids';                            % poids
+    SPM.condition = vertcat(bigstruct(:).condition)';   % conditions
     
     %% ANOVA
     % p est corrigé car on fait 4 ANOVA (pour chaque delta): 0.05/4
@@ -206,9 +205,7 @@ if stat == 1
     % Plotter les résultats
     spmilist.plot('plot_threshold_label',false, 'plot_p_values',true, 'autoset_ylim',false);
     %% Post-hoc
-    % p est corrigé car on fait 4 mesures répétés (4 delta) pour 12
-    % conditions (6 hauteurs x 2 poids) = 48 tests
-    p_ttest = spm1d.util.p_critical_bonf(0.05, 48);
+    hauteur_SPM_posthoc
     
     
     spm = spm1d.stats.ttest2(SPM.delta_hand, SPM.delta_GH);
@@ -217,62 +214,64 @@ if stat == 1
     spmi.plot();
     spmi.plot_threshold_label();
     spmi.plot_p_values();
+    
+
 end
 
 %% Vérification
 if verif == 1
-%     figure('units','normalized','outerposition',[0 0 1 1])
-%     for i = 1 : length(delta_hand)
-%         plot(delta_hand{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-%         hold on
-%     end
-%     
-%     figure('units','normalized','outerposition',[0 0 1 1])
-%     for i = 1 : length(delta_GH)
-%         plot(delta_GH{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-%         hold on
-%     end
-%     
-%     figure('units','normalized','outerposition',[0 0 1 1])
-%     for i = 1 : length(delta_SCAC)
-%         plot(delta_SCAC{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-%         hold on
-%     end
-%     
-%     figure('units','normalized','outerposition',[0 0 1 1])
-%     for i = 1 : length(delta_RoB)
-%         plot(delta_RoB{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-%         hold on
-%     end
-
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-height = 4;
-
-idx    = find(hauteur == height);
-
-figure('units','normalized','outerposition',[0 0 1 1])
-for i = 1 : length(idx)
-    plot(delta_hand{idx(i),1},'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
-    hold on
-end
-
-figure('units','normalized','outerposition',[0 0 1 1])
-for i = 1 : length(idx)
-    plot(delta_GH{idx(i),1},'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
-    hold on
-end
-
-figure('units','normalized','outerposition',[0 0 1 1])
-for i = 1 : length(idx)
-    plot(delta_SCAC{idx(i),1},'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
-    hold on
-end
-
-figure('units','normalized','outerposition',[0 0 1 1])
-for i = 1 : length(idx)
-    plot(delta_RoB{idx(i),1},'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
-    hold on
-end
-
-
+    %     figure('units','normalized','outerposition',[0 0 1 1])
+    %     for i = 1 : length(delta_hand)
+    %         plot(delta_hand{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
+    %         hold on
+    %     end
+    %
+    %     figure('units','normalized','outerposition',[0 0 1 1])
+    %     for i = 1 : length(delta_GH)
+    %         plot(delta_GH{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
+    %         hold on
+    %     end
+    %
+    %     figure('units','normalized','outerposition',[0 0 1 1])
+    %     for i = 1 : length(delta_SCAC)
+    %         plot(delta_SCAC{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
+    %         hold on
+    %     end
+    %
+    %     figure('units','normalized','outerposition',[0 0 1 1])
+    %     for i = 1 : length(delta_RoB)
+    %         plot(delta_RoB{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
+    %         hold on
+    %     end
+    
+    %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+    height = 4;
+    
+    idx    = find(hauteur == height);
+    
+    figure('units','normalized','outerposition',[0 0 1 1])
+    for i = 1 : length(idx)
+        plot(delta_hand{idx(i),1},'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
+        hold on
+    end
+    
+    figure('units','normalized','outerposition',[0 0 1 1])
+    for i = 1 : length(idx)
+        plot(delta_GH{idx(i),1},'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
+        hold on
+    end
+    
+    figure('units','normalized','outerposition',[0 0 1 1])
+    for i = 1 : length(idx)
+        plot(delta_SCAC{idx(i),1},'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
+        hold on
+    end
+    
+    figure('units','normalized','outerposition',[0 0 1 1])
+    for i = 1 : length(idx)
+        plot(delta_RoB{idx(i),1},'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
+        hold on
+    end
+    
+    
 end
