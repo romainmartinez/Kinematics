@@ -18,8 +18,11 @@ clear all; close all; clc
 if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
     % Librairie S2M
     loadS2MLib;
-    cd('C:\Users\Romain\Google Drive\Codes\Kinematics\Cinematique\functions\')
 end
+
+% Fonctions locales
+cd('C:\Users\marti\Google Drive\Codes\Kinematics\Cinematique\functions\')
+
 %% Interrupteur
 test        =   0;                  % 0 ou 1
 grammplot   =   0;                  % 0 ou 1
@@ -189,7 +192,7 @@ if stat == 1
     
     SPM.hauteur   = hauteur';                          % hauteur
     SPM.poids     = poids';                            % poids
-    SPM.condition = vertcat(bigstruct(:).condition)';   % conditions
+    SPM.condition = vertcat(bigstruct(:).condition)';  % conditions
     
     %% ANOVA
     % p est corrigé car on fait 4 ANOVA (pour chaque delta): 0.05/4
@@ -207,15 +210,6 @@ if stat == 1
     %% Post-hoc
     [export] = hauteur_SPM_posthoc(comparaison, SPM);
     
-    
-    spm = spm1d.stats.ttest2(SPM.delta_hand, SPM.delta_GH);
-    spmi = spm.inference(p_ttest, 'two_tailed', true);
-    disp(spmi)
-    spmi.plot();
-    spmi.plot_threshold_label();
-    spmi.plot_p_values();
-    
-
 end
 
 %% Vérification
