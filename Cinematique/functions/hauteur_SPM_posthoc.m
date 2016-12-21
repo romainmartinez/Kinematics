@@ -4,8 +4,8 @@ function [export] = hauteur_SPM_posthoc(comparaison, SPM)
 
 %% sélection des données
 for i = length(test) : -1 : 1
-    data_hommes = SPM.delta_GH(SPM.condition == test(i,1) & SPM.sexe == 0,:);
-    data_femmes = SPM.delta_GH(SPM.condition == test(i,2) & SPM.sexe == 1,:);
+    data_hommes = SPM.comp(SPM.condition == test(i,1) & SPM.sexe == 0,:);
+    data_femmes = SPM.comp(SPM.condition == test(i,2) & SPM.sexe == 1,:);
     
     %% Correction Bonferonni
     % p est corrigé car on fait 4 mesures répétés (4 delta) pour 12
