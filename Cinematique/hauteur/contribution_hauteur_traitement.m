@@ -173,25 +173,17 @@ end
 
 
 %% SPM
-if stat == 1  
-    %% ANOVA
-    % p est corrigé car on fait 4 ANOVA (pour chaque delta): 0.05/4
-    p_anova = spm1d.util.p_critical_bonf(0.05, 4);
-    
-    % Analyse SPM
-    spmlist   = spm1d.stats.anova3(SPM.delta_hand, SPM.sexe, SPM.hauteur, SPM.poids);
-    spmilist  = spmlist.inference(p_anova);
-    
-    % Afficher les résultats
-    disp_summ(spmilist)
-    
-    % Plotter les résultats
-    spmilist.plot('plot_threshold_label',false, 'plot_p_values',true, 'autoset_ylim',false);
-    %% Post-hoc
-    [export] = hauteur_SPM_posthoc(comparaison, SPM);
-    
-    %% plot post-hoc
-    
+if stat == 1
+    for i = 1 : 4 % nombre de delta
+        
+        %% ANOVA
+        [anova] = hauteur_SPM_anova(SPM)
+        
+        %% Post-hoc
+        [posthoc] = hauteur_SPM_posthoc(comparaison, SPM);
+        
+        %% plot post-hoc
+    end
 end
 
 %% Vérification
