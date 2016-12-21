@@ -176,7 +176,7 @@ end
 if stat == 1
     for i = 4 : -1 : 1 % nombre de delta
         %% Choix de la variable
-        [SPM] = selectSPMvariable(SPM,i);
+        [SPM, result(i).test] = selectSPMvariable(SPM,i);
         
         %% ANOVA
         [result(i).anova] = hauteur_SPM_anova(SPM);
