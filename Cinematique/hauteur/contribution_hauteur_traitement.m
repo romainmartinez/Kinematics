@@ -9,7 +9,7 @@
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
 %   Website: https://github.com/romainmartinez
-%   Date:    29-Nov-2016; Last revision: 20-Dec-2016
+%   Date:    29-Nov-2016; Last revision: 21-Dec-2016
 %_____________________________________________________________________________
 
 clear all; close all; clc
@@ -174,13 +174,15 @@ end
 
 %% SPM
 if stat == 1
-    for i = 1 : 4 % nombre de delta
+    for i = 4 : -1 : 1 % nombre de delta
+        %% Choix de la variable
+        [SPM] = selectSPMvariable(SPM,i);
         
         %% ANOVA
-        [anova] = hauteur_SPM_anova(SPM)
+        [result(i).anova] = hauteur_SPM_anova(SPM);
         
         %% Post-hoc
-        [posthoc] = hauteur_SPM_posthoc(comparaison, SPM);
+        [result(i).posthoc] = hauteur_SPM_posthoc(comparaison, SPM);
         
         %% plot post-hoc
     end
