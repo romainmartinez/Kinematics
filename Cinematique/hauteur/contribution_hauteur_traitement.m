@@ -179,10 +179,10 @@ if stat == 1
         [SPM, result(i).test] = selectSPMvariable(SPM,i);
         
         %% ANOVA
-        [result(i).anova] = hauteur_SPM_anova(SPM);
+        [result(i).anova]     = hauteur_SPM_anova(SPM);
         
         %% Post-hoc
-        [result(i).posthoc] = hauteur_SPM_posthoc(comparaison, SPM);
+        [result(i).posthoc]   = hauteur_SPM_posthoc(comparaison, SPM);
         
         %% plot post-hoc
     end
