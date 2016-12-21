@@ -18,7 +18,8 @@ for i = length(test) : -1 : 1
     spmi = spm.inference(p_ttest, 'two_tailed', true);
     
     %% Paramètres d'exportation
-    export(i).comp     = [num2str(test(i,1)) 'vs' num2str(test(i,2))];
+    export(i).men      = test(i,1);
+    export(i).women    = test(i,2);
     export(i).df       = spmi.df;
     export(i).p        = spmi.p;
     export(i).h0reject = spmi.h0reject;
