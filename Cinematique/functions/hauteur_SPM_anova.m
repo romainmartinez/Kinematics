@@ -13,6 +13,13 @@ for i = length(spmilist.SPMs) : -1 : 1
     export(i).df1      = spmilist.SPMs{1, i}.df(1);
     export(i).df2      = spmilist.SPMs{1, i}.df(2);
     export(i).h0reject = spmilist.SPMs{1, i}.h0reject;
-    export(i).clusters = spmilist.SPMs{1, i}.clusters;
-    export(i).p        = spmilist.SPMs{1, i}.p;
+    
+    if spmilist.SPMs{1, i}.h0reject == 1
+        for n = 1 : spmilist.SPMs{1, i}.nClusters
+            export(i).(['p' num2str(n)]) = spmilist.SPMs{1, i}.p(n);
+            export(i).(['cluster' num2str(n) 'start']) = round(spmilist.SPMs{1, i}.clusters{1, n}.endpoints(1)/2);
+            export(i).(['cluster' num2str(n) 'end'])   = round(spmilist.SPMs{1, i}.clusters{1, n}.endpoints(2)/2);
+        end
+    end
+    
 end
