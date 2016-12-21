@@ -10,8 +10,9 @@ spmilist  = spmlist.inference(p_anova);
 %% Paramètres d'exportation
 for i = length(spmilist.SPMs) : -1 : 1
     export(i).effect   = spmilist.SPMs{1, i}.effect;
-    export(i).df       = spmilist.SPMs{1, i}.df;
-    export(i).p        = spmilist.SPMs{1, i}.p;
+    export(i).df1      = spmilist.SPMs{1, i}.df(1);
+    export(i).df2      = spmilist.SPMs{1, i}.df(2);
     export(i).h0reject = spmilist.SPMs{1, i}.h0reject;
     export(i).clusters = spmilist.SPMs{1, i}.clusters;
+    export(i).p        = spmilist.SPMs{1, i}.p;
 end

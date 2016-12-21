@@ -20,10 +20,11 @@ for i = length(test) : -1 : 1
     %% Paramètres d'exportation
     export(i).men      = test(i,1);
     export(i).women    = test(i,2);
-    export(i).df       = spmi.df;
-    export(i).p        = spmi.p;
+    export(i).df1      = spmi.df(1);
+    export(i).df2      = spmi.df(2);
     export(i).h0reject = spmi.h0reject;
     export(i).clusters = spmi.clusters;
+    export(i).p        = spmi.p;
     
     clearvars spmi
 end
