@@ -27,8 +27,15 @@ for i = length(test) : -1 : 1
     if spmi.h0reject == 1
         for n = 1 : spmi.nClusters
             export(i).(['p' num2str(n)]) = spmi.p(n);
-            export(i).(['cluster' num2str(n) 'start']) = round(spmi.clusters{1, n}.endpoints(1)/2);
-            export(i).(['cluster' num2str(n) 'end'])   = round(spmi.clusters{1, n}.endpoints(2)/2);
+            debut = round(spmi.clusters{1, n}.endpoints(1));
+            fin   = round(spmi.clusters{1, n}.endpoints(2));
+            export(i).(['cluster' num2str(n) 'start']) = round(debut/2);
+            export(i).(['cluster' num2str(n) 'end'])   = round(fin/2);
+            
+            % Obtenir le % de différence dans les zones significatives
+            if debut == 0,debut = 1;,end
+           export(i).(['cluster' num2str(n) 'diff']) = mean(spmi.beta(1,debut:fin)) - mean(spmi.beta(2,debut:fin));
+
         end
     end
     

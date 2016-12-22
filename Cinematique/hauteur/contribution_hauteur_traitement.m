@@ -26,10 +26,10 @@ cd('C:\Users\marti\Google Drive\Codes\Kinematics\Cinematique\functions\')
 %% Interrupteur
 test        =   0;                  % 0 ou 1
 grammplot   =   0;                  % 0 ou 1
-plotmean    =   0;                  % 0 ou 1
+plotmean    =   1;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
 stat        =   1;                  % 0 ou 1
-exporter    =   1;                  % 0 ou 1
+exporter    =   0;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 
 %% Dossiers
@@ -185,8 +185,8 @@ if stat == 1
         %% Post-hoc
         [result(i).posthoc]   = hauteur_SPM_posthoc(comparaison, SPM);
         
-        %% plot post-hoc
-%         [output_args]         = hauteur_SPM_plot(SPM, result)
+        %% Obtenir le % de différence dans les zones significatives
+        
     end
 end
 

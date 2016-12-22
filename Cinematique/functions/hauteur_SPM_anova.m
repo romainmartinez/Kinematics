@@ -19,6 +19,7 @@ for i = length(spmilist.SPMs) : -1 : 1
             export(i).(['p' num2str(n)]) = spmilist.SPMs{1, i}.p(n);
             export(i).(['cluster' num2str(n) 'start']) = round(spmilist.SPMs{1, i}.clusters{1, n}.endpoints(1)/2);
             export(i).(['cluster' num2str(n) 'end'])   = round(spmilist.SPMs{1, i}.clusters{1, n}.endpoints(2)/2);
+            
         end
     end
     
