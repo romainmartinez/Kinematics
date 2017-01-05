@@ -50,24 +50,7 @@ Alias.nameTags = S2M_rbdl('nameTags', Stuff.model);
 Alias.nTags    = S2M_rbdl('nTags', Stuff.model);
 % Nom des segments
 Alias.nameBody = S2M_rbdl('nameBody', Stuff.model);
-    % identification des marqueurs correspondant à chaque segement
-        % handelbow
-        Alias.segmentMarkers.handelbow = 32:43;
-        % GH
-        Alias.segmentMarkers.GH        = 25:31;
-        % SCAC
-        Alias.segmentMarkers.SCAC      = 11:24;
-        % RoB
-        Alias.segmentMarkers.RoB       = 1:10;
-    % identification des DoF correspondant à chaque segement
-        % handelbow
-        Alias.segmentDoF.handelbow     = 25:28;
-        % GH
-        Alias.segmentDoF.GH            = 19:24;
-        % SCAC
-        Alias.segmentDoF.SCAC          = 13:18;
-        % RoB
-        Alias.segmentDoF.RoB           = 1:12;
+[Alias.segmentMarkers, Alias.segmentDoF] = segment_RBDL;
         
 %% Déterminer les phases du mouvement
 % Obtenir les onset et offset de force
