@@ -60,7 +60,9 @@ for isubject = length(Alias.sujet) : -1 : 1
     Data.Qdata = load([Path.importPath Alias.Qnames.name], '-mat');
     
     %% test
-    Data.Q0 = mean(Data.Qdata.Q1,2)
-    [q] = positionanato(Data.Q0)
+    Data.Q0 = mean(Data.Qdata.Q1,2);
+    [q] = positionanato(Data.Q0, Stuff.model)
     
 end
+S2M_rbdl_ShowModel(Stuff.model, Data.Q0, 'rt', true, 'comi', false, 'tags', true, 'com', false)
+axis equal
