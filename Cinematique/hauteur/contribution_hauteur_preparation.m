@@ -33,11 +33,11 @@ for isujet = length(Alias.sujet) : -1 : 1
     disp(['Traitement de ' cell2mat(Alias.sujet(isujet)) ' (' num2str(length(Alias.sujet) - isujet+1) ' sur ' num2str(length(Alias.sujet)) ')'])
     %% Chemin des fichiers
     % Dossier du sujet
-    Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\' Alias.sujet{1, isujet} 'd\Model_2\'];
+    Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\' Alias.sujet{isujet} 'd\Model_2\'];
     % Dossier du modèle pour le sujet
     Path.pathModel  = [Path.DirModels 'Model.s2mMod'];
     % Dossier des data
-    Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{1, isujet} 'd\Trials\'];
+    Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\Trials\'];
     % Dossier d'exportation
     Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
     % Noms des fichiers data
@@ -57,7 +57,7 @@ for isujet = length(Alias.sujet) : -1 : 1
     [Alias.segmentMarkers, Alias.segmentDoF] = segment_RBDL;
     
     %% Obtenir les onset et offset de force
-    load(['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{1, isujet} 'd\forceindex\' Alias.sujet{1, isujet} '_forceindex'])
+    load(['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\forceindex\' Alias.sujet{isujet} '_forceindex'])
     
     for trial = length(Alias.Qnames) : -1 : 1
         %% Caractéristique de l'essai
@@ -186,7 +186,7 @@ for isujet = length(Alias.sujet) : -1 : 1
         data = rmfield(Data, 'Qdata');
         save([Path.exportPath Alias.sujet{1,isujet} '.mat'],'data')
     end
-    
+    clearvars data Data forceindex logical_cells
 end
 
 %% Zone de test 1
