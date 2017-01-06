@@ -45,15 +45,15 @@ for isubject = length(Alias.sujet) : -1 : 1
     
     %% Ouverture et information du modèle
     % Ouverture du modèle
-    Stuff.model    = S2M_rbdl('new',Path.pathModel);
+    Alias.model    = S2M_rbdl('new',Path.pathModel);
     % Noms et nombre de DoF
-    Alias.nameDof  = S2M_rbdl('nameDof', Stuff.model);
-    Alias.nDof     = S2M_rbdl('nDof', Stuff.model);
+    Alias.nameDof  = S2M_rbdl('nameDof', Alias.model);
+    Alias.nDof     = S2M_rbdl('nDof', Alias.model);
     % Noms et nombre de marqueurs
-    Alias.nameTags = S2M_rbdl('nameTags', Stuff.model);
-    Alias.nTags    = S2M_rbdl('nTags', Stuff.model);
+    Alias.nameTags = S2M_rbdl('nameTags', Alias.model);
+    Alias.nTags    = S2M_rbdl('nTags', Alias.model);
     % Nom des segments
-    Alias.nameBody = S2M_rbdl('nameBody', Stuff.model);
+    Alias.nameBody = S2M_rbdl('nameBody', Alias.model);
     [Alias.segmentMarkers, Alias.segmentDoF] = segment_RBDL;
     
     %% Ouverture des données
@@ -61,8 +61,8 @@ for isubject = length(Alias.sujet) : -1 : 1
     
     %% test
     Data.Q0 = mean(Data.Qdata.Q1,2);
-    [q] = positionanato(Data.Q0, Stuff.model)
+    [q] = positionanato(Data.Q0, Alias.model)
     
 end
-S2M_rbdl_ShowModel(Stuff.model, Data.Q0, 'rt', true, 'comi', false, 'tags', true, 'com', false)
+S2M_rbdl_ShowModel(Alias.model, Data.Q0, 'rt', true, 'comi', false, 'tags', true, 'com', false)
 axis equal
