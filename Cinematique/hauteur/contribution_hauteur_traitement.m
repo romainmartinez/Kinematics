@@ -2,9 +2,9 @@
 %       contribution_hauteur_traitement is used to compute the contribution of each
 %       articulation to the height
 %   Output:
-%       contribution_hauteur gives SPM output and graph
+%       contribution_hauteur_traitement gives SPM output and graph
 %   Functions:
-%       contribution_hauteur uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
+%       contribution_hauteur_traitement uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
 %
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com

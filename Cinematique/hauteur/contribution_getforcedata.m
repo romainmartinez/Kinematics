@@ -1,10 +1,11 @@
 %   Description:
-%       contribution_hauteur_preparation is used to compute the contribution of each
-%       articulation to the height
+%       contribution_getforcedata is used to get the index where the hand
+%       touch the force sensor (start) and leave the handle (end)
 %   Output:
-%       contribution_hauteur_preparation gives matrix for input in SPM1D and GRAMM
+%       contribution_getforcedata gives starting and ending point of the
+%       trial
 %   Functions:
-%       contribution_hauteur_preparation uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
+%       contribution_getforcedata uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
 %
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
