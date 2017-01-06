@@ -110,7 +110,7 @@ for trial = 1 : length(Alias.Qnames)
     haut      = max(h);
     
     % normalisation
-    Data(trial).H1 = (Data(trial).H1 - bas) / ( haut - bas )*100;
+    Data(trial).H1 = (Data(trial).H1 - bas) / (haut - bas)*100;
     
     % Blocage des q du segment
     q1(Alias.segmentDoF.handelbow,:) = 0;
@@ -122,7 +122,7 @@ for trial = 1 : length(Alias.Qnames)
     Data(trial).H2 = squeeze(T(3,39,:));
     
     % normalisation avec 100 = max de H1
-    Data(trial).H2 = (Data(trial).H2 - bas) / ( haut - bas )*100;
+    Data(trial).H2 = (Data(trial).H2 - bas) / (haut - bas)*100;
     
     % Delta entre les deux matrices de marqueurs en Z
     Data(trial).deltahand  = Data(trial).H1 - Data(trial).H2;
@@ -138,7 +138,7 @@ for trial = 1 : length(Alias.Qnames)
     Data(trial).H3 = squeeze(T(3,39,:));
     
     % normalisation avec 100 = max de H1
-    Data(trial).H3 = (Data(trial).H3 - bas) / ( haut - bas )*100;
+    Data(trial).H3 = (Data(trial).H3 - bas) / (haut - bas)*100;
     
     % Delta entre les deux matrices de marqueurs en Z
     Data(trial).deltaGH  = Data(trial).H2 - Data(trial).H3;
@@ -154,7 +154,7 @@ for trial = 1 : length(Alias.Qnames)
     Data(trial).H4 = squeeze(T(3,39,:));
     
     % normalisation avec 100 = max de H1
-    Data(trial).H4 = (Data(trial).H4 - bas) / ( haut - bas )*100;
+    Data(trial).H4 = (Data(trial).H4 - bas) / (haut - bas)*100;
     
     % Delta entre les deux matrices de marqueurs en Z
     Data(trial).deltaSCAC  = Data(trial).H3 - Data(trial).H4;
@@ -170,7 +170,7 @@ for trial = 1 : length(Alias.Qnames)
     Data(trial).H5 = squeeze(T(3,39,:));
     
     % normalisation avec 100 = max de H1
-    Data(trial).H5 = (Data(trial).H5 - bas) / ( haut - bas )*100;
+    Data(trial).H5 = (Data(trial).H5 - bas) / (haut - bas)*100;
     
     % Delta entre les deux matrices de marqueurs en Z
     Data(trial).deltaRoB  = Data(trial).H4 - Data(trial).H5;
