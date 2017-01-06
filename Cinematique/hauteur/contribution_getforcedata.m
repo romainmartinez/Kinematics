@@ -20,7 +20,7 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
 end
 
 %% Interrupteurs
-plotforce   = 1;
+plotforce   = 0;
 saveresult  = 1;
 
 %% Sujets
@@ -29,19 +29,21 @@ alias.sujet = cellstr(vertcat(alias.sujet(:).name));
 alias.sujet = cellfun(@(x){x(1:end-4)}, alias.sujet);
 alias.sujet = cellfun(@(x){['IRSST_' upper(x(1)) x(2:end-1) upper(x(end))]}, alias.sujet);
 
-for isujet = 1 : length(alias.sujet)
-    %% Dossier des essais
-    folderPath = ['\\10.89.24.15\f\Data\Shoulder\RAW\' cell2mat(alias.sujet(isujet)) 'd\trials\'];
+for isujet = length(alias.sujet) : -1 : 1
+    disp(['Traitement de ' cell2mat(alias.sujet(isujet)) ' (' num2str(length(alias.sujet) - isujet) ' sur ' num2str(length(alias.sujet)) ')'])
+    %% Chemins
+    path.raw      = ['\\10.89.24.15\f\Data\Shoulder\RAW\' cell2mat(alias.sujet(isujet)) 'd\trials\'];
+    path.savepath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' cell2mat(alias.sujet(isujet)) 'd\forceindex\'];
     
     %% noms des fichiers c3d
-    C3dfiles   = dir([folderPath '*.c3d']);
+    C3dfiles   = dir([path.raw '*.c3d']);
     
     %% premier itération
     iter = 1;
     
     %% Ouvertures des c3d analogiques (EMG & Force)
-    for     i  = 1 : length(C3dfiles)
-        FileName    = [folderPath C3dfiles(i).name];
+    for     i  = length(C3dfiles) : -1 : 1
+        FileName    = [path.raw C3dfiles(i).name];
         btkc3d      = btkReadAcquisition(FileName);
         btkanalog   = btkGetAnalogs(btkc3d);
         
@@ -63,8 +65,8 @@ for isujet = 1 : length(alias.sujet)
                     
                     fields     = fieldnames(btkanalog);
                     channels   = {'Voltage_1','Voltage_2','Voltage_3','Voltage_4','Voltage_5','Voltage_6'};
-                    [oldlabel] = GUI_renameforce(fields, channels);
-                    pause(4)
+                    [oldlabel, handles] = GUI_renameforce(fields, channels);
+                    waitfor(handles(1));
             end
             
             %% Si il n'y a pas de channel correspondant, relance le GUI
@@ -126,6 +128,9 @@ for isujet = 1 : length(alias.sujet)
     
     %% Sauvegarde des résultats
     if saveresult == 1
-        
+        if ~exist(path.savepath, 'file')
+            mkdir(path.savepath);
+        end
+        save([path.savepath cell2mat(alias.sujet(isujet)) '_forceindex.mat'],'forceindex')
     end
 end
