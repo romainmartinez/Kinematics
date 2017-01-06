@@ -26,10 +26,11 @@ cd('C:\Users\marti\Google Drive\Codes\Kinematics\Cinematique\functions\');
 saveresults = 1;
 test        = 0;
 
-%% Nom des sujet
+%% Nom des sujets
 Alias.sujet = sujets_valides;
 
 for isujet = length(Alias.sujet) : -1 : 1
+    
     disp(['Traitement de ' cell2mat(Alias.sujet(isujet)) ' (' num2str(length(Alias.sujet) - isujet+1) ' sur ' num2str(length(Alias.sujet)) ')'])
     %% Chemin des fichiers
     % Dossier du sujet
@@ -45,15 +46,15 @@ for isujet = length(Alias.sujet) : -1 : 1
     
     %% Ouverture et information du modèle
     % Ouverture du modèle
-    Stuff.model    = S2M_rbdl('new',Path.pathModel);
+    Alias.model    = S2M_rbdl('new',Path.pathModel);
     % Noms et nombre de DoF
-    Alias.nameDof  = S2M_rbdl('nameDof', Stuff.model);
-    Alias.nDof     = S2M_rbdl('nDof', Stuff.model);
+    Alias.nameDof  = S2M_rbdl('nameDof', Alias.model);
+    Alias.nDof     = S2M_rbdl('nDof', Alias.model);
     % Noms et nombre de marqueurs
-    Alias.nameTags = S2M_rbdl('nameTags', Stuff.model);
-    Alias.nTags    = S2M_rbdl('nTags', Stuff.model);
+    Alias.nameTags = S2M_rbdl('nameTags', Alias.model);
+    Alias.nTags    = S2M_rbdl('nTags', Alias.model);
     % Nom des segments
-    Alias.nameBody = S2M_rbdl('nameBody', Stuff.model);
+    Alias.nameBody = S2M_rbdl('nameBody', Alias.model);
     [Alias.segmentMarkers, Alias.segmentDoF] = segment_RBDL;
     
     %% Obtenir les onset et offset de force
@@ -94,7 +95,7 @@ for isujet = length(Alias.sujet) : -1 : 1
         
         %% Articulation 1 : Poignet + coude
         % Coordonnées des marqueurs dans le repère global
-        T = S2M_rbdl('Tags', Stuff.model, q1);
+        T = S2M_rbdl('Tags', Alias.model, q1);
         
         % Marqueurs du segment en cours ('3' correspond à Z car on s'intéresse à la hauteur)
         Data(trial).H1 = squeeze(T(3,39,:));
@@ -115,7 +116,7 @@ for isujet = length(Alias.sujet) : -1 : 1
         q1(Alias.segmentDoF.handelbow,:) = 0;
         
         % Redefinition des marqueurs avec les q bloqués
-        T = S2M_rbdl('Tags', Stuff.model, q1);
+        T = S2M_rbdl('Tags', Alias.model, q1);
         
         % Marqueurs du segment en cours avec q bloqués
         Data(trial).H2 = squeeze(T(3,39,:));
@@ -131,7 +132,7 @@ for isujet = length(Alias.sujet) : -1 : 1
         q1(Alias.segmentDoF.GH,:) = 0;
         
         % Redefinition des marqueurs avec les q bloqués
-        T = S2M_rbdl('Tags', Stuff.model,q1);
+        T = S2M_rbdl('Tags', Alias.model,q1);
         
         % Marqueurs du segment en cours avec q bloqués
         Data(trial).H3 = squeeze(T(3,39,:));
@@ -147,7 +148,7 @@ for isujet = length(Alias.sujet) : -1 : 1
         q1(Alias.segmentDoF.SCAC,:) = 0;
         
         % Redefinition des marqueurs avec les q bloqués
-        T = S2M_rbdl('Tags', Stuff.model, q1);
+        T = S2M_rbdl('Tags', Alias.model, q1);
         
         % Marqueurs du segment en cours avec q bloqués
         Data(trial).H4 = squeeze(T(3,39,:));
@@ -163,7 +164,7 @@ for isujet = length(Alias.sujet) : -1 : 1
         q1(Alias.segmentDoF.RoB,:) = 0;
         
         % Redefinition des marqueurs avec les q bloqués
-        T = S2M_rbdl('Tags', Stuff.model, q1);
+        T = S2M_rbdl('Tags', Alias.model, q1);
         
         % Marqueurs du segment en cours avec q bloqués
         Data(trial).H5 = squeeze(T(3,39,:));
@@ -200,7 +201,7 @@ if test == 1
     q1(Alias.segmentDoF.SCAC,:)      = 0;
     q1(Alias.segmentDoF.RoB,:)       = 0;
     
-    S2M_rbdl_AnimateModel(Stuff.model, q1)
+    S2M_rbdl_AnimateModel(Alias.model, q1)
     
     %     for i = 1 : length(Data)
     %         figure('units','normalized','outerposition',[0 0 1 1])
