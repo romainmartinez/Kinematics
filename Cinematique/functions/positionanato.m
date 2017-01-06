@@ -3,7 +3,7 @@ GH = 22:24;
 
     function val = obj1(x)
         q = Q0;
-        q(GH(1:2),:) = x;
+        q(GH(1:2)) = x;
         
         RL = S2M_rbdl('globalJCS', model ,q);
         
@@ -24,8 +24,8 @@ GH = 22:24;
     end
 
 Q0(GH(1:2)) = lsqnonlin(@obj1,[0,0]);
-Q0(GH(3)) = lsqnonlin(@obj2,[0]);
+Q0(GH(3))   = lsqnonlin(@obj2,[0]);
 
-S2M_rbdl_AnimateModel(model, Q0);
+S2M_rbdl_ShowModel(model, Q0, 'rt', true, 'comi', false, 'tags', true, 'com', false)
+axis equal
 end
-
