@@ -19,15 +19,15 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
     loadS2MLib;
 end
 
+% Fonctions locales
+cd('C:\Users\marti\Google Drive\Codes\Kinematics\Cinematique\functions\')
+
 %% Interrupteurs
 plotforce   = 0;
 saveresult  = 1;
 
 %% Sujets
-alias.sujet = dir(['\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\' '*mat']);
-alias.sujet = cellstr(vertcat(alias.sujet(:).name));
-alias.sujet = cellfun(@(x){x(1:end-4)}, alias.sujet);
-alias.sujet = cellfun(@(x){['IRSST_' upper(x(1)) x(2:end-1) upper(x(end))]}, alias.sujet);
+alias.sujet = sujets_valides;
 
 for isujet = length(alias.sujet) : -1 : 1
     disp(['Traitement de ' cell2mat(alias.sujet(isujet)) ' (' num2str(length(alias.sujet) - isujet) ' sur ' num2str(length(alias.sujet)) ')'])
