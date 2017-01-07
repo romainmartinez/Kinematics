@@ -26,18 +26,16 @@ cd('C:\Users\marti\Google Drive\Codes\Kinematics\Cinematique\functions\')
 
 
 %% Nom du sujet
-Alias.sujet = dir(['\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\' '*mat']);
-Alias.sujet = cellstr(vertcat(Alias.sujet(:).name));
-Alias.sujet = cellfun(@(x){x(1:end-4)}, Alias.sujet);
+Alias.sujet = sujets_valides;
 
 for isubject = length(Alias.sujet) : -1 : 1
     %% Chemin des fichiers
     % Dossier du sujet
-    Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\IRSST_' Alias.sujet{isubject} 'd\Model_2\'];
+    Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\' Alias.sujet{isubject} 'd\Model_2\'];
     % Dossier du modèle pour le sujet
     Path.pathModel  = [Path.DirModels 'Model.s2mMod'];
     % Dossier des data
-    Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\IRSST_' Alias.sujet{isubject} 'd\MODEL2\'];
+    Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isubject} 'd\MODEL2\'];
     % Dossier d'exportation
     Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
     % Noms des fichiers data
