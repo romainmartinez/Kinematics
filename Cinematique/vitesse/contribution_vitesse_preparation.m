@@ -29,7 +29,7 @@ test        = 0;
 %% Nom des sujets
 Alias.sujet = sujets_valides;
 
-for isujet = length(Alias.sujet) : -1 : 1
+for isujet = 1 %length(Alias.sujet) : -1 : 1
     
     disp(['Traitement de ' cell2mat(Alias.sujet(isujet)) ' (' num2str(length(Alias.sujet) - isujet+1) ' sur ' num2str(length(Alias.sujet)) ')'])
     %% Chemin des fichiers
@@ -60,36 +60,36 @@ for isujet = length(Alias.sujet) : -1 : 1
     %% Obtenir les onset et offset de force
     load(['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\forceindex\' Alias.sujet{isujet} '_forceindex'])
     
-    for trial = length(Alias.Qnames) : -1 : 1
+    for itrial = length(Alias.Qnames) : -1 : 1
         %% Caractéristique de l'essai
         % Sexe du sujet
         if     length(Alias.Qnames) == 54
-            Data(trial).sexe = 'H';
+            Data(itrial).sexe = 'H';
         elseif length(Alias.Qnames) == 36
-            Data(trial).sexe = 'F';
+            Data(itrial).sexe = 'F';
         end
         
         % Noms des essais
-        Data(trial).trialname = Alias.Qnames(trial).name(5:11);
+        Data(itrial).trialname = Alias.Qnames(itrial).name(5:11);
         
-        if Data(trial).trialname(end) == '_'
-            Data(trial).trialname = Data(trial).trialname(1:end-1);
+        if Data(itrial).trialname(end) == '_'
+            Data(itrial).trialname = Data(itrial).trialname(1:end-1);
         end
         %% Phase du mouvement
         cellfind      = @(string)(@(cell_contents)(strcmp(string,cell_contents)));
-        logical_cells = cellfun(cellfind(Data(trial).trialname),forceindex);
+        logical_cells = cellfun(cellfind(Data(itrial).trialname),forceindex);
         [row,~]       = find(logical_cells == 1);
-        Data(trial).start = forceindex{row,1};
-        Data(trial).end   = forceindex{row,2};
+        Data(itrial).start = forceindex{row,1};
+        Data(itrial).end   = forceindex{row,2};
         
         %% Importation des Q,QDOT,QDDOT
-        Data(trial).Qdata = load([Path.importPath Alias.Qnames(trial).name], '-mat');
+        Data(itrial).Qdata = load([Path.importPath Alias.Qnames(itrial).name], '-mat');
         
         % Initialisation des Q
-        if length(fieldnames(Data(trial).Qdata)) == 3
-            q1 = Data(trial).Qdata.Q2;
-        elseif length(fieldnames(Data(trial).Qdata)) == 1
-            q1 = Data(trial).Qdata.Q1;
+        if length(fieldnames(Data(itrial).Qdata)) == 3
+            q1 = Data(itrial).Qdata.Q2;
+        elseif length(fieldnames(Data(itrial).Qdata)) == 1
+            q1 = Data(itrial).Qdata.Q1;
         end
         
     end
@@ -103,18 +103,15 @@ for isujet = length(Alias.sujet) : -1 : 1
         data = rmfield(Data, 'Qdata');
         save([Path.exportPath Alias.sujet{1,isujet} '.mat'],'data')
     end
-    clearvars data Data forceindex logical_cells
+    %     clearvars data Data forceindex logical_cells
 end
 
 
 %% Zone de test
-trial = 1;
-
-Qdata     = load([Path.importPath Alias.Qnames(trial).name], '-mat');
-for i = 1 : 553
-    TJ = S2M_rbdl('TagsJacobian', Alias.model, Qdata.Q2)
+% for
+    TJ = S2M_rbdl('TagsJacobian', Alias.model, Data(itrial).Qdata.Q1)
     TJ = reshape(TJ,[3,28,43])
     TJ = TJ(:,:,39)
-    
+% end  
+
     vGH = multiprod(TJ, Qdata.QDOT2  )
-end
