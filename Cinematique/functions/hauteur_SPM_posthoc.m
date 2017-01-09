@@ -32,10 +32,11 @@ for i = length(test) : -1 : 1
             export(i).(['cluster' num2str(n) 'start']) = round(debut/2);
             export(i).(['cluster' num2str(n) 'end'])   = round(fin/2);
             
-            % Obtenir le % de différence dans les zones significatives
             if debut == 0,debut = 1;,end
-           export(i).(['cluster' num2str(n) 'diff']) = mean(spmi.beta(1,debut:fin)) - mean(spmi.beta(2,debut:fin));
-
+            
+            % Obtenir le % de différence dans les zones significatives
+            export(i).(['cluster' num2str(n) 'diff']) = mean(spmi.beta(1,debut:fin)) - mean(spmi.beta(2,debut:fin));
+            
         end
     end
     
