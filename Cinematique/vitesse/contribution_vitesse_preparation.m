@@ -38,7 +38,7 @@ for isujet = 1 %length(Alias.sujet) : -1 : 1
     % Dossier du modèle pour le sujet
     Path.pathModel  = [Path.DirModels 'Model.s2mMod'];
     % Dossier des data
-    Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain_onlyQLD\' Alias.sujet{isujet} 'd\Trials\'];
+    Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain_onlyKalman\' Alias.sujet{isujet} 'd\Trials\'];
     % Dossier d'exportation
     Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_vitesse\elaboratedData_mat\';
     % Noms des fichiers data
@@ -106,12 +106,31 @@ for isujet = 1 %length(Alias.sujet) : -1 : 1
     %     clearvars data Data forceindex logical_cells
 end
 
-
 %% Zone de test
-% for
-    TJ = S2M_rbdl('TagsJacobian', Alias.model, Data(itrial).Qdata.Q1)
-    TJ = reshape(TJ,[3,28,43])
-    TJ = TJ(:,:,39)
-% end  
+for iframe = 1 : length(Data(itrial).Qdata.Q2)
+    TJi = S2M_rbdl('TagsJacobian', Alias.model, Data(itrial).Qdata.Q2);
+    TJi  = reshape(TJi,[3,28,43]);
+    TJ(:,:,iframe) = TJi(:,:,39);
+end  
 
-    vGH = multiprod(TJ, Qdata.QDOT2  )
+
+
+vGH = multiprod(TJ(:,22:24,:), Data(itrial).Qdata.QDOT2(22:24,:))
+    
+    %% smooth avec kalman
+    T = S2M_rbdl('Tags', Alias.model, Data(itrial).Qdata.Q2);
+    
+    nameTags = S2M_rbdl('nameTechnicalTags', Alias.model);
+    for iname = 1:length(Alias.nameTags)
+        
+%      idx = strfind(Alias.nameTags, nameTags{iname,1});
+     
+     idx(iname) = find(ismember(Alias.nameTags, nameTags{iname,1}))
+    end
+    
+    xi = S2M_rbdl('IK_EKF', Alias.model, T(:,idx,:), zeros(28,1) , 100, 10^-10,10^-5);
+
+    subplot(2,1,1)
+   plot(Data(itrial).Qdata.Q2')
+    subplot(2,1,2)
+     plot(xi')

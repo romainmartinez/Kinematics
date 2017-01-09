@@ -38,7 +38,7 @@ for isujet = length(Alias.sujet) : -1 : 1
     % Dossier du modèle pour le sujet
     Path.pathModel  = [Path.DirModels 'Model.s2mMod'];
     % Dossier des data
-    Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\Trials\'];
+    Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain_onlyKalman\' Alias.sujet{isujet} 'd\Trials\'];
     % Dossier d'exportation
     Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
     % Noms des fichiers data
