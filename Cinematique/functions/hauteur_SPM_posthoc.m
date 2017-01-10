@@ -24,19 +24,27 @@ for i = length(test) : -1 : 1
     export(i).df2      = spmi.df(2);
     export(i).h0reject = spmi.h0reject;
     
+    icluster = 0;
     if spmi.h0reject == 1
         for n = 1 : spmi.nClusters
-            export(i).(['p' num2str(n)]) = spmi.p(n);
-            debut = round(spmi.clusters{1, n}.endpoints(1));
-            fin   = round(spmi.clusters{1, n}.endpoints(2));
-            export(i).(['cluster' num2str(n) 'start']) = round(debut/2);
-            export(i).(['cluster' num2str(n) 'end'])   = round(fin/2);
-            
-            if debut == 0,debut = 1;,end
-            
-            % Obtenir le % de différence dans les zones significatives
-            export(i).(['cluster' num2str(n) 'diff']) = mean(spmi.beta(1,debut:fin)) - mean(spmi.beta(2,debut:fin));
-            
+            % Merge des zones avec différence de moins de 10%
+            if n ~= 1 && round(spmi.clusters{1, n}.endpoints(1)/2) - round(spmi.clusters{1, n-1}.endpoints(2)/2) < 10
+                export(i).cluster{icluster,3} = round(spmi.clusters{1, n}.endpoints(1)/2);
+            else
+                icluster = icluster+1;
+                
+                export(i).cluster{icluster,1} = spmi.p(n);
+                export(i).cluster{icluster,2} = round(spmi.clusters{1, n}.endpoints(1)/2);
+                export(i).cluster{icluster,3} = round(spmi.clusters{1, n}.endpoints(2)/2);
+                
+                if export(i).cluster{icluster,2} == 0
+                    export(i).cluster{icluster,2} = 1;
+                end
+                
+                % Obtenir le % de différence dans les zones significatives
+%                 export(i).(['cluster' num2str(n) 'diff']) = mean(spmi.beta(1,debut:fin)) - mean(spmi.beta(2,debut:fin));
+%                 export(i).(['cluster' num2str(n) 'diff']) = mean(spmi.beta(1,debut:fin)) - mean(spmi.beta(2,debut:fin));
+            end
         end
     end
     
