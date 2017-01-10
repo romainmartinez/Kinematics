@@ -28,7 +28,7 @@ grammplot   =   0;                  % 0 ou 1
 plotmean    =   0;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
 stat        =   1;                  % 0 ou 1
-exporter    =   0;                  % 0 ou 1
+exporter    =   1;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 
 %% Dossiers
@@ -111,7 +111,7 @@ for i = 1 : length(bigstruct)
     SPM.delta_hand(i,:) = ScaleTime(bigstruct(i).deltahand, 1, length(bigstruct(i).deltahand), nbframe);
     SPM.delta_GH(i,:)   = ScaleTime(bigstruct(i).deltaGH, 1, length(bigstruct(i).deltaGH), nbframe);
     SPM.delta_SCAC(i,:) = ScaleTime(bigstruct(i).deltaSCAC, 1, length(bigstruct(i).deltaSCAC), nbframe);
-    SPM.delta_RoB(i,:)  = ScaleTime(bigstruct(i).deltaRoB, 1, length(bigstruct(i).deltaRoB), nbframe);   
+    SPM.delta_RoB(i,:)  = ScaleTime(bigstruct(i).deltaRoB, 1, length(bigstruct(i).deltaRoB), nbframe);
 end
 
 % Vecteur X (temps en %)
@@ -179,21 +179,21 @@ if stat == 1
         [SPM, result(i).test] = selectSPMvariable(SPM,i);
         
         %% ANOVA
-        [result(i).anova]     = hauteur_SPM_anova(SPM);
+        [result(i).anova]     = hauteur_SPM_anova(SPM, i);
         
         %% Post-hoc
         [result(i).posthoc]   = hauteur_SPM_posthoc(comparaison, SPM, i);
-        
-        %% Obtenir le % de différence dans les zones significatives
-        
+   
     end
 end
 
-%% Exporter les résultats
-if exporter == 1
-    
-end
-
+        %% Exporter les résultats
+        if exporter == 1
+            export.anova   = [result(:).anova];
+            export.posthoc = [result(:).posthoc];
+            
+            [out_struct] = expandcellinstruct(export.anova, 'cluster', 1, 'h0reject')
+        end
 %% Vérification
 if verif == 1
     %     figure('units','normalized','outerposition',[0 0 1 1])
