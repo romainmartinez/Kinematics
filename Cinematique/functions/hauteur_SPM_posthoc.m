@@ -42,10 +42,25 @@ for i = length(test) : -1 : 1
                 end
                 
                 % Obtenir le % de différence dans les zones significatives
-%                 export(i).(['cluster' num2str(n) 'diff']) = mean(spmi.beta(1,debut:fin)) - mean(spmi.beta(2,debut:fin));
-%                 export(i).(['cluster' num2str(n) 'diff']) = mean(spmi.beta(1,debut:fin)) - mean(spmi.beta(2,debut:fin));
+                %                 export(i).(['cluster' num2str(n) 'diff']) = mean(spmi.beta(1,debut:fin)) - mean(spmi.beta(2,debut:fin));
+                %                 export(i).(['cluster' num2str(n) 'diff']) = mean(spmi.beta(1,debut:fin)) - mean(spmi.beta(2,debut:fin));
             end
         end
+        %% Plot SPM
+        subplot(2,1,1)
+        spmi.plot();
+        spmi.plot_threshold_label();
+        spmi.plot_p_values();
+        
+        subplot(2,1,2)
+        plot(spmi.beta(1,:), 'linewidth', 2) % hommes
+        hold on
+        plot(spmi.beta(2,:), 'linewidth', 2) % femmes
+        legend('men', 'women')
+        title(['condition ' num2str(test(i,1)) ' vs ' num2str(test(i,2)) ])
+        
+        hgsave(gcf, ['\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\figures\SPM_raw\' num2str(test(i,1)) 'vs' num2str(test(i,2))]);
+        close(gcf);
     end
     
     clearvars spmi
