@@ -1,4 +1,4 @@
-function [export] = hauteur_SPM_anova(SPM)
+function [export] = hauteur_SPM_anova(SPM, delta)
 
 % p est corrigé car on fait 4 ANOVA (pour chaque delta): 0.05/4
 p_anova = spm1d.util.p_critical_bonf(0.05, 4);
@@ -9,6 +9,7 @@ spmilist  = spmlist.inference(p_anova);
 
 %% Paramètres d'exportation
 for i = length(spmilist.SPMs) : -1 : 1
+    export(i).delta    = delta;
     export(i).effect   = spmilist.SPMs{1, i}.effect;
     export(i).df1      = spmilist.SPMs{1, i}.df(1);
     export(i).df2      = spmilist.SPMs{1, i}.df(2);
@@ -28,11 +29,6 @@ for i = length(spmilist.SPMs) : -1 : 1
                 export(i).cluster{icluster,3} = round(spmilist.SPMs{1, i}.clusters{1, n}.endpoints(2)/2);
             end
         end
-%         for u = 1 : size(export(i).cluster,1)
-%             if export(i).cluster{u,3} - export(i).cluster{u,2} < 10
-%                 export(i).cluster{u,3}
-%             end
-%         end
     end
     
 end

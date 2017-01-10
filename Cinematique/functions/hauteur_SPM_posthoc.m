@@ -18,6 +18,7 @@ for i = length(test) : -1 : 1
     spmi = spm.inference(p_ttest, 'two_tailed', true);
     
     %% Paramètres d'exportation
+    export(i).delta    = delta;
     export(i).men      = test(i,1);
     export(i).women    = test(i,2);
     export(i).df1      = spmi.df(1);
