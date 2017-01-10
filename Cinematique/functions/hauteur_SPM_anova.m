@@ -14,13 +14,25 @@ for i = length(spmilist.SPMs) : -1 : 1
     export(i).df2      = spmilist.SPMs{1, i}.df(2);
     export(i).h0reject = spmilist.SPMs{1, i}.h0reject;
     
+    icluster = 0;
     if spmilist.SPMs{1, i}.h0reject == 1
         for n = 1 : spmilist.SPMs{1, i}.nClusters
-            export(i).(['p' num2str(n)]) = spmilist.SPMs{1, i}.p(n);
-            export(i).(['cluster' num2str(n) 'start']) = round(spmilist.SPMs{1, i}.clusters{1, n}.endpoints(1)/2);
-            export(i).(['cluster' num2str(n) 'end'])   = round(spmilist.SPMs{1, i}.clusters{1, n}.endpoints(2)/2);
-            
+            % Merge des zones avec différence de moins de 10%
+            if n ~= 1 && round(spmilist.SPMs{1, i}.clusters{1, n}.endpoints(1)/2) - round(spmilist.SPMs{1, i}.clusters{1, n-1}.endpoints(2)/2) < 10
+                export(i).cluster{icluster,3} = round(spmilist.SPMs{1, i}.clusters{1, n}.endpoints(1)/2);
+            else
+                icluster = icluster+1;
+                
+                export(i).cluster{icluster,1} = spmilist.SPMs{1, i}.p(n);
+                export(i).cluster{icluster,2} = round(spmilist.SPMs{1, i}.clusters{1, n}.endpoints(1)/2);
+                export(i).cluster{icluster,3} = round(spmilist.SPMs{1, i}.clusters{1, n}.endpoints(2)/2);
+            end
         end
+%         for u = 1 : size(export(i).cluster,1)
+%             if export(i).cluster{u,3} - export(i).cluster{u,2} < 10
+%                 export(i).cluster{u,3}
+%             end
+%         end
     end
     
 end
