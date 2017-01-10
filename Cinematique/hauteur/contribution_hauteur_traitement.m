@@ -182,7 +182,7 @@ if stat == 1
         [result(i).anova]     = hauteur_SPM_anova(SPM);
         
         %% Post-hoc
-        [result(i).posthoc]   = hauteur_SPM_posthoc(comparaison, SPM);
+        [result(i).posthoc]   = hauteur_SPM_posthoc(comparaison, SPM, i);
         
         %% Obtenir le % de différence dans les zones significatives
         
