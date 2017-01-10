@@ -63,7 +63,7 @@ for i = length(test) : -1 : 1
         hold on
         plot(spmi.beta(2,:), 'linewidth', 2) % femmes
         legend('men', 'women')
-        title([num2str(delta) num2str(test(i,1)) ' vs ' num2str(test(i,2)) ])
+        title([num2str(delta) '_' num2str(test(i,1)) ' vs ' num2str(test(i,2)) ])
         
         hgsave(gcf, ['\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\figures\SPM_raw\' num2str(delta) '\' num2str(test(i,1)) 'vs' num2str(test(i,2))]);
         close(gcf);
