@@ -23,7 +23,7 @@ end
 cd('C:\Users\marti\Google Drive\Codes\Kinematics\Cinematique\functions\');
 
 %% Interrupteurs
-saveresults = 1;
+saveresults = 0;
 test        = 0;
 
 %% Nom des sujets
@@ -181,6 +181,8 @@ for isujet = length(Alias.sujet) : -1 : 1
     %% Condition de l'essai
     [Data]    = getcondition(Data);
     [~,index] = sortrows([Data.condition].'); Data = Data(index); clear index
+    
+    S2M_rbdl('delete', Alias.model);
     
     %% Sauvegarde de la matrice
     if saveresults == 1
