@@ -26,8 +26,8 @@ cd('C:\Users\marti\Google Drive\Codes\Kinematics\Cinematique\functions\')
 test        =   0;                  % 0 ou 1
 grammplot   =   0;                  % 0 ou 1
 plotmean    =   0;                  % 0 ou 1
-verif       =   1;                  % 0 ou 1
-stat        =   0;                  % 0 ou 1
+verif       =   0;                  % 0 ou 1
+stat        =   1;                  % 0 ou 1
 exporter    =   0 ;                 % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 
@@ -196,32 +196,32 @@ end
         end
 %% Vérification
 if verif == 1
-    %     figure('units','normalized','outerposition',[0 0 1 1])
-    %     for i = 1 : length(delta_hand)
-    %         plot(delta_hand{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-    %         hold on
-    %     end
-    %
-    %     figure('units','normalized','outerposition',[0 0 1 1])
-    %     for i = 1 : length(delta_GH)
-    %         plot(delta_GH{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-    %         hold on
-    %     end
-    %
-    %     figure('units','normalized','outerposition',[0 0 1 1])
-    %     for i = 1 : length(delta_SCAC)
-    %         plot(delta_SCAC{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-    %         hold on
-    %     end
-    %
-    %     figure('units','normalized','outerposition',[0 0 1 1])
-    %     for i = 1 : length(delta_RoB)
-    %         plot(delta_RoB{i,1},'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-    %         hold on
-    %     end
-    
+%         figure('units','normalized','outerposition',[0 0 1 1])
+%         for i = 1 : length(SPM.delta_hand)
+%             plot(SPM.delta_hand(i,:),'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
+%             hold on
+%         end
+%     
+%         figure('units','normalized','outerposition',[0 0 1 1])
+%         for i = 1 : length(SPM.delta_GH)
+%             plot(SPM.delta_GH(i,:),'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
+%             hold on
+%         end
+%     
+%         figure('units','normalized','outerposition',[0 0 1 1])
+%         for i = 1 : length(SPM.delta_SCAC)
+%             plot(SPM.delta_SCAC(i,:),'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
+%             hold on
+%         end
+%     
+%         figure('units','normalized','outerposition',[0 0 1 1])
+%         for i = 1 : length(SPM.delta_RoB)
+%             plot(SPM.delta_RoB(i,:),'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
+%             hold on
+%         end
+%     
     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-    height = 5;
+    height = 6;
     
     idx    = find(SPM.hauteur == height);
     
