@@ -23,7 +23,7 @@ end
 cd('C:\Users\marti\Google Drive\Codes\Kinematics\Cinematique\functions\');
 
 %% Interrupteurs
-saveresults = 0;
+saveresults = 1;
 test        = 0;
 
 %% Nom des sujets
@@ -92,6 +92,9 @@ for isujet = length(Alias.sujet) : -1 : 1
         elseif length(fieldnames(Data(trial).Qdata)) == 1
             q1 = Data(trial).Qdata.Q1;
         end
+        
+        %% Filtre passe-bas 25Hz
+        q1 = transpose(lpfilter(q1', 15, 100));
         
         %% Articulation 1 : Poignet + coude
         % Coordonnées des marqueurs dans le repère global
