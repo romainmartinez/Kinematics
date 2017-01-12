@@ -28,7 +28,7 @@ grammplot   =   0;                  % 0 ou 1
 plotmean    =   0;                  % 0 ou 1
 verif       =   1;                  % 0 ou 1
 stat        =   0;                  % 0 ou 1
-exporter    =   0 ;                  % 0 ou 1
+exporter    =   0 ;                 % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 
 %% Dossiers
@@ -192,7 +192,7 @@ end
             export.anova   = [result(:).anova];
             export.posthoc = [result(:).posthoc];
             
-            [out_struct] = expandcellinstruct(export.anova, 'cluster', 1, 'h0reject')
+            [out_struct] = expandcellinstruct(export.anova, 'cluster', 1, 'h0reject');
         end
 %% Vérification
 if verif == 1
