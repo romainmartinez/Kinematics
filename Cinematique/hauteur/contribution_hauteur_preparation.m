@@ -20,7 +20,7 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
 end
 
 % Fonctions locales
-cd('C:\Users\marti\Google Drive\Codes\Kinematics\Cinematique\functions\');
+cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteurs
 saveresults = 1;
@@ -29,7 +29,7 @@ test        = 0;
 %% Nom des sujets
 Alias.sujet = sujets_valides;
 
-for isujet = 36%length(Alias.sujet) : -1 : 1
+for isujet = length(Alias.sujet) : -1 : 1
     
     disp(['Traitement de ' cell2mat(Alias.sujet(isujet)) ' (' num2str(length(Alias.sujet) - isujet+1) ' sur ' num2str(length(Alias.sujet)) ')'])
     %% Chemin des fichiers

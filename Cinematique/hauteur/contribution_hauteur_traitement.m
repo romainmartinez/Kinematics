@@ -20,14 +20,14 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
 end
 
 % Fonctions locales
-cd('C:\Users\marti\Google Drive\Codes\Kinematics\Cinematique\functions\')
+cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteur
 test        =   0;                  % 0 ou 1
 grammplot   =   0;                  % 0 ou 1
 plotmean    =   0;                  % 0 ou 1
-verif       =   0;                  % 0 ou 1
-stat        =   1;                  % 0 ou 1
+verif       =   1;                  % 0 ou 1
+stat        =   0;                  % 0 ou 1
 exporter    =   0 ;                 % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 
@@ -221,7 +221,7 @@ if verif == 1
 %         end
 %     
     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-    height = 6;
+    height = 1;
     
     idx    = find(SPM.hauteur == height);
     
