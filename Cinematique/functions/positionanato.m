@@ -16,7 +16,7 @@ options = optimoptions('lsqnonlin','Display','iter');
         RL = S2M_rbdl('globalJCS', model ,q); 
         
         zHum    = RL(1:3,3,5);
-        val     = -(zThorax'*zHum);
+        val     = zThorax-zHum;
     end
 
     function val = obj2(x)
@@ -27,16 +27,18 @@ options = optimoptions('lsqnonlin','Display','iter');
 
 
         xHum     = RL(1:3,1,5);
-        val      = -(xScapula'*xHum);
+        val      = xScapula-xHum;
     end
 
 Q0(GH(1:2)) = lsqnonlin(@obj1,[0,0],[],[],options);
 
-% % verifier l'alignement
-% S2M_rbdl_ShowModel(model, Q0, 'rt', true, 'comi', false, 'tags', true, 'com', false)
-% axis equal
 
 Q0(GH(3))   = lsqnonlin(@obj2,[0],[],[],options);
+
+% % verifier l'alignement
+S2M_rbdl_ShowModel(model, Q0, 'rt', true, 'comi', false, 'tags', true, 'com', false)
+axis equal
+
 
 q_optim = Q0;
 end

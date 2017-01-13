@@ -20,7 +20,7 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
 end
 
 % Fonctions locales
-cd('C:\Users\marti\Google Drive\Codes\Kinematics\Cinematique\functions\')
+cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteurs
 
@@ -28,7 +28,7 @@ cd('C:\Users\marti\Google Drive\Codes\Kinematics\Cinematique\functions\')
 %% Nom du sujet
 Alias.sujet = sujets_valides;
 
-for isubject = length(Alias.sujet) : -1 : 1
+for isubject = 2%length(Alias.sujet) : -1 : 1
     %% Chemin des fichiers
     % Dossier du sujet
     Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\' Alias.sujet{isubject} 'd\Model_2\'];
