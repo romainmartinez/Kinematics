@@ -28,7 +28,7 @@ cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 %% Nom du sujet
 Alias.sujet = sujets_valides;
 
-for isubject = 2%length(Alias.sujet) : -1 : 1
+for isubject = length(Alias.sujet) : -1 : 1
     %% Chemin des fichiers
     % Dossier du sujet
     Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\' Alias.sujet{isubject} 'd\Model_2\'];
@@ -59,8 +59,6 @@ for isubject = 2%length(Alias.sujet) : -1 : 1
     
     %% test
     Data.Q0 = mean(Data.Qdata.Q1,2);
-    [q] = positionanato(Data.Q0, Alias.model)
+    [q]     = positionanato(Data.Q0, Alias.model);
     
 end
-S2M_rbdl_ShowModel(Alias.model, Data.Q0, 'rt', true, 'comi', false, 'tags', true, 'com', false)
-axis equal
