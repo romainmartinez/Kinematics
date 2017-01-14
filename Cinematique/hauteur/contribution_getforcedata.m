@@ -21,7 +21,7 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
 end
 
 % Fonctions locales
-cd('C:\Users\marti\Google Drive\Codes\Kinematics\Cinematique\functions\');
+cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteurs
 plotforce   = 0;
