@@ -23,7 +23,7 @@ end
 cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteurs
-saveresults = 1;
+saveresults = 0;
 test        = 0;
 model       = 3;
 
@@ -35,7 +35,7 @@ for isujet = length(Alias.sujet) : -1 : 1
     disp(['Traitement de ' cell2mat(Alias.sujet(isujet)) ' (' num2str(length(Alias.sujet) - isujet+1) ' sur ' num2str(length(Alias.sujet)) ')'])
     %% Chemin des fichiers
     % Dossier du sujet
-    Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\' Alias.sujet{isujet} 'd\Model_' num2str(model) '\'];
+    Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\' Alias.sujet{isujet} 'd\Model_' num2str(round(model)) '\'];
     % Dossier du modèle pour le sujet
     Path.pathModel  = [Path.DirModels 'Model.s2mMod'];
     % Dossier des data
@@ -43,7 +43,7 @@ for isujet = length(Alias.sujet) : -1 : 1
     % Dossier d'exportation
     Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
     % Noms des fichiers data
-    Alias.Qnames    = dir([Path.importPath '*_MOD' num2str(model) '*' 'r' '*.Q*']);
+    Alias.Qnames    = dir([Path.importPath '*_MOD' num2str(model) '_*' 'r' '*.Q*']);
     
     %% Ouverture et information du modèle
     % Ouverture du modèle
@@ -56,7 +56,7 @@ for isujet = length(Alias.sujet) : -1 : 1
     Alias.nTags    = S2M_rbdl('nTags', Alias.model);
     % Nom des segments
     Alias.nameBody = S2M_rbdl('nameBody', Alias.model);
-    [Alias.segmentMarkers, Alias.segmentDoF] = segment_RBDL(model);
+    [Alias.segmentMarkers, Alias.segmentDoF] = segment_RBDL(round(model));
     
     %% Obtenir les onset et offset de force
     load(['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\forceindex\' Alias.sujet{isujet} '_forceindex'])
