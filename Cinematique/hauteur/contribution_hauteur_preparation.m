@@ -25,7 +25,7 @@ cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 %% Interrupteurs
 saveresults = 1;
 test        = 0;
-model       = 2;
+model       = 3;
 
 %% Nom des sujets
 Alias.sujet = sujets_valides;
@@ -43,7 +43,7 @@ for isujet = length(Alias.sujet) : -1 : 1
     % Dossier d'exportation
     Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
     % Noms des fichiers data
-    Alias.Qnames    = dir([Path.importPath '*.Q*']);
+    Alias.Qnames    = dir([Path.importPath '*_MOD' num2str(model) '*' 'r' '*.Q*']);
     
     %% Ouverture et information du modèle
     % Ouverture du modèle

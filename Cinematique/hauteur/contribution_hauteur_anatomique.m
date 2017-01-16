@@ -23,23 +23,24 @@ end
 cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteurs
-
+saveresults = 1;
+model       = 3;
 
 %% Nom du sujet
 Alias.sujet = sujets_valides;
 
-for isubject = length(Alias.sujet) : -1 : 1
+for isujet = length(Alias.sujet) : -1 : 1
     %% Chemin des fichiers
     % Dossier du sujet
-    Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\' Alias.sujet{isubject} 'd\Model_2\'];
+    Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\' Alias.sujet{isujet} 'd\Model_' num2str(model) '\'];
     % Dossier du modèle pour le sujet
     Path.pathModel  = [Path.DirModels 'Model.s2mMod'];
     % Dossier des data
-    Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isubject} 'd\MODEL2\'];
+    Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\MODEL' num2str(model) '\'];
     % Dossier d'exportation
-    Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
+    %     Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
     % Noms des fichiers data
-    Alias.Qnames    = dir([Path.importPath '*.Q1']);
+    Alias.Qnames    = dir([Path.importPath '*_MOD' num2str(model) '*' 'r' '*.Q*']);
     
     %% Ouverture et information du modèle
     % Ouverture du modèle
@@ -52,13 +53,18 @@ for isubject = length(Alias.sujet) : -1 : 1
     Alias.nTags    = S2M_rbdl('nTags', Alias.model);
     % Nom des segments
     Alias.nameBody = S2M_rbdl('nameBody', Alias.model);
-    [Alias.segmentMarkers, Alias.segmentDoF] = segment_RBDL;
+    [Alias.segmentMarkers, Alias.segmentDoF] = segment_RBDL(model);
     
     %% Ouverture des données
     Data.Qdata = load([Path.importPath Alias.Qnames.name], '-mat');
     
     %% test
-    Data.Q0 = mean(Data.Qdata.Q1,2);
+    
+    if length(fieldnames(Data.Qdata)) == 3
+        Data.Q0 = mean(Data.Qdata.Q2);
+    elseif length(fieldnames(Data.Qdata)) == 1
+        Data.Q0 = mean(Data.Qdata.Q1);
+    end
     [q]     = positionanato(Data.Q0, Alias.model);
     
 end
