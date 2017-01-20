@@ -32,5 +32,7 @@ for iRow = 1 : length(inp_struct)
         idx = idx+1;
     end
 end
-out_struct = rmfield(out_struct, inp_cell)
+
+out_struct = rmfield(out_struct, inp_cell);
+
 end

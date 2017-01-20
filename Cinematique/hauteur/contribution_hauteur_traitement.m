@@ -33,6 +33,7 @@ comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 
 %% Dossiers
 path.datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
+path.exportpath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\SPM\';
 alias.matname = dir([path.datapath '*mat']);
 
 %% Chargement des données
@@ -77,11 +78,11 @@ end
 
 %% Facteurs
 % Sexe
-SPM.sexe    = vertcat(bigstruct(:).sexe)';
+SPM.sexe      = vertcat(bigstruct(:).sexe)';
 % Hauteur
-SPM.hauteur = vertcat(bigstruct(:).hauteur)';
+SPM.hauteur   = vertcat(bigstruct(:).hauteur)';
 % Poids
-SPM.poids   = vertcat(bigstruct(:).poids)';
+SPM.poids     = vertcat(bigstruct(:).poids)';
 % Conditions
 SPM.condition = vertcat(bigstruct(:).condition)';
 
@@ -193,10 +194,32 @@ if exporter == 1
     export.posthoc = [result(:).posthoc];
     
     % Expandre les cellules pour rendre exportable
-    [export.anova] = expandcellinstruct(export.anova, 'cluster', 1, 'h0reject');
+    [export.anova]   = expandcellinstruct(export.anova  , 'cluster', 1, 'h0reject');
     [export.posthoc] = expandcellinstruct(export.posthoc, 'cluster', 1, 'h0reject');
     
+    % Headers
+    out_anova   = fieldnames(export.anova)';
+    out_posthoc = fieldnames(export.posthoc)';
     
+    % transformer en cell
+    export.anova   = struct2cell(export.anova);
+    export.posthoc = struct2cell(export.posthoc);
+    
+    % 2D to 3D cell
+    export.anova   = permute(export.anova,[3,1,2]);
+    export.posthoc = permute(export.posthoc,[3,1,2]);
+    
+    % matrice d'export
+    export.anova = vertcat(out_anova,export.anova);
+    export.posthoc = vertcat(out_posthoc,export.posthoc);
+    
+    if     comparaison == '%'
+        xlswrite([path.exportpath 'relative_ANOVA.xlsx'], export.anova, 'anova');
+        xlswrite([path.exportpath 'relative_ANOVA.xlsx'], export.posthoc, 'posthoc');
+    elseif comparaison == '='
+        xlswrite([path.exportpath 'absolute_ANOVA.xlsx'], export.anova, 'anova');
+        xlswrite([path.exportpath 'absolute_ANOVA.xlsx'], export.posthoc, 'posthoc');
+    end
 end
 %% Vérification
 if verif == 1
