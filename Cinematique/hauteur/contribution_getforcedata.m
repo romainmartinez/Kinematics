@@ -118,6 +118,9 @@ for isujet = length(alias.sujet) : -1 : 1
         forceindex{i,2} = (index(end)*freq_camera)/freq_analog;
         forceindex{i,3} = FileName(58:end-4);
         
+        % Calcul du temps mit pour réaliser l'essai
+        forceindex{i,4} = (forceindex{i,2} - forceindex{i,1})/freq_camera;
+        
         if plotforce == 1
             figure
             plot(Force_norm, 'linewidth',2)
