@@ -28,8 +28,8 @@ grammplot   =   0;                  % 0 ou 1
 plotmean    =   0;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
 stat        =   1;                  % 0 ou 1
-exporter    =   0 ;                 % 0 ou 1
-comparaison =  '=';                 % '=' (absolu) ou '%' (relatif)
+exporter    =   1 ;                 % 0 ou 1
+comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 
 %% Dossiers
 path.datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
@@ -102,10 +102,10 @@ nbframe = 200;
 
 for i = 1 : length(bigstruct)
     % Filtre passe-bas 25Hz
-    bigstruct(i).deltahand = lpfilter(bigstruct(i).deltahand(round(bigstruct(i).start):round(bigstruct(i).end)), 25, 100);
-    bigstruct(i).deltaGH   = lpfilter(bigstruct(i).deltaGH(round(bigstruct(i).start):round(bigstruct(i).end)), 25, 100);
-    bigstruct(i).deltaSCAC = lpfilter(bigstruct(i).deltaSCAC(round(bigstruct(i).start):round(bigstruct(i).end)), 25, 100);
-    bigstruct(i).deltaRoB  = lpfilter(bigstruct(i).deltaRoB(round(bigstruct(i).start):round(bigstruct(i).end)), 25, 100);
+    bigstruct(i).deltahand = lpfilter(bigstruct(i).deltahand, 15, 100);
+    bigstruct(i).deltaGH   = lpfilter(bigstruct(i).deltaGH, 15, 100);
+    bigstruct(i).deltaSCAC = lpfilter(bigstruct(i).deltaSCAC, 15, 100);
+    bigstruct(i).deltaRoB  = lpfilter(bigstruct(i).deltaRoB, 15, 100);
     
     % Interpolation (pour avoir même nombre de frames)
     SPM.delta_hand(i,:) = ScaleTime(bigstruct(i).deltahand, 1, length(bigstruct(i).deltahand), nbframe);
@@ -183,43 +183,47 @@ if stat == 1
         
         %% Post-hoc
         [result(i).posthoc]   = hauteur_SPM_posthoc(comparaison, SPM, i);
-   
+        
     end
 end
 
-        %% Exporter les résultats
-        if exporter == 1
-            export.anova   = [result(:).anova];
-            export.posthoc = [result(:).posthoc];
-            
-            [out_struct] = expandcellinstruct(export.anova, 'cluster', 1, 'h0reject');
-        end
+%% Exporter les résultats
+if exporter == 1
+    export.anova   = [result(:).anova];
+    export.posthoc = [result(:).posthoc];
+    
+    % Expandre les cellules pour rendre exportable
+    [export.anova] = expandcellinstruct(export.anova, 'cluster', 1, 'h0reject');
+    [export.posthoc] = expandcellinstruct(export.posthoc, 'cluster', 1, 'h0reject');
+    
+    
+end
 %% Vérification
 if verif == 1
-%         figure('units','normalized','outerposition',[0 0 1 1])
-%         for i = 1 : length(SPM.delta_hand)
-%             plot(SPM.delta_hand(i,:),'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-%             hold on
-%         end
-%     
-%         figure('units','normalized','outerposition',[0 0 1 1])
-%         for i = 1 : length(SPM.delta_GH)
-%             plot(SPM.delta_GH(i,:),'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-%             hold on
-%         end
-%     
-%         figure('units','normalized','outerposition',[0 0 1 1])
-%         for i = 1 : length(SPM.delta_SCAC)
-%             plot(SPM.delta_SCAC(i,:),'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-%             hold on
-%         end
-%     
-%         figure('units','normalized','outerposition',[0 0 1 1])
-%         for i = 1 : length(SPM.delta_RoB)
-%             plot(SPM.delta_RoB(i,:),'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-%             hold on
-%         end
-%     
+    %         figure('units','normalized','outerposition',[0 0 1 1])
+    %         for i = 1 : length(SPM.delta_hand)
+    %             plot(SPM.delta_hand(i,:),'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
+    %             hold on
+    %         end
+    %
+    %         figure('units','normalized','outerposition',[0 0 1 1])
+    %         for i = 1 : length(SPM.delta_GH)
+    %             plot(SPM.delta_GH(i,:),'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
+    %             hold on
+    %         end
+    %
+    %         figure('units','normalized','outerposition',[0 0 1 1])
+    %         for i = 1 : length(SPM.delta_SCAC)
+    %             plot(SPM.delta_SCAC(i,:),'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
+    %             hold on
+    %         end
+    %
+    %         figure('units','normalized','outerposition',[0 0 1 1])
+    %         for i = 1 : length(SPM.delta_RoB)
+    %             plot(SPM.delta_RoB(i,:),'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
+    %             hold on
+    %         end
+    %
     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
     height = 2;
     
