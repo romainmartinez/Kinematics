@@ -25,12 +25,12 @@ cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 %% Interrupteurs
 saveresults = 0;
 test        = 0;
-model       = 3;
+model       = 2.1;
 
 %% Nom des sujets
 Alias.sujet = sujets_valides;
 
-for isujet = length(Alias.sujet) : -1 : 1
+for isujet = 35%length(Alias.sujet) : -1 : 1
     
     disp(['Traitement de ' cell2mat(Alias.sujet(isujet)) ' (' num2str(length(Alias.sujet) - isujet+1) ' sur ' num2str(length(Alias.sujet)) ')'])
     %% Chemin des fichiers
@@ -92,6 +92,13 @@ for isujet = length(Alias.sujet) : -1 : 1
             q1 = Data(trial).Qdata.Q2;
         elseif length(fieldnames(Data(trial).Qdata)) == 1
             q1 = Data(trial).Qdata.Q1;
+        end
+        
+        %% Suppression du 1er frame si NaN
+        if isnan(q1(1,1))
+            q1(:,1) = [];
+            forceindex{trial,1} = forceindex{trial,1}-1;
+            forceindex{trial,2} = forceindex{trial,2}-1;
         end
         
         %% Filtre passe-bas 25Hz
@@ -193,7 +200,7 @@ for isujet = length(Alias.sujet) : -1 : 1
         data = rmfield(Data, 'Qdata');
         save([Path.exportPath Alias.sujet{1,isujet} '.mat'],'data')
     end
-    clearvars data Data forceindex logical_cells
+%     clearvars data Data forceindex logical_cells
 end
 
 %% Zone de test 1
