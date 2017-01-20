@@ -185,6 +185,11 @@ if stat == 1
         %% Post-hoc
         [result(i).posthoc]   = hauteur_SPM_posthoc(comparaison, SPM, i);
         
+        %% export 0D
+        
+        % exporter duree
+        % exporter 0D : contribution moyenne 
+        % export sheet '0D' avec 'cond_men' + 'moy_men' + 'time_men'
     end
 end
 

@@ -30,7 +30,7 @@ model       = 2.1;
 %% Nom des sujets
 Alias.sujet = sujets_valides;
 
-for isujet = 1%length(Alias.sujet) : -1 : 1
+for isujet = length(Alias.sujet) : -1 : 1
     
     disp(['Traitement de ' cell2mat(Alias.sujet(isujet)) ' (' num2str(length(Alias.sujet) - isujet+1) ' sur ' num2str(length(Alias.sujet)) ')'])
     %% Chemin des fichiers
@@ -82,6 +82,7 @@ for isujet = 1%length(Alias.sujet) : -1 : 1
         [row,~]       = find(logical_cells == 1);
         Data(trial).start = forceindex{row,1};
         Data(trial).end   = forceindex{row,2};
+        Data(trial).time   = forceindex{row,4};
         
         %% Importation des Q,QDOT,QDDOT
         Data(trial).Qdata = load([Path.importPath Alias.Qnames(trial).name], '-mat');
@@ -102,11 +103,11 @@ for isujet = 1%length(Alias.sujet) : -1 : 1
         T = S2M_rbdl('Tags', Alias.model, q1);
         
         % Marqueurs du segment en cours ('3' correspond à Z car on s'intéresse à la hauteur)
-        Data(trial).H1 = squeeze(T(3,39,:));
+        H1 = squeeze(T(3,39,:));
         
         % Moment de prise et lâché de caisse
-        hstart    = Data(trial).H1(1);
-        hend      = Data(trial).H1(end);
+        hstart    = H1(1);
+        hend      = H1(end);
         h         = [hstart hend];
         
         % Pour différencier entre essai de montée et descente
@@ -114,7 +115,7 @@ for isujet = 1%length(Alias.sujet) : -1 : 1
         haut      = max(h);
         
         % normalisation
-        Data(trial).H1 = (Data(trial).H1 - bas) / (haut - bas)*100;
+        H1 = (H1 - bas) / (haut - bas)*100;
         
         % Blocage des q du segment
         q1(Alias.segmentDoF.handelbow,:) = 0;
@@ -123,13 +124,13 @@ for isujet = 1%length(Alias.sujet) : -1 : 1
         T = S2M_rbdl('Tags', Alias.model, q1);
         
         % Marqueurs du segment en cours avec q bloqués
-        Data(trial).H2 = squeeze(T(3,39,:));
+        H2 = squeeze(T(3,39,:));
         
         % normalisation avec 100 = max de H1
-        Data(trial).H2 = (Data(trial).H2 - bas) / (haut - bas)*100;
+        H2 = (H2 - bas) / (haut - bas)*100;
         
         % Delta entre les deux matrices de marqueurs en Z
-        Data(trial).deltahand  = Data(trial).H1 - Data(trial).H2;
+        Data(trial).deltahand  = H1 - H2;
         
         %% Articulation 2 : GH
         % Blocage des q du segment
@@ -139,13 +140,13 @@ for isujet = 1%length(Alias.sujet) : -1 : 1
         T = S2M_rbdl('Tags', Alias.model,q1);
         
         % Marqueurs du segment en cours avec q bloqués
-        Data(trial).H3 = squeeze(T(3,39,:));
+        H3 = squeeze(T(3,39,:));
         
         % normalisation avec 100 = max de H1
-        Data(trial).H3 = (Data(trial).H3 - bas) / (haut - bas)*100;
+        H3 = (H3 - bas) / (haut - bas)*100;
         
         % Delta entre les deux matrices de marqueurs en Z
-        Data(trial).deltaGH  = Data(trial).H2 - Data(trial).H3;
+        Data(trial).deltaGH  = H2 - H3;
         
         %% Articulation 3 : GH
         % Blocage des q du segment
@@ -155,13 +156,13 @@ for isujet = 1%length(Alias.sujet) : -1 : 1
         T = S2M_rbdl('Tags', Alias.model, q1);
         
         % Marqueurs du segment en cours avec q bloqués
-        Data(trial).H4 = squeeze(T(3,39,:));
+        H4 = squeeze(T(3,39,:));
         
         % normalisation avec 100 = max de H1
-        Data(trial).H4 = (Data(trial).H4 - bas) / (haut - bas)*100;
+        H4 = (H4 - bas) / (haut - bas)*100;
         
         % Delta entre les deux matrices de marqueurs en Z
-        Data(trial).deltaSCAC  = Data(trial).H3 - Data(trial).H4;
+        Data(trial).deltaSCAC  = H3 - H4;
         
         %% Articulation 4 : Reste du corps (pelvis + thorax)
         % Blocage des q du segment
@@ -171,13 +172,13 @@ for isujet = 1%length(Alias.sujet) : -1 : 1
         T = S2M_rbdl('Tags', Alias.model, q1);
         
         % Marqueurs du segment en cours avec q bloqués
-        Data(trial).H5 = squeeze(T(3,39,:));
+        H5 = squeeze(T(3,39,:));
         
         % normalisation avec 100 = max de H1
-        Data(trial).H5 = (Data(trial).H5 - bas) / (haut - bas)*100;
+        H5 = (H5 - bas) / (haut - bas)*100;
         
         % Delta entre les deux matrices de marqueurs en Z
-        Data(trial).deltaRoB  = Data(trial).H4 - Data(trial).H5;
+        Data(trial).deltaRoB  = H4 - H5;
         
         
     end
@@ -191,10 +192,10 @@ for isujet = 1%length(Alias.sujet) : -1 : 1
     %% Sauvegarde de la matrice
     if saveresults == 1
         data = rmfield(Data, 'Qdata');
-        save([Path.exportPath Alias.sujet{1,isujet} '.mat'],'data')
+        save([Path.exportPath Alias.sujet{1,isujet} '.mat'],'Data')
     end
     
-    clearvars data Data forceindex logical_cells
+    clearvars data Data forceindex logical_cells H1 H2 H3 H4 H5 q1 T
 end
 
 %% Zone de test 1
