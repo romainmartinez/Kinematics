@@ -24,11 +24,11 @@ cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteur
 test        =   0;                  % 0 ou 1
-grammplot   =   1;                  % 0 ou 1
+grammplot   =   0;                  % 0 ou 1
 plotmean    =   0;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
-stat        =   0;                  % 0 ou 1
-exporter    =   0 ;                 % 0 ou 1
+stat        =   1;                  % 0 ou 1
+exporter    =   1 ;                 % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 
 %% Dossiers
@@ -40,12 +40,12 @@ alias.matname = dir([path.Datapath '*mat']);
 for i = length(alias.matname) : -1 : 1
     RAW(i) = load([path.Datapath alias.matname(i).name]);
     
-    for u = 1 : length(RAW(i).Data)
-        RAW(i).Data(u).sujet = alias.matname(i).name(1:end-4);
-        if RAW(i).Data(u).sexe == 'F'
-            RAW(i).Data(u).sexe = 1;
-        elseif RAW(i).Data(u).sexe == 'H'
-            RAW(i).Data(u).sexe = 0;
+    for u = 1 : length(RAW(i).temp)
+        RAW(i).temp(u).sujet = alias.matname(i).name(1:end-4);
+        if RAW(i).temp(u).sexe == 'F'
+            RAW(i).temp(u).sexe = 1;
+        elseif RAW(i).temp(u).sexe == 'H'
+            RAW(i).temp(u).sexe = 0;
         end
     end
 end
@@ -85,6 +85,8 @@ SPM.hauteur   = vertcat(bigstruct(:).hauteur)';
 SPM.poids     = vertcat(bigstruct(:).poids)';
 % Conditions
 SPM.condition = vertcat(bigstruct(:).condition)';
+% Conditions
+SPM.duree      = vertcat(bigstruct(:).time)';
 
 %% Compter le nombre d'hommes et de femmes
 % Nombre de femmes
@@ -183,18 +185,17 @@ if stat == 1
         [result(i).anova]     = hauteur_SPM_anova(SPM, i);
         
         %% Post-hoc
-        [result(i).posthoc]   = hauteur_SPM_posthoc(comparaison, SPM, i);
+        [result(i).posthoc, zeroD(i).posthoc]   = hauteur_SPM_posthoc(comparaison, SPM, i);
         
-        %% export 0D
-        
-        % exporter duree
-        % exporter 0D : contribution moyenne 
-        % export sheet '0D' avec 'cond_men' + 'moy_men' + 'time_men'
     end
 end
 
 %% Exporter les résultats
 if exporter == 1
+    %% Export 0D: temps et contributions moyennes
+    export.zeroD = [zeroD(:).posthoc];
+    
+    %% Export SPM
     export.anova   = [result(:).anova];
     export.posthoc = [result(:).posthoc];
     
@@ -205,25 +206,31 @@ if exporter == 1
     % Headers
     out_anova   = fieldnames(export.anova)';
     out_posthoc = fieldnames(export.posthoc)';
+    out_zeroD   = fieldnames(export.zeroD)';
     
     % transformer en cell
     export.anova   = struct2cell(export.anova);
     export.posthoc = struct2cell(export.posthoc);
+    export.zeroD   = struct2cell(export.zeroD);
     
     % 2D to 3D cell
     export.anova   = permute(export.anova,[3,1,2]);
     export.posthoc = permute(export.posthoc,[3,1,2]);
+    export.zeroD   = permute(export.zeroD,[3,1,2]);
     
     % matrice d'export
-    export.anova = vertcat(out_anova,export.anova);
+    export.anova   = vertcat(out_anova,export.anova);
     export.posthoc = vertcat(out_posthoc,export.posthoc);
+    export.zeroD   = vertcat(out_zeroD,export.zeroD);
     
     if     comparaison == '%'
         xlswrite([path.exportpath 'relative_ANOVA.xlsx'], export.anova, 'anova');
         xlswrite([path.exportpath 'relative_ANOVA.xlsx'], export.posthoc, 'posthoc');
+        xlswrite([path.exportpath 'relative_ANOVA.xlsx'], export.zeroD, 'zeroD');
     elseif comparaison == '='
         xlswrite([path.exportpath 'absolute_ANOVA.xlsx'], export.anova, 'anova');
         xlswrite([path.exportpath 'absolute_ANOVA.xlsx'], export.posthoc, 'posthoc');
+        xlswrite([path.exportpath 'absolute_ANOVA.xlsx'], export.zeroD, 'zeroD');
     end
 end
 %% Vérification

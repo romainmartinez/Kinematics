@@ -1,4 +1,4 @@
-function [export] = hauteur_SPM_posthoc(comparaison, SPM, delta)
+function [export, zeroD] = hauteur_SPM_posthoc(comparaison, SPM, delta)
 %% Combinaison de comparaison (colonne 1: hommes ; colonne 2 : femmes)
 [test] = comparison(comparaison);
 
@@ -24,6 +24,15 @@ for i = length(test) : -1 : 1
     export(i).df1      = spmi.df(1);
     export(i).df2      = spmi.df(2);
     export(i).h0reject = spmi.h0reject;
+    
+    %% Exportation 0D
+    zeroD(i).delta      = delta;
+    zeroD(i).men        = test(i,1);
+    zeroD(i).women      = test(i,2);
+    zeroD(i).moy_men    = mean(spmi.beta(1,:));
+    zeroD(i).moy_women  = mean(spmi.beta(2,:));
+    zeroD(i).time_men   = mean(SPM.duree(SPM.condition == test(i,1) & SPM.sexe == 0));
+    zeroD(i).time_women = mean(SPM.duree(SPM.condition == test(i,2) & SPM.sexe == 1));
     
     icluster = 0;
     if spmi.h0reject == 1
