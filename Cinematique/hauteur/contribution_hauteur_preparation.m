@@ -41,7 +41,7 @@ for isujet = length(Alias.sujet) : -1 : 1
     % Dossier des data
     Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\Trials\'];
     % Dossier d'exportation
-    Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
+    Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\';
     % Noms des fichiers data
     Alias.Qnames    = dir([Path.importPath '*_MOD' num2str(model) '_*' 'r' '*.Q*']);
     
@@ -191,8 +191,14 @@ for isujet = length(Alias.sujet) : -1 : 1
     
     %% Sauvegarde de la matrice
     if saveresults == 1
-        data = rmfield(Data, 'Qdata');
-        save([Path.exportPath Alias.sujet{1,isujet} '.mat'],'Data')
+        % contributions
+        temp = rmfield(Data,'Qdata');
+        save([Path.exportPath 'contribution\' Alias.sujet{1,isujet} '.mat'],'temp')
+        clearvars temp 
+        % cinématique
+        temp = rmfield(Data, {'deltahand', 'deltaGH', 'deltaSCAC', 'deltaRoB'});
+        save([Path.exportPath 'cinematique\' Alias.sujet{1,isujet} '.mat'],'temp')
+        clearvars temp
     end
     
     clearvars data Data forceindex logical_cells H1 H2 H3 H4 H5 q1 T

@@ -40,7 +40,7 @@ for isujet = 1 %length(Alias.sujet) : -1 : 1
     % Dossier des data
     Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain_onlyKalman\' Alias.sujet{isujet} 'd\Trials\'];
     % Dossier d'exportation
-    Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_vitesse\elaboratedData_mat\';
+    Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\';
     % Noms des fichiers data
     Alias.Qnames    = dir([Path.importPath '*.Q*']);
     

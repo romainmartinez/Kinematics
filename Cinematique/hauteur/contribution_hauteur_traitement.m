@@ -24,28 +24,28 @@ cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteur
 test        =   0;                  % 0 ou 1
-grammplot   =   0;                  % 0 ou 1
+grammplot   =   1;                  % 0 ou 1
 plotmean    =   0;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
-stat        =   1;                  % 0 ou 1
-exporter    =   1 ;                 % 0 ou 1
+stat        =   0;                  % 0 ou 1
+exporter    =   0 ;                 % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 
 %% Dossiers
-path.datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
+path.Datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\contribution\';
 path.exportpath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\SPM\';
-alias.matname = dir([path.datapath '*mat']);
+alias.matname = dir([path.Datapath '*mat']);
 
 %% Chargement des données
 for i = length(alias.matname) : -1 : 1
-    RAW(i) = load([path.datapath alias.matname(i).name]);
+    RAW(i) = load([path.Datapath alias.matname(i).name]);
     
-    for u = 1 : length(RAW(i).data)
-        RAW(i).data(u).sujet = alias.matname(i).name(1:end-4);
-        if RAW(i).data(u).sexe == 'F'
-            RAW(i).data(u).sexe = 1;
-        elseif RAW(i).data(u).sexe == 'H'
-            RAW(i).data(u).sexe = 0;
+    for u = 1 : length(RAW(i).Data)
+        RAW(i).Data(u).sujet = alias.matname(i).name(1:end-4);
+        if RAW(i).Data(u).sexe == 'F'
+            RAW(i).Data(u).sexe = 1;
+        elseif RAW(i).Data(u).sexe == 'H'
+            RAW(i).Data(u).sexe = 0;
         end
     end
 end

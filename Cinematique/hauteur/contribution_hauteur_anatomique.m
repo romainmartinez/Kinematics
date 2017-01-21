@@ -38,7 +38,7 @@ for isujet = length(Alias.sujet) : -1 : 1
     % Dossier des data
     Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\MODEL' num2str(model) '\'];
     % Dossier d'exportation
-    %     Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_hauteur\elaboratedData_mat\';
+%     Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\';
     % Noms des fichiers data
     Alias.Qnames    = dir([Path.importPath '*_MOD' num2str(model) '*' 'r' '*.Q*']);
     
