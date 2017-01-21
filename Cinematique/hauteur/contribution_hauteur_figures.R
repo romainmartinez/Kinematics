@@ -12,11 +12,14 @@
 rm(list = ls())
 
 # Packages ----------------------------------------------------------------
-lapply(c("tidyr","dplyr","ggplot2", "readxl"), require, character.only = T)
+lapply(c("tidyr","dplyr","ggplot2", "readxl", "magrittr"), require, character.only = T)
 
 
 # Load data ---------------------------------------------------------------
-anova <- read_excel("Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_hauteur/SPM/relative_ANOVA.xlsx",
-                             sheet = "anova", na = "NA")
-posthoc <- read_excel("Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_hauteur/SPM/relative_ANOVA.xlsx",
-                    sheet = "posthoc", na = "NA")
+anova <- read_excel("Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_hauteur/SPM/relative_ANOVA.xlsx", sheet = "anova", na = "NA")
+anova$delta <- factor(x = anova$delta, labels = c("delta hand + EL", "delta GH", "delta SCAC", "delta RoB"))
+  
+  
+  posthoc <- read_excel("Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_hauteur/SPM/relative_ANOVA.xlsx",
+                        sheet = "posthoc", na = "NA")
+  
