@@ -16,7 +16,7 @@ loArm1 = 25;
 RL = S2M_rbdl('globalJCS', model ,Q0);
 
 % RL --> coord | sequence | segment
-zThorax  = RL(1:3,3,2); 
+zThorax  = RL(1:3,3,2);
 xScapula = RL(1:3,1,4);
 
 options = optimoptions('lsqnonlin','Display','iter');
@@ -55,7 +55,7 @@ zArm  = RL(1:3,3,5);
     function val = obj3(x)
         q = Q0;
         q(loArm2) = x;
-
+        
         RL = S2M_rbdl('globalJCS', model ,q);
         
         zLoArm = RL(1:3,3,7);
@@ -72,10 +72,10 @@ xWrist  = RL(1:3,1,8);
     function val = obj4(x)
         q = Q0;
         q(loArm1) = x;
-
+        
         RL = S2M_rbdl('globalJCS', model ,q);
-
-
+        
+        
         xLoArm = RL(1:3,1,6);
         val    = xWrist-xLoArm;
     end
