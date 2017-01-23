@@ -12,11 +12,14 @@
 
 # Preparation ----------------------------------------------------------------
 # Packages
-lapply(c("tidyr", "dplyr", "ggplot2", "readxl", "magrittr", "knitr"),
+lapply(c("tidyr", "dplyr", "ggplot2", "readxl", "magrittr", "knitr", "grid", "ggthemes"),
        require,
        character.only = T)
 # Path
 setwd("C:/Users/marti/Documents/Codes/Kinematics/Cinematique/R_contribution/")
+
+# Switch
+delete.na <- TRUE
 
 # Load data ---------------------------------------------------------------
 anova <- read_excel(
@@ -31,13 +34,13 @@ posthoc <- read_excel(
 
 # Factor ------------------------------------------------------------------
 anova$delta  <- factor(x = anova$delta,
-                       labels = c("delta hand + EL", "delta GH", "delta SCAC", "delta RoB"))
+                       labels = c("hand + EL", "GH", "SCAC", "RoB"))
 anova$effect <- factor(x = anova$effect,
                        levels = c("Main A", "Main B", "Main C", "Interaction AB", "Interaction AC", "Interaction BC", "Interaction ABC"),
                        labels = c("sexe", "hauteur", "poids", "sexe-hauteur", "sexe-poids", "hauteur-poids", "sexe-hauteur-poids"))
 
 posthoc$delta <- factor(x = posthoc$delta,
-                       labels = c("delta hand + EL", "delta GH", "delta SCAC", "delta RoB"))
+                       labels = c("hand + EL", "GH", "SCAC", "RoB"))
 
 # Height
 height <- rep(c("hips-shoulders", "hips-eyes", "shoulders-hips", "shoulder-eyes", "eyes-hips", "eyes-shoulder"), times = 2)
@@ -55,8 +58,16 @@ names(posthoc)[names(posthoc) == 'men'] <- 'height'
 names(posthoc)[names(posthoc) == 'women'] <- 'weight'
 
 
+# Delete non-significant row ----------------------------------------------
+if(delete.na == TRUE){
+  anova <- dplyr::filter(anova, h0reject == 1)
+  posthoc <- dplyr::filter(posthoc, h0reject == 1)
+}
+
 # Create output table -----------------------------------------------------
 saveRDS(anova, "output/table.anova.rds")
 saveRDS(posthoc, "output/table.posthoc.rds")
 
-
+# gantt plot --------------------------------------------------------------
+source("functions/plot.gantt.R")
+plot.gantt(posthoc, annotation = FALSE, save = TRUE)
