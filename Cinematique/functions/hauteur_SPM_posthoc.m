@@ -31,6 +31,8 @@ for i = length(test) : -1 : 1
     zeroD(i).women      = test(i,2);
     zeroD(i).moy_men    = mean(spmi.beta(1,:));
     zeroD(i).moy_women  = mean(spmi.beta(2,:));
+    zeroD(i).max_men    = max(spmi.beta(1,:));
+    zeroD(i).max_women  = max(spmi.beta(2,:));
     zeroD(i).time_men   = mean(SPM.duree(SPM.condition == test(i,1) & SPM.sexe == 0));
     zeroD(i).time_women = mean(SPM.duree(SPM.condition == test(i,2) & SPM.sexe == 1));
     
