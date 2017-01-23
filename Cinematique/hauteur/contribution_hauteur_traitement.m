@@ -28,7 +28,7 @@ grammplot   =   0;                  % 0 ou 1
 plotmean    =   0;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
 stat        =   1;                  % 0 ou 1
-exporter    =   1;                 % 0 ou 1
+exporter    =   1;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 
 %% Dossiers

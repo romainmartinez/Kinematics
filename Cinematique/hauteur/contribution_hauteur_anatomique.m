@@ -29,7 +29,7 @@ model       = 2.1;
 %% Nom du sujet
 Alias.sujet = sujets_valides;
 
-for isujet = length(Alias.sujet) : -1 : 1
+for isujet = 1%length(Alias.sujet) : -1 : 1
     %% Chemin des fichiers
     % Dossier du sujet
     Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\' Alias.sujet{isujet} 'd\Model_' num2str(round(model)) '\'];
@@ -38,7 +38,7 @@ for isujet = length(Alias.sujet) : -1 : 1
     % Dossier des data
     Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\MODEL' num2str(round(model)) '\'];
     % Dossier d'exportation
-%     Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\';
+    %     Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\';
     % Noms des fichiers data
     Alias.Qnames    = dir([Path.importPath '*_MOD' num2str(model) '*' 'r' '*.Q*']);
     
@@ -66,6 +66,10 @@ for isujet = length(Alias.sujet) : -1 : 1
         Data.Q0 = mean(Data.Qdata.Q1,2);
     end
     [q]     = positionanato(Data.Q0, Alias.model);
+    
+%     S2M_rbdl_ShowModel(model, q)
+%     axis equal
+%     axis tight
     
     S2M_rbdl('delete', Alias.model);
 end
