@@ -52,7 +52,7 @@ Temporary Items
 ##---------------------------------------------------
 
 # Windows default autosave extension
-*.asv 
+*.asv
 
 # OSX / *nix default autosave extension
 *.m~
@@ -62,3 +62,6 @@ Temporary Items
 
 # Simulink Code Generation
 slprj/
+
+# Rstudio
+.Rhistory

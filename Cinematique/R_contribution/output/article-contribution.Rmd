@@ -3,16 +3,20 @@ title: "article-contribution"
 author: "Romain Martinez"
 date: "January 23, 2017"
 output:
-  word_document: default
-  pdf_document: default
   html_document: default
+  pdf_document: default
+  word_document: default
 ---
 
-# Tableau
+# Tableau ANOVA
 ```{r table.anova, echo=FALSE}
 table.anova <- readRDS("table.anova.rds")
-knitr::kable(table.anova)
+knitr::kable(table.anova, digits = 3)
 ```
 
-
+# Tableau post-hoc
+```{r table.anova, echo=FALSE}
+table.anova <- readRDS("table.posthoc.rds")
+knitr::kable(table.anova, digits = 3)
+```
 
