@@ -24,7 +24,7 @@ cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteurs
 saveresults = 1;
-model       = 3;
+model       = 2.1;
 
 %% Nom du sujet
 Alias.sujet = sujets_valides;
@@ -32,11 +32,11 @@ Alias.sujet = sujets_valides;
 for isujet = length(Alias.sujet) : -1 : 1
     %% Chemin des fichiers
     % Dossier du sujet
-    Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\' Alias.sujet{isujet} 'd\Model_' num2str(model) '\'];
+    Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\' Alias.sujet{isujet} 'd\Model_' num2str(round(model)) '\'];
     % Dossier du modèle pour le sujet
     Path.pathModel  = [Path.DirModels 'Model.s2mMod'];
     % Dossier des data
-    Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\MODEL' num2str(model) '\'];
+    Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\MODEL' num2str(round(model)) '\'];
     % Dossier d'exportation
 %     Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\';
     % Noms des fichiers data
@@ -53,7 +53,7 @@ for isujet = length(Alias.sujet) : -1 : 1
     Alias.nTags    = S2M_rbdl('nTags', Alias.model);
     % Nom des segments
     Alias.nameBody = S2M_rbdl('nameBody', Alias.model);
-    [Alias.segmentMarkers, Alias.segmentDoF] = segment_RBDL(model);
+    [Alias.segmentMarkers, Alias.segmentDoF] = segment_RBDL(round(model));
     
     %% Ouverture des données
     Data.Qdata = load([Path.importPath Alias.Qnames.name], '-mat');
@@ -61,10 +61,11 @@ for isujet = length(Alias.sujet) : -1 : 1
     %% test
     
     if length(fieldnames(Data.Qdata)) == 3
-        Data.Q0 = mean(Data.Qdata.Q2);
+        Data.Q0 = mean(Data.Qdata.Q2,2);
     elseif length(fieldnames(Data.Qdata)) == 1
-        Data.Q0 = mean(Data.Qdata.Q1);
+        Data.Q0 = mean(Data.Qdata.Q1,2);
     end
     [q]     = positionanato(Data.Q0, Alias.model);
     
+    S2M_rbdl('delete', Alias.model);
 end
