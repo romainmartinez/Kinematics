@@ -20,11 +20,16 @@ if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
 end
 
 % Fonctions locales
-cd('C:\Users\marti\Google Drive\Codes\Kinematics\Cinematique\functions\');
+cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteurs
 saveresults = 0;
 test        = 0;
+
+%% Dossiers
+path.Datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\cinematique\';
+path.exportpath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_articulation\SPM\';
+alias.matname = dir([path.Datapath '*mat']);
 
 %% Nom des sujets
 Alias.sujet = sujets_valides;
