@@ -54,17 +54,18 @@ posthoc$women <- factor(x = posthoc$women,
                       labels = weight)
 
 # Rename column
-posthoc <- dplyr::rename(posthoc, height = men)
-posthoc <- dplyr::rename(posthoc, weight = women)
+posthoc <- posthoc %>%
+  rename(height = men) %>% 
+  rename(weight = women)
 
 # Delete non-significant row ----------------------------------------------
 if(delete.na == TRUE){
-  anova   <- dplyr::filter(anova, h0reject == 1)
+  anova   <- dplyr::filter(anova,   h0reject == 1)
   posthoc <- dplyr::filter(posthoc, h0reject == 1)
 }
 
 # Create output table -----------------------------------------------------
-saveRDS(anova, "output/table.anova.rds")
+saveRDS(anova,   "output/table.anova.rds")
 saveRDS(posthoc, "output/table.posthoc.rds")
 
 # gantt plot --------------------------------------------------------------
