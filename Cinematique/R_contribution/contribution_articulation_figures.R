@@ -23,12 +23,12 @@ delete.na <- TRUE
 
 # Load data ---------------------------------------------------------------
 anova <- read_excel(
-  "Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/relative_ANOVA.xlsx",
+  "Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/height_relative_ANOVA.xlsx",
   sheet = "anova",
   na = "NA")
 
 posthoc <- read_excel(
-  "Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/relative_ANOVA.xlsx",
+  "Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/height_relative_ANOVA.xlsx",
   sheet = "posthoc",
   na = "NA")
 

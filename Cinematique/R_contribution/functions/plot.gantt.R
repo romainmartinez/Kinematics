@@ -1,14 +1,5 @@
 plot.gantt <- function(data, annotation, save) {
-  # p <- p + theme_bw() +
-  #   theme(plot.background = element_blank(),
-  #         panel.grid.major = element_blank(),
-  #         panel.grid.minor = element_blank() )+
-  #   # theme(panel.border= element_blank())+
-  #   theme(axis.line.x = element_line(color="black", size = 0.5),
-  #         axis.line.y = element_line(color="black", size = 0.5))+
-  #   theme(text = element_text(size=12))+
-  #   theme(legend.key = element_rect(colour = NA), legend.position="top")
-  
+
   gantt <- ggplot(data, aes())
   # Theme
   
@@ -69,14 +60,6 @@ plot.gantt <- function(data, annotation, save) {
  }
   
   # Theme
-  # gantt <- gantt + theme_classic() +
-  #   theme(
-  #     axis.line.x = element_line(color = "black", size = 0.5),
-  #     axis.line.y = element_line(color = "black", size = 0.5)
-  #   ) +
-  #   theme(text = element_text(size = 12)) +
-  #   theme(legend.key = element_rect(colour = NA),
-  #         legend.position = "top")
   gantt <-gantt + theme_classic() +
                   theme(panel.border = element_rect(colour = "black", fill=NA, size=0.5)) + 
                   theme(text = element_text(size = 12)) + 
