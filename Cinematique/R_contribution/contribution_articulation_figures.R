@@ -54,13 +54,12 @@ posthoc$women <- factor(x = posthoc$women,
                       labels = weight)
 
 # Rename column
-names(posthoc)[names(posthoc) == 'men'] <- 'height'
-names(posthoc)[names(posthoc) == 'women'] <- 'weight'
-
+posthoc <- dplyr::rename(posthoc, height = men)
+posthoc <- dplyr::rename(posthoc, weight = women)
 
 # Delete non-significant row ----------------------------------------------
 if(delete.na == TRUE){
-  anova <- dplyr::filter(anova, h0reject == 1)
+  anova   <- dplyr::filter(anova, h0reject == 1)
   posthoc <- dplyr::filter(posthoc, h0reject == 1)
 }
 

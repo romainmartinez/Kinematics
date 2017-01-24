@@ -5,21 +5,17 @@ plot.gantt <- function(data, annotation, save) {
   
   # create segment
   gantt <- gantt + geom_segment(aes(
-    x     = start,
-    xend  = end,
-    y     = delta,
-    yend  = delta,
-    color = diff
-  ),
-  size = 4)
+                   x     = start,
+                   xend  = end,
+                   y     = delta,
+                   yend  = delta,
+                   color = diff),size = 4)
   
   # X axis
-  gantt <-
-    gantt + scale_x_continuous(
-      name   = "normalized time (% of trial)",
-      limits = c(0, 100),
-      breaks = c(0, 20, 40, 60, 80, 100)
-    )
+  gantt <- gantt + scale_x_continuous(
+                   name   = "normalized time (% of trial)",
+                   limits = c(0, 100),
+                   breaks = c(0, 20, 40, 60, 80, 100))
   
   # Y axis
   gantt <- gantt + ylab("delta")
@@ -35,13 +31,11 @@ plot.gantt <- function(data, annotation, save) {
     gantt + geom_vline(xintercept = c(20, 80), linetype = "dotted")
   
   # Legend
-  gantt <-
-    gantt + scale_colour_gradient2(
-      "mean difference\n(% contribution)",
-      low  = "deepskyblue2",
-      mid  = "white",
-      high = "firebrick3"
-    )
+  gantt <- gantt + scale_colour_gradient2(
+                  "mean difference\n(% contribution)",
+                  low  = "deepskyblue2",
+                  mid  = "white",
+                  high = "firebrick3")
   gantt
   
  if (annotation == TRUE){
