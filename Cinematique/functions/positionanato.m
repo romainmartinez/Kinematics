@@ -6,7 +6,7 @@ function [q_optim] = positionanato(Q0, model)
 % | xScapula  | xArm   |ok
 % | zArm      | zLoArm |
 % | xWrist    | xLoArm |
-%%
+%% todo : remplacer xLoArm par xArm
 
 Arm    = 22:24;
 loArm2 = 26;
@@ -62,7 +62,7 @@ zArm  = RL(1:3,3,5);
         val    = zArm-zLoArm;
     end
 
-Q0(loArm2)   = lsqnonlin(@obj3,0,[],[],options);
+
 
 %% | xWrist | xLoArm |
 RL = S2M_rbdl('globalJCS', model ,Q0);
@@ -81,7 +81,7 @@ xWrist  = RL(1:3,1,8);
     end
 
 Q0(loArm1)   = lsqnonlin(@obj4,0,[],[],options);
-
+Q0(loArm2)   = lsqnonlin(@obj3,0,[],[],options);
 %% plot
 S2M_rbdl_ShowModel(model, Q0, 'rt', true, 'comi', false, 'tags', true, 'com', false)
 axis equal
