@@ -1,4 +1,4 @@
-plot.gantt <- function(data, annotation, save) {
+plot.gantt <- function(data, annotation, save, scale.free) {
 
   gantt <- ggplot(data, aes())
   # Theme
@@ -21,10 +21,13 @@ plot.gantt <- function(data, annotation, save) {
   gantt <- gantt + ylab("delta")
   
   # Facet
-  gantt <-
-    gantt + facet_grid(height ~ weight,
+  if (scale.free == TRUE){
+  gantt <- gantt + facet_grid(height ~ weight,
                        scales = "free",
                        space = "free")
+  } else {
+    gantt <- gantt + facet_grid(height ~ weight)
+  }
   
   # vLine
   gantt <-
