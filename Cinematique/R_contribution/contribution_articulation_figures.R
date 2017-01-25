@@ -93,7 +93,7 @@ plot.gantt(posthoc, annotation = FALSE, save = TRUE, scale.free = FALSE)
 # test --------------------------------------------------------------------
 zeroD_radar <- cbind(zeroD$delta, zeroD$moy_men)
 zeroD_radar <- zeroD %>%
-  gather(key = sex, value = moy_men)
+  # gather(key = key, value = c("mean", "max", "time"), 4:9) %>%
   filter(height != "eyes-shoulders" & height != "shoulders-eyes")
 
 
