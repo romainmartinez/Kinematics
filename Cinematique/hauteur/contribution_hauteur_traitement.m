@@ -98,10 +98,10 @@ if femmes ~= hommes
     disp('Number of participants is not balanced: please add names in the blacklist')
 end
 %% Variables
-% nombre de frames dï¿½sirï¿½s pour interpolation
+% nombre de frames désirés pour interpolation
 nbframe = 200;
 
-% Transformation des donnï¿½es vers GRAMM & SPM friendly
+% Transformation des données vers GRAMM & SPM friendly
 
 for i = 1 : length(bigstruct)
     % Filtre passe-bas 25Hz
@@ -190,7 +190,7 @@ if stat == 1
     end
 end
 
-%% Exporter les rï¿½sultats
+%% Exporter les resultats
 if exporter == 1
     %% Export 0D: temps et contributions moyennes
     export.zeroD = [zeroD(:).posthoc];
@@ -233,7 +233,7 @@ if exporter == 1
         xlswrite([path.exportpath 'height_absolute_ANOVA.xlsx'], export.zeroD, 'zeroD');
     end
 end
-%% Vï¿½rification
+%% Verification
 if verif == 1
     %         figure('units','normalized','outerposition',[0 0 1 1])
     %         for i = 1 : length(SPM.delta_hand)
