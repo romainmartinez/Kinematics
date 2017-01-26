@@ -2,13 +2,13 @@ function [export, zeroD] = hauteur_SPM_posthoc(comparaison, SPM, delta)
 %% Combinaison de comparaison (colonne 1: hommes ; colonne 2 : femmes)
 [test] = comparison(comparaison);
 
-%% sï¿½lection des donnï¿½es
+%% sï¿½lection des données
 for i = length(test) : -1 : 1
     data_hommes = SPM.comp(SPM.condition == test(i,1) & SPM.sexe == 0,:);
     data_femmes = SPM.comp(SPM.condition == test(i,2) & SPM.sexe == 1,:);
 
     %% Correction Bonferonni
-    % p est corrigï¿½ car on fait 4 mesures rï¿½pï¿½tï¿½s (4 delta) pour 12
+    % p est corrigé car on fait 4 mesures répétés (4 delta) pour 12
     % conditions (6 hauteurs x 2 poids) = 48 tests
     nbtrials = 4*6*2;
     p_ttest = spm1d.util.p_critical_bonf(0.05, nbtrials);
@@ -40,7 +40,7 @@ for i = length(test) : -1 : 1
     if spmi.h0reject == 1
         for n = 1 : spmi.nClusters
             if n ~= 1 && round(spmi.clusters{1, n}.endpoints(1)/2) - round(spmi.clusters{1, n-1}.endpoints(2)/2) < 10
-                % Merge des zones avec diffï¿½rence de moins de 10%
+                % Merge des zones avec différence de moins de 10%
                 export(i).cluster{icluster,3} = round(spmi.clusters{1, n}.endpoints(1)/2);
 
             else
