@@ -23,8 +23,9 @@ end
 cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteurs
-saveresults = 1;
+saveresults = 0;
 test        = 0;
+anato       = 1;
 model       = 2.1;
 
 %% Nom des sujets
@@ -58,6 +59,13 @@ for isujet = length(Alias.sujet) : -1 : 1
     Alias.nameBody = S2M_rbdl('nameBody', Alias.model);
     [Alias.segmentMarkers, Alias.segmentDoF] = segment_RBDL(round(model));
     
+    
+   %% Anatomical position correction
+   if anato == 1
+       save_fig = 1;
+       [q_correct] = anatomical_correction(Alias.sujet{isujet}, model, Alias.model, save_fig);
+   end
+   
     %% Obtenir les onset et offset de force
     load(['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\forceindex\' Alias.sujet{isujet} '_forceindex'])
     

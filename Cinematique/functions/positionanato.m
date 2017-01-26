@@ -1,13 +1,12 @@
-function [q_optim] = positionanato(Q0, model)
-% todo : z humerus-bras et x poignet - coude
+function [q_optim] = positionanato(Q0, model, trace)
 %  | référence | aligné |
 %  |-----------|--------|
 % 1| zThorax   | zArm   |ok
 % 2| xScapula  | xArm   |ok
 % 3| xWrist    | xLoArm |
 % 4| zArm      | zLoArm |
-%% todo : remplacer xLoArm par xArm
-% DoF 
+
+% DoF
 Arm    = 22:24;
 loArm1 = 25;
 loArm2 = 26;
@@ -48,7 +47,7 @@ options = optimoptions('lsqnonlin','Display','iter');
         val    = zArm-zLoArm;
     end
 
-function val = obj4(x)
+    function val = obj4(x)
         q = Q0;
         q(loArm2) = x;
         
@@ -56,16 +55,16 @@ function val = obj4(x)
         xLowArm2 = RL(1:3,1,7);
         
         val    = xLowArm2-xArm;
-end
+    end
 
-function val = obj5(x)
+    function val = obj5(x)
         q = Q0;
         q(Wrist) = x;
         
         RL = S2M_rbdl('globalJCS', model ,q);
         RWrist  = RL(1:3,2:3,8); RWrist = RWrist(:);
         val    = RWrist-RLowArm2;
-end
+    end
 
 % S2M_rbdl_ShowModel(model, zeros(28,1), 'rt', true, 'comi', false, 'tags', true, 'com', false)
 % axis equal
@@ -99,9 +98,11 @@ Q0(Wrist)   = lsqnonlin(@obj5,[0 0],[],[],options);
 
 
 %% plot
-S2M_rbdl_ShowModel(model, Q0, 'rt', true, 'comi', false, 'tags', true, 'com', false)
-axis equal
-axis tight
+if trace == 1
+    S2M_rbdl_ShowModel(model, Q0, 'rt', true, 'comi', false, 'tags', true, 'com', false)
+    axis equal
+    axis tight
+end
 
 q_optim = Q0;
 end
