@@ -48,12 +48,11 @@ for isujet = 1 %length(Alias.sujet) : -1 : 1
 end
 
 %% Zone de test
+itrial = 1;
 for iframe = 1 : length(Data(itrial).Qdata.Q2)
     TJi = S2M_rbdl('TagsJacobian', alias.model, Data(itrial).Qdata.Q2);
     TJi  = reshape(TJi,[3,28,43]);
     TJ(:,:,iframe) = TJi(:,:,39);
 end
-
-
 
 vGH = multiprod(TJ(:,22:24,:), Data(itrial).Qdata.QDOT2(22:24,:))
