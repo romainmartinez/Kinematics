@@ -66,150 +66,150 @@ for isujet = length(Alias.sujet) : -1 : 1
        [q_correct] = anatomical_correction(Alias.sujet{isujet}, model, Alias.model, save_fig);
    end
    
-    %% Obtenir les onset et offset de force
-    load(['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\forceindex\' Alias.sujet{isujet} '_forceindex'])
-    
-    for trial = length(Alias.Qnames) : -1 : 1
-        %% Caractéristique de l'essai
-        % Sexe du sujet
-        if     length(Alias.Qnames) == 54
-            Data(trial).sexe = 'H';
-        elseif length(Alias.Qnames) == 36
-            Data(trial).sexe = 'F';
-        end
-        
-        % Noms des essais
-        Data(trial).trialname = Alias.Qnames(trial).name(5:11);
-        
-        if Data(trial).trialname(end) == '_'
-            Data(trial).trialname = Data(trial).trialname(1:end-1);
-        end
-        %% Phase du mouvement
-        cellfind      = @(string)(@(cell_contents)(strcmp(string,cell_contents)));
-        logical_cells = cellfun(cellfind(Data(trial).trialname),forceindex);
-        [row,~]       = find(logical_cells == 1);
-        Data(trial).start = forceindex{row,1};
-        Data(trial).end   = forceindex{row,2};
-        Data(trial).time   = forceindex{row,4};
-        
-        %% Importation des Q,QDOT,QDDOT
-        Data(trial).Qdata = load([Path.importPath Alias.Qnames(trial).name], '-mat');
-        
-        %% Contribution des articulation à la hauteur
-        % Initialisation des Q
-        if length(fieldnames(Data(trial).Qdata)) == 3
-            q1 = Data(trial).Qdata.Q2(:,round(Data(trial).start:Data(trial).end));
-        elseif length(fieldnames(Data(trial).Qdata)) == 1
-            q1 = Data(trial).Qdata.Q1(:,round(Data(trial).start:Data(trial).end));
-        end
-        
-        %% Filtre passe-bas 25Hz
-        q1 = transpose(lpfilter(q1', 15, 100));
-        
-        %% Articulation 1 : Poignet + coude
-        % Coordonnées des marqueurs dans le repère global
-        T = S2M_rbdl('Tags', Alias.model, q1);
-        
-        % Marqueurs du segment en cours ('3' correspond à Z car on s'intéresse à la hauteur)
-        H1 = squeeze(T(3,39,:));
-        
-        % Moment de prise et lâché de caisse
-        hstart    = H1(1);
-        hend      = H1(end);
-        h         = [hstart hend];
-        
-        % Pour différencier entre essai de montée et descente
-        bas       = min(h);
-        haut      = max(h);
-        
-        % normalisation
-        H1 = (H1 - bas) / (haut - bas)*100;
-        
-        % Blocage des q du segment
-        q1(Alias.segmentDoF.handelbow,:) = 0;
-        
-        % Redefinition des marqueurs avec les q bloqués
-        T = S2M_rbdl('Tags', Alias.model, q1);
-        
-        % Marqueurs du segment en cours avec q bloqués
-        H2 = squeeze(T(3,39,:));
-        
-        % normalisation avec 100 = max de H1
-        H2 = (H2 - bas) / (haut - bas)*100;
-        
-        % Delta entre les deux matrices de marqueurs en Z
-        Data(trial).deltahand  = H1 - H2;
-        
-        %% Articulation 2 : GH
-        % Blocage des q du segment
-        q1(Alias.segmentDoF.GH,:) = 0;
-        
-        % Redefinition des marqueurs avec les q bloqués
-        T = S2M_rbdl('Tags', Alias.model,q1);
-        
-        % Marqueurs du segment en cours avec q bloqués
-        H3 = squeeze(T(3,39,:));
-        
-        % normalisation avec 100 = max de H1
-        H3 = (H3 - bas) / (haut - bas)*100;
-        
-        % Delta entre les deux matrices de marqueurs en Z
-        Data(trial).deltaGH  = H2 - H3;
-        
-        %% Articulation 3 : GH
-        % Blocage des q du segment
-        q1(Alias.segmentDoF.SCAC,:) = 0;
-        
-        % Redefinition des marqueurs avec les q bloqués
-        T = S2M_rbdl('Tags', Alias.model, q1);
-        
-        % Marqueurs du segment en cours avec q bloqués
-        H4 = squeeze(T(3,39,:));
-        
-        % normalisation avec 100 = max de H1
-        H4 = (H4 - bas) / (haut - bas)*100;
-        
-        % Delta entre les deux matrices de marqueurs en Z
-        Data(trial).deltaSCAC  = H3 - H4;
-        
-        %% Articulation 4 : Reste du corps (pelvis + thorax)
-        % Blocage des q du segment
-        q1(Alias.segmentDoF.RoB,:) = 0;
-        
-        % Redefinition des marqueurs avec les q bloqués
-        T = S2M_rbdl('Tags', Alias.model, q1);
-        
-        % Marqueurs du segment en cours avec q bloqués
-        H5 = squeeze(T(3,39,:));
-        
-        % normalisation avec 100 = max de H1
-        H5 = (H5 - bas) / (haut - bas)*100;
-        
-        % Delta entre les deux matrices de marqueurs en Z
-        Data(trial).deltaRoB  = H4 - H5;
-        
-        
-    end
-    
-    %% Condition de l'essai
-    [Data]    = getcondition(Data);
-    [~,index] = sortrows([Data.condition].'); Data = Data(index); clear index
-    
-    S2M_rbdl('delete', Alias.model);
-    
-    %% Sauvegarde de la matrice
-    if saveresults == 1
-        % contributions
-        temp = rmfield(Data,'Qdata');
-        save([Path.exportPath 'contribution\' Alias.sujet{1,isujet} '.mat'],'temp')
-        clearvars temp 
-        % cinématique
-        temp = rmfield(Data, {'deltahand', 'deltaGH', 'deltaSCAC', 'deltaRoB'});
-        save([Path.exportPath 'cinematique\' Alias.sujet{1,isujet} '.mat'],'temp')
-        clearvars temp
-    end
-    
-    clearvars data Data forceindex logical_cells H1 H2 H3 H4 H5 q1 T
+%     %% Obtenir les onset et offset de force
+%     load(['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\forceindex\' Alias.sujet{isujet} '_forceindex'])
+%     
+%     for trial = length(Alias.Qnames) : -1 : 1
+%         %% Caractéristique de l'essai
+%         % Sexe du sujet
+%         if     length(Alias.Qnames) == 54
+%             Data(trial).sexe = 'H';
+%         elseif length(Alias.Qnames) == 36
+%             Data(trial).sexe = 'F';
+%         end
+%         
+%         % Noms des essais
+%         Data(trial).trialname = Alias.Qnames(trial).name(5:11);
+%         
+%         if Data(trial).trialname(end) == '_'
+%             Data(trial).trialname = Data(trial).trialname(1:end-1);
+%         end
+%         %% Phase du mouvement
+%         cellfind      = @(string)(@(cell_contents)(strcmp(string,cell_contents)));
+%         logical_cells = cellfun(cellfind(Data(trial).trialname),forceindex);
+%         [row,~]       = find(logical_cells == 1);
+%         Data(trial).start = forceindex{row,1};
+%         Data(trial).end   = forceindex{row,2};
+%         Data(trial).time   = forceindex{row,4};
+%         
+%         %% Importation des Q,QDOT,QDDOT
+%         Data(trial).Qdata = load([Path.importPath Alias.Qnames(trial).name], '-mat');
+%         
+%         %% Contribution des articulation à la hauteur
+%         % Initialisation des Q
+%         if length(fieldnames(Data(trial).Qdata)) == 3
+%             q1 = Data(trial).Qdata.Q2(:,round(Data(trial).start:Data(trial).end));
+%         elseif length(fieldnames(Data(trial).Qdata)) == 1
+%             q1 = Data(trial).Qdata.Q1(:,round(Data(trial).start:Data(trial).end));
+%         end
+%         
+%         %% Filtre passe-bas 25Hz
+%         q1 = transpose(lpfilter(q1', 15, 100));
+%         
+%         %% Articulation 1 : Poignet + coude
+%         % Coordonnées des marqueurs dans le repère global
+%         T = S2M_rbdl('Tags', Alias.model, q1);
+%         
+%         % Marqueurs du segment en cours ('3' correspond à Z car on s'intéresse à la hauteur)
+%         H1 = squeeze(T(3,39,:));
+%         
+%         % Moment de prise et lâché de caisse
+%         hstart    = H1(1);
+%         hend      = H1(end);
+%         h         = [hstart hend];
+%         
+%         % Pour différencier entre essai de montée et descente
+%         bas       = min(h);
+%         haut      = max(h);
+%         
+%         % normalisation
+%         H1 = (H1 - bas) / (haut - bas)*100;
+%         
+%         % Blocage des q du segment
+%         q1(Alias.segmentDoF.handelbow,:) = 0;
+%         
+%         % Redefinition des marqueurs avec les q bloqués
+%         T = S2M_rbdl('Tags', Alias.model, q1);
+%         
+%         % Marqueurs du segment en cours avec q bloqués
+%         H2 = squeeze(T(3,39,:));
+%         
+%         % normalisation avec 100 = max de H1
+%         H2 = (H2 - bas) / (haut - bas)*100;
+%         
+%         % Delta entre les deux matrices de marqueurs en Z
+%         Data(trial).deltahand  = H1 - H2;
+%         
+%         %% Articulation 2 : GH
+%         % Blocage des q du segment
+%         q1(Alias.segmentDoF.GH,:) = 0;
+%         
+%         % Redefinition des marqueurs avec les q bloqués
+%         T = S2M_rbdl('Tags', Alias.model,q1);
+%         
+%         % Marqueurs du segment en cours avec q bloqués
+%         H3 = squeeze(T(3,39,:));
+%         
+%         % normalisation avec 100 = max de H1
+%         H3 = (H3 - bas) / (haut - bas)*100;
+%         
+%         % Delta entre les deux matrices de marqueurs en Z
+%         Data(trial).deltaGH  = H2 - H3;
+%         
+%         %% Articulation 3 : GH
+%         % Blocage des q du segment
+%         q1(Alias.segmentDoF.SCAC,:) = 0;
+%         
+%         % Redefinition des marqueurs avec les q bloqués
+%         T = S2M_rbdl('Tags', Alias.model, q1);
+%         
+%         % Marqueurs du segment en cours avec q bloqués
+%         H4 = squeeze(T(3,39,:));
+%         
+%         % normalisation avec 100 = max de H1
+%         H4 = (H4 - bas) / (haut - bas)*100;
+%         
+%         % Delta entre les deux matrices de marqueurs en Z
+%         Data(trial).deltaSCAC  = H3 - H4;
+%         
+%         %% Articulation 4 : Reste du corps (pelvis + thorax)
+%         % Blocage des q du segment
+%         q1(Alias.segmentDoF.RoB,:) = 0;
+%         
+%         % Redefinition des marqueurs avec les q bloqués
+%         T = S2M_rbdl('Tags', Alias.model, q1);
+%         
+%         % Marqueurs du segment en cours avec q bloqués
+%         H5 = squeeze(T(3,39,:));
+%         
+%         % normalisation avec 100 = max de H1
+%         H5 = (H5 - bas) / (haut - bas)*100;
+%         
+%         % Delta entre les deux matrices de marqueurs en Z
+%         Data(trial).deltaRoB  = H4 - H5;
+%         
+%         
+%     end
+%     
+%     %% Condition de l'essai
+%     [Data]    = getcondition(Data);
+%     [~,index] = sortrows([Data.condition].'); Data = Data(index); clear index
+%     
+%     S2M_rbdl('delete', Alias.model);
+%     
+%     %% Sauvegarde de la matrice
+%     if saveresults == 1
+%         % contributions
+%         temp = rmfield(Data,'Qdata');
+%         save([Path.exportPath 'contribution\' Alias.sujet{1,isujet} '.mat'],'temp')
+%         clearvars temp 
+%         % cinématique
+%         temp = rmfield(Data, {'deltahand', 'deltaGH', 'deltaSCAC', 'deltaRoB'});
+%         save([Path.exportPath 'cinematique\' Alias.sujet{1,isujet} '.mat'],'temp')
+%         clearvars temp
+%     end
+%     
+%     clearvars data Data forceindex logical_cells H1 H2 H3 H4 H5 q1 T
 end
 
 %% Zone de test 1

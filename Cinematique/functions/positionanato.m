@@ -99,7 +99,7 @@ Q0(Wrist)   = lsqnonlin(@obj5,[0 0],[],[],options);
 
 %% plot
 if trace == 1
-    S2M_rbdl_ShowModel(model, Q0, 'rt', true, 'comi', false, 'tags', true, 'com', false)
+    S2M_rbdl_ShowModel(model, Q0, 'rt', true, 'comi', false, 'tags', true, 'com', false, 'view', [-30 50])
     axis equal
     axis tight
 end

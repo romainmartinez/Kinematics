@@ -24,4 +24,6 @@ if save_fig == 1
     saveas(gcf,[exportPath sujet],'fig')
 end
 
+close all
+
 
