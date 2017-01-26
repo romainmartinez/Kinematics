@@ -29,7 +29,7 @@ model       = 2.1;
 %% Nom du sujet
 Alias.sujet = sujets_valides;
 
-for isujet = 1%length(Alias.sujet) : -1 : 1
+for isujet = 3%length(Alias.sujet) : -1 : 1
     %% Chemin des fichiers
     % Dossier du sujet
     Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\' Alias.sujet{isujet} 'd\Model_' num2str(round(model)) '\'];
