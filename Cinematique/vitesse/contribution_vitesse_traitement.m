@@ -58,7 +58,8 @@ for itrial = 1 : length(data)
             TJi = S2M_rbdl('TagsJacobian', model, data(itrial).Qdata.Q2(:,iframe));
             % calcul de la contribution de chaque segment à la vitesse du marqueur
             % 3 car Z ; 39 car main ; 43 + 43 + 39 --> x + y + z du marqueur 39
-            contrib(isegment,iframe) = multiprod(TJi(43+43+39,segmentDoF{isegment}),data(itrial).Qdata.QDOT2(segmentDoF{isegment},iframe));
+            contrib(isegment,iframe) = multiprod(TJi(43+43+39,segmentDoF{isegment}),...
+                                                 data(itrial).Qdata.QDOT2(segmentDoF{isegment},iframe));
         end
     end
     data(itrial).contrib_HELB = contrib(1,:);
