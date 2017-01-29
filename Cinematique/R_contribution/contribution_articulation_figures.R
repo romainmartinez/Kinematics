@@ -19,9 +19,10 @@ lapply(c("tidyr", "dplyr", "ggplot2", "readxl", "magrittr", "knitr", "grid", "gg
 setwd("C:/Users/marti/Documents/Codes/Kinematics/Cinematique/R_contribution/")
 
 # Switch
-delete.na  <- TRUE
-plot_gantt <- TRUE
-plot_radar <- TRUE
+delete.na   <- FALSE
+plot_gantt  <- TRUE
+plot_radar  <- TRUE
+delete.zone <- TRUE
 
 # Load data ---------------------------------------------------------------
 anova <- read_excel(
@@ -41,24 +42,25 @@ zeroD <- read_excel(
 
 # Factor ------------------------------------------------------------------
 ## Delta
-anova$delta   <- anova$delta %>% factor(labels = c("hand + EL", "GH", "SCAC", "RoB"))
+anova$delta   <- anova$delta %>% factor(  labels = c("hand + EL", "GH", "SCAC", "RoB"))
 posthoc$delta <- posthoc$delta %>% factor(labels = c("hand + EL", "GH", "SCAC", "RoB"))
-zeroD$delta   <- zeroD$delta %>% factor(labels = c("hand + EL", "GH", "SCAC", "RoB"))
+zeroD$delta   <- zeroD$delta %>% factor(  labels = c("hand + EL", "GH", "SCAC", "RoB"))
 
 ## effect
-anova$effect <- anova$effect %>% factor(
-                       levels = c("Main A", "Main B", "Main C", "Interaction AB", "Interaction AC", "Interaction BC", "Interaction ABC"),
-                       labels = c("sexe", "hauteur", "poids", "sexe-hauteur", "sexe-poids", "hauteur-poids", "sexe-hauteur-poids"))
+anova$effect <- anova$effect %>% factor(levels = c("Main A", "Main B", "Main C", "Interaction AB", "Interaction AC", "Interaction BC", "Interaction ABC"),
+                                        labels = c("sexe", "hauteur", "poids", "sexe-hauteur", "sexe-poids", "hauteur-poids", "sexe-hauteur-poids"))
 
 ## Height
-height <- c(rep(c("hips-shoulders", "hips-eyes", "shoulders-eyes"), times = 2), rep(c("shoulders-hips", "eyes-hips", "eyes-shoulders"), times = 2))
+height <- c(rep(c("hips-shoulders", "hips-eyes", "shoulders-eyes"), times = 2), 
+            rep(c("shoulders-hips", "eyes-hips", "eyes-shoulders"), times = 2))
 
 posthoc$men <- posthoc$men %>% factor(levels = c(7,8,10,13,14,16,9,11,12,15,17,18), 
                                       labels = height)
 zeroD$men <- zeroD$men %>% factor(levels = c(7,8,10,13,14,16,9,11,12,15,17,18), 
                                   labels = height)
 ## Weight
-weight <- c(rep("12kg-6kg", times = 6), rep("18kg-12kg", times = 6))
+weight <- c(rep("12kg-6kg",  times = 6), 
+            rep("18kg-12kg", times = 6))
 
 posthoc$women <- posthoc$women %>% factor(levels = c(1:12),
                                           labels = weight)
@@ -73,28 +75,39 @@ zeroD <- zeroD %>%
   rename(height = men) %>% 
   rename(weight = women)
 
-# Delete non-significant row ----------------------------------------------
-if(delete.na == TRUE){
-  anova   <- anova   %>% filter(h0reject == 1)
-  posthoc <- posthoc %>% filter(h0reject == 1)
-  
+# Delete zone < 10 % ------------------------------------------------------
+if (delete.zone == TRUE) {
+  posthoc <- posthoc %>% filter(end - start > 10)
 }
 
+# Delete non-significant row ----------------------------------------------
+if (delete.na == TRUE) {
+  anova   <- anova   %>% filter(h0reject == 1)
+  posthoc <- posthoc %>% filter(h0reject == 1)
+}
+
+# main effect of gender ---------------------------------------------------
+gendereffect <- filter(anova, effect == "sexe")
+
 # Create output table -----------------------------------------------------
-saveRDS(anova,   "output/table.anova.rds")
-saveRDS(posthoc, "output/table.posthoc.rds")
-saveRDS(zeroD,   "output/table.zeroD.rds")
+saveRDS(gendereffect,"output/table.gendereffect.rds")
+saveRDS(anova,       "output/table.anova.rds")
+saveRDS(posthoc,     "output/table.posthoc.rds")
+saveRDS(zeroD,       "output/table.zeroD.rds")
 
 # gantt plot --------------------------------------------------------------
 source("functions/plot.gantt.R")
-plot.gantt(posthoc, annotation = FALSE, save = TRUE, scale.free = FALSE)
+# plot.gantt(posthoc, annotation = FALSE, save = TRUE, scale.free = FALSE)
 
 
 # test --------------------------------------------------------------------
-zeroD_radar <- cbind(zeroD$delta, zeroD$moy_men)
-zeroD_radar <- zeroD %>%
+zeroD_bar <- zeroD %>%
   gather(key = key, value = value, 4:9) %>%
-  filter(height != "eyes-shoulders" & height != "shoulders-eyes")
+  separate(key, c("valeur", "sex"), sep = "_") %>%
+  spread(valeur, value)
 
+bar <- ggplot(data = zeroD_bar, aes(x = delta, y = moy, fill = sex))
+bar <- bar + geom_bar(stat = "identity", position = position_dodge())
+bar <- bar + facet_grid(height ~ weight, scales = "free",space = "free")
+bar
 
-ggradar(zeroD_radar)

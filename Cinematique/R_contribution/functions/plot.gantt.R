@@ -36,9 +36,9 @@ plot.gantt <- function(data, annotation, save, scale.free) {
   # Legend
   gantt <- gantt + scale_colour_gradient2(
                   "mean difference\n(% contribution)",
-                  low  = "deepskyblue2",
+                  low  = "firebrick3",
                   mid  = "white",
-                  high = "firebrick3")
+                  high = "deepskyblue2")
   gantt
   
  if (annotation == TRUE){
