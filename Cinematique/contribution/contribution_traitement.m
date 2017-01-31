@@ -174,10 +174,7 @@ if grammplot == 1
         g.draw();
     end
 elseif grammplot == 2
-    figure('units','normalized','outerposition',[0 0 1 1])
-    
-    g(1,1) = gramm('x', SPM.time ,'y', SPM.delta_hand, 'color', SPM.sexe, 'subset', SPM.hauteur == 1);
-    g(1,1).stat_summary('type','std');
+        gramm_contribution(SPM)
 end
 
 
