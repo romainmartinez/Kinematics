@@ -24,32 +24,33 @@ cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteur
 test        =   0;                  % 0 ou 1
-grammplot   =   1;                  % 0 ou 1
-plotmean    =   1;                  % 0 ou 1
+grammplot   =   0;                  % 0 ou 1
+plotmean    =   0;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
-stat        =   0;                  % 0 ou 1
-exporter    =   0;                  % 0 ou 1
+stat        =   1;                  % 0 ou 1
+exporter    =   1;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
+variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
 
 %% Dossiers
-path.Datapath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\contribution\';
+path.Datapath = ['\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\' variable '\'];
 path.exportpath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_articulation\SPM\';
 alias.matname = dir([path.Datapath '*mat']);
 
-%% Chargement des donnï¿½es
+%% Chargement des données
 for i = length(alias.matname) : -1 : 1
     RAW(i) = load([path.Datapath alias.matname(i).name]);
-
+    
     for u = 1 : length(RAW(i).temp)
         RAW(i).temp(u).sujet = alias.matname(i).name(1:end-4);
         if RAW(i).temp(u).sexe == 'F'
-            RAW(i).temp(u).sexe = 1;
+            RAW(i).temp(u).sexe = 2;
         elseif RAW(i).temp(u).sexe == 'H'
-            RAW(i).temp(u).sexe = 0;
+            RAW(i).temp(u).sexe = 1;
         end
     end
 end
-% Grande structure de donnï¿½es
+% Grande structure de données
 bigstruct  = struct2array(RAW);
 
 %% Choix de la comparaison (absolu ou relatif)
@@ -62,15 +63,15 @@ switch comparaison
         end
     case '%'
         for i = length(bigstruct):-1:1
-            if bigstruct(i).poids == 6 && bigstruct(i).sexe == 0
+            if bigstruct(i).poids == 6 && bigstruct(i).sexe == 1
                 bigstruct(i) = [];
-            elseif bigstruct(i).poids == 12 && bigstruct(i).sexe == 0
-                bigstruct(i).poids = 1;
-            elseif bigstruct(i).poids == 18 && bigstruct(i).sexe == 0
-                bigstruct(i).poids = 2;
-            elseif bigstruct(i).poids == 6 && bigstruct(i).sexe == 1
-                bigstruct(i).poids = 1;
             elseif bigstruct(i).poids == 12 && bigstruct(i).sexe == 1
+                bigstruct(i).poids = 1;
+            elseif bigstruct(i).poids == 18 && bigstruct(i).sexe == 1
+                bigstruct(i).poids = 2;
+            elseif bigstruct(i).poids == 6 && bigstruct(i).sexe == 2
+                bigstruct(i).poids = 1;
+            elseif bigstruct(i).poids == 12 && bigstruct(i).sexe == 2
                 bigstruct(i).poids = 2;
             end
         end
@@ -90,9 +91,9 @@ SPM.duree      = vertcat(bigstruct(:).time)';
 
 %% Compter le nombre d'hommes et de femmes
 % Nombre de femmes
-femmes = sum(SPM.sexe == 1)/36;
+femmes = sum(SPM.sexe == 2)/36;
 % Nombre d'hommes
-hommes = sum(SPM.sexe == 0)/36;
+hommes = sum(SPM.sexe == 1)/36;
 
 if femmes ~= hommes
     disp('Number of participants is not balanced: please add names in the blacklist')
@@ -109,8 +110,8 @@ for i = 1 : length(bigstruct)
     bigstruct(i).deltaGH   = lpfilter(bigstruct(i).deltaGH, 15, 100);
     bigstruct(i).deltaSCAC = lpfilter(bigstruct(i).deltaSCAC, 15, 100);
     bigstruct(i).deltaRoB  = lpfilter(bigstruct(i).deltaRoB, 15, 100);
-
-    % Interpolation (pour avoir mï¿½me nombre de frames)
+    
+    % Interpolation (pour avoir méme nombre de frames)
     SPM.delta_hand(i,:) = ScaleTime(bigstruct(i).deltahand, 1, length(bigstruct(i).deltahand), nbframe);
     SPM.delta_GH(i,:)   = ScaleTime(bigstruct(i).deltaGH, 1, length(bigstruct(i).deltaGH), nbframe);
     SPM.delta_SCAC(i,:) = ScaleTime(bigstruct(i).deltaSCAC, 1, length(bigstruct(i).deltaSCAC), nbframe);
@@ -128,22 +129,22 @@ if grammplot == 1
         g(1,1) = gramm('x', SPM.time ,'y', SPM.delta_hand, 'color', SPM.sexe, 'subset', SPM.hauteur == i);
         g(1,1).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
         g(1,1).set_title('Contribution of the hand and elbow');
-
+        
         % Delta GH
         g(1,2) = gramm('x',SPM.time,'y',SPM.delta_GH,'color',SPM.sexe, 'subset', SPM.hauteur == i);
         g(1,2).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
         g(1,2).set_title('Contribution of GH');
-
+        
         % Delta SCAC
         g(2,1) = gramm('x',SPM.time,'y',SPM.delta_SCAC,'color',SPM.sexe, 'subset', SPM.hauteur == i);
         g(2,1).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
         g(2,1).set_title('Contribution of SC & AC');
-
+        
         % Delta RoB
         g(2,2) = gramm('x',SPM.time,'y',SPM.delta_RoB,'color',SPM.sexe, 'subset', SPM.hauteur == i);
         g(2,2).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
         g(2,2).set_title('Contribution of the rest of the body');
-
+        
         if plotmean == 1
             g(1,1).stat_summary('type','std');
             g(1,2).stat_summary('type','std');
@@ -155,7 +156,7 @@ if grammplot == 1
             g(2,1).geom_line();
             g(2,2).geom_line();
         end
-
+        
         switch i
             case 1
                 g.set_title([' Hips - Shoulders (H' num2str(i) ')']);
@@ -180,57 +181,61 @@ if stat == 1
     for i = 4 : -1 : 1 % nombre de delta
         %% Choix de la variable
         [SPM, result(i).test] = selectSPMvariable(SPM,i);
-
+        %% zone de test
+        result(i).posthoc = SPM_contribution(SPM.comp, SPM.sexe, SPM.hauteur, SPM.poids ,i);
         %% ANOVA
-        [result(i).anova]     = hauteur_SPM_anova(SPM, i);
-
+%         [result(i).anova]     = hauteur_SPM_anova(SPM, i);
+        
         %% Post-hoc
-        [result(i).posthoc, zeroD(i).posthoc]   = hauteur_SPM_posthoc(comparaison, SPM, i);
-
+%         [result(i).posthoc, zeroD(i).posthoc]   = hauteur_SPM_posthoc(comparaison, SPM, i);
+        
     end
 end
 
 %% Exporter les resultats
 if exporter == 1
+    %% test
+    export.posthoc = [result(:).posthoc];
+    [export.posthoc]   = expandcellinstruct(export.posthoc  , 'cluster');
     %% Export 0D: temps et contributions moyennes
     export.zeroD = [zeroD(:).posthoc];
-
+    
     %% Export SPM
     export.anova   = [result(:).anova];
     export.posthoc = [result(:).posthoc];
-
+    
     % Expandre les cellules pour rendre exportable
     [export.anova]   = expandcellinstruct(export.anova  , 'cluster', 1, 'h0reject');
     [export.posthoc] = expandcellinstruct(export.posthoc, 'cluster', 1, 'h0reject');
-
+    
     % Headers
     out_anova   = fieldnames(export.anova)';
     out_posthoc = fieldnames(export.posthoc)';
     out_zeroD   = fieldnames(export.zeroD)';
-
+    
     % transformer en cell
     export.anova   = struct2cell(export.anova);
     export.posthoc = struct2cell(export.posthoc);
     export.zeroD   = struct2cell(export.zeroD);
-
+    
     % 2D to 3D cell
     export.anova   = permute(export.anova,[3,1,2]);
     export.posthoc = permute(export.posthoc,[3,1,2]);
     export.zeroD   = permute(export.zeroD,[3,1,2]);
-
+    
     % matrice d'export
     export.anova   = vertcat(out_anova,export.anova);
     export.posthoc = vertcat(out_posthoc,export.posthoc);
     export.zeroD   = vertcat(out_zeroD,export.zeroD);
-
+    
     if     comparaison == '%'
-        xlswrite([path.exportpath 'height_relative_ANOVA.xlsx'], export.anova, 'anova');
-        xlswrite([path.exportpath 'height_relative_ANOVA.xlsx'], export.posthoc, 'posthoc');
-        xlswrite([path.exportpath 'height_relative_ANOVA.xlsx'], export.zeroD, 'zeroD');
+        xlswrite([path.exportpath variable '_relative_ANOVA.xlsx'], export.anova, 'anova');
+        xlswrite([path.exportpath variable '_relative_ANOVA.xlsx'], export.posthoc, 'posthoc');
+        xlswrite([path.exportpath variable '_relative_ANOVA.xlsx'], export.zeroD, 'zeroD');
     elseif comparaison == '='
-        xlswrite([path.exportpath 'height_absolute_ANOVA.xlsx'], export.anova, 'anova');
-        xlswrite([path.exportpath 'height_absolute_ANOVA.xlsx'], export.posthoc, 'posthoc');
-        xlswrite([path.exportpath 'height_absolute_ANOVA.xlsx'], export.zeroD, 'zeroD');
+        xlswrite([path.exportpath variable '_absolute_ANOVA.xlsx'], export.anova, 'anova');
+        xlswrite([path.exportpath variable '_absolute_ANOVA.xlsx'], export.posthoc, 'posthoc');
+        xlswrite([path.exportpath variable '_absolute_ANOVA.xlsx'], export.zeroD, 'zeroD');
     end
 end
 %% Verification
@@ -261,32 +266,32 @@ if verif == 1
     %
     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
     height = 2;
-
+    
     idx    = find(SPM.hauteur == height);
-
+    
     figure('units','normalized','outerposition',[0 0 1 1])
     for i = 1 : length(idx)
         plot(SPM.delta_hand(idx(i),:),'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
         hold on
     end
-
+    
     figure('units','normalized','outerposition',[0 0 1 1])
     for i = 1 : length(idx)
         plot(SPM.delta_GH(idx(i),:),'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
         hold on
     end
-
+    
     figure('units','normalized','outerposition',[0 0 1 1])
     for i = 1 : length(idx)
         plot(SPM.delta_SCAC(idx(i),:),'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
         hold on
     end
-
+    
     figure('units','normalized','outerposition',[0 0 1 1])
     for i = 1 : length(idx)
         plot(SPM.delta_RoB(idx(i),:),'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
         hold on
     end
-
-
+    
+    
 end
