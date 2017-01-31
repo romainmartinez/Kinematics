@@ -23,7 +23,7 @@ end
 cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteurs
-saveresults = 0;
+saveresults = 1;
 test        = 0;
 anato       = 1;
 model       = 2.1;
@@ -64,6 +64,8 @@ for isujet = length(Alias.sujet) : -1 : 1
    if anato == 1
        save_fig = 1;
        [q_correct] = anatomical_correction(Alias.sujet{isujet}, model, Alias.model, save_fig);
+   elseif anato == 0
+       q_correct = 0;
    end
    
     %% Obtenir les onset et offset de force
@@ -126,7 +128,7 @@ for isujet = length(Alias.sujet) : -1 : 1
         H1 = (H1 - bas) / (haut - bas)*100;
         
         % Blocage des q du segment
-        q1(Alias.segmentDoF.handelbow,:) = 0;
+        q1(Alias.segmentDoF.handelbow,:) = repmat(q_correct(Alias.segmentDoF.handelbow), 1, length(q1));
         
         % Redefinition des marqueurs avec les q bloqués
         T = S2M_rbdl('Tags', Alias.model, q1);
@@ -142,7 +144,7 @@ for isujet = length(Alias.sujet) : -1 : 1
         
         %% Articulation 2 : GH
         % Blocage des q du segment
-        q1(Alias.segmentDoF.GH,:) = 0;
+        q1(Alias.segmentDoF.GH,:) = repmat(q_correct(Alias.segmentDoF.GH), 1, length(q1));
         
         % Redefinition des marqueurs avec les q bloqués
         T = S2M_rbdl('Tags', Alias.model,q1);
@@ -158,7 +160,7 @@ for isujet = length(Alias.sujet) : -1 : 1
         
         %% Articulation 3 : GH
         % Blocage des q du segment
-        q1(Alias.segmentDoF.SCAC,:) = 0;
+        q1(Alias.segmentDoF.SCAC,:) = repmat(q_correct(Alias.segmentDoF.SCAC), 1, length(q1));
         
         % Redefinition des marqueurs avec les q bloqués
         T = S2M_rbdl('Tags', Alias.model, q1);
@@ -174,7 +176,7 @@ for isujet = length(Alias.sujet) : -1 : 1
         
         %% Articulation 4 : Reste du corps (pelvis + thorax)
         % Blocage des q du segment
-        q1(Alias.segmentDoF.RoB,:) = 0;
+        q1(Alias.segmentDoF.RoB,:) = repmat(q_correct(Alias.segmentDoF.RoB), 1, length(q1));
         
         % Redefinition des marqueurs avec les q bloqués
         T = S2M_rbdl('Tags', Alias.model, q1);
