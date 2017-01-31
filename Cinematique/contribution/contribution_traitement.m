@@ -24,11 +24,11 @@ cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteur
 test        =   0;                  % 0 ou 1
-grammplot   =   0;                  % 0 ou 1
-plotmean    =   0;                  % 0 ou 1
+grammplot   =   1;                  % 0 ou 1 ou 2
+plotmean    =   1;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
-stat        =   1;                  % 0 ou 1
-exporter    =   1;                  % 0 ou 1
+stat        =   0;                  % 0 ou 1
+exporter    =   0;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
 
@@ -173,6 +173,11 @@ if grammplot == 1
         end
         g.draw();
     end
+elseif grammplot == 2
+    figure('units','normalized','outerposition',[0 0 1 1])
+    
+    g(1,1) = gramm('x', SPM.time ,'y', SPM.delta_hand, 'color', SPM.sexe, 'subset', SPM.hauteur == 1);
+    g(1,1).stat_summary('type','std');
 end
 
 
@@ -181,61 +186,35 @@ if stat == 1
     for i = 4 : -1 : 1 % nombre de delta
         %% Choix de la variable
         [SPM, result(i).test] = selectSPMvariable(SPM,i);
-        %% zone de test
-        result(i).posthoc = SPM_contribution(SPM.comp, SPM.sexe, SPM.hauteur, SPM.poids ,i);
-        %% ANOVA
-%         [result(i).anova]     = hauteur_SPM_anova(SPM, i);
-        
-        %% Post-hoc
-%         [result(i).posthoc, zeroD(i).posthoc]   = hauteur_SPM_posthoc(comparaison, SPM, i);
-        
+        %% SPM analysis
+        result(i).posthoc = SPM_contribution(SPM.comp, SPM.sexe, SPM.hauteur, SPM.poids ,i, SPM.duree);
     end
 end
 
 %% Exporter les resultats
 if exporter == 1
-    %% test
+    % cat structure
     export.posthoc = [result(:).posthoc];
+    
+    % expand cell
     [export.posthoc]   = expandcellinstruct(export.posthoc  , 'cluster');
-    %% Export 0D: temps et contributions moyennes
-    export.zeroD = [zeroD(:).posthoc];
-    
-    %% Export SPM
-    export.anova   = [result(:).anova];
-    export.posthoc = [result(:).posthoc];
-    
-    % Expandre les cellules pour rendre exportable
-    [export.anova]   = expandcellinstruct(export.anova  , 'cluster', 1, 'h0reject');
-    [export.posthoc] = expandcellinstruct(export.posthoc, 'cluster', 1, 'h0reject');
     
     % Headers
-    out_anova   = fieldnames(export.anova)';
     out_posthoc = fieldnames(export.posthoc)';
-    out_zeroD   = fieldnames(export.zeroD)';
     
     % transformer en cell
-    export.anova   = struct2cell(export.anova);
     export.posthoc = struct2cell(export.posthoc);
-    export.zeroD   = struct2cell(export.zeroD);
     
     % 2D to 3D cell
-    export.anova   = permute(export.anova,[3,1,2]);
     export.posthoc = permute(export.posthoc,[3,1,2]);
-    export.zeroD   = permute(export.zeroD,[3,1,2]);
     
     % matrice d'export
-    export.anova   = vertcat(out_anova,export.anova);
     export.posthoc = vertcat(out_posthoc,export.posthoc);
-    export.zeroD   = vertcat(out_zeroD,export.zeroD);
     
     if     comparaison == '%'
-        xlswrite([path.exportpath variable '_relative_ANOVA.xlsx'], export.anova, 'anova');
-        xlswrite([path.exportpath variable '_relative_ANOVA.xlsx'], export.posthoc, 'posthoc');
-        xlswrite([path.exportpath variable '_relative_ANOVA.xlsx'], export.zeroD, 'zeroD');
+        xlswrite([path.exportpath variable '_relative_posthoc.xlsx'], export.posthoc, 'posthoc');
     elseif comparaison == '='
-        xlswrite([path.exportpath variable '_absolute_ANOVA.xlsx'], export.anova, 'anova');
-        xlswrite([path.exportpath variable '_absolute_ANOVA.xlsx'], export.posthoc, 'posthoc');
-        xlswrite([path.exportpath variable '_absolute_ANOVA.xlsx'], export.zeroD, 'zeroD');
+        xlswrite([path.exportpath variable '_absolute_posthoc.xlsx'], export.posthoc, 'posthoc');
     end
 end
 %% Verification
