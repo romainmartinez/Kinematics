@@ -34,11 +34,12 @@ plot.gantt <- function(data, annotation, save, scale.free) {
     gantt + geom_vline(xintercept = c(20, 80), linetype = "dotted")
   
   # Legend
-  gantt <- gantt + scale_colour_gradient2(
-                  "mean difference\n(% contribution)",
-                  low  = "firebrick3",
-                  mid  = "white",
-                  high = "deepskyblue2")
+  plot.limit <- round(max(abs(data$diff)))
+  gantt <- gantt + scale_colour_gradient2("mean difference\n(% contribution)",
+                                          limits=c(-plot.limit, plot.limit),
+                                          low  = "firebrick3",
+                                          mid  = "white",
+                                          high = "deepskyblue2")
   gantt
   
  if (annotation == TRUE){

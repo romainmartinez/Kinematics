@@ -19,24 +19,24 @@ lapply(c("tidyr", "dplyr", "ggplot2", "readxl", "magrittr", "knitr", "grid", "gg
 setwd("C:/Users/marti/Documents/Codes/Kinematics/Cinematique/R_contribution/")
 
 # Switch
-delete.na   <- FALSE
+delete.na   <- TRUE
 plot_gantt  <- TRUE
 plot_radar  <- TRUE
 delete.zone <- TRUE
 
 # Load data ---------------------------------------------------------------
 anova <- read_excel(
-  "Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/height_relative_ANOVA.xlsx",
+  "Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/hauteur_relative_ANOVA.xlsx",
   sheet = "anova",
   na = "NA")
 
 posthoc <- read_excel(
-  "Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/height_relative_ANOVA.xlsx",
+  "Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/hauteur_relative_ANOVA.xlsx",
   sheet = "posthoc",
   na = "NA")
 
 zeroD <- read_excel(
-  "Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/height_relative_ANOVA.xlsx",
+  "Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/hauteur_relative_ANOVA.xlsx",
   sheet = "zeroD",
   na = "NA")
 
@@ -97,7 +97,7 @@ saveRDS(zeroD,       "output/table.zeroD.rds")
 
 # gantt plot --------------------------------------------------------------
 source("functions/plot.gantt.R")
-# plot.gantt(posthoc, annotation = FALSE, save = TRUE, scale.free = FALSE)
+plot.gantt(posthoc, annotation = FALSE, save = TRUE, scale.free = FALSE)
 
 
 # test --------------------------------------------------------------------
@@ -108,6 +108,6 @@ zeroD_bar <- zeroD %>%
 
 bar <- ggplot(data = zeroD_bar, aes(x = delta, y = moy, fill = sex))
 bar <- bar + geom_bar(stat = "identity", position = position_dodge())
-bar <- bar + facet_grid(height ~ weight, scales = "free",space = "free")
+bar <- bar + facet_grid(height ~ weight)
 bar
 
