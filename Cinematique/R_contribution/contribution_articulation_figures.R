@@ -25,16 +25,14 @@ plot_radar  <- TRUE
 delete.zone <- TRUE
 
 # load data ---------------------------------------------------------------
-data <- read_excel(
-  "Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/hauteur_relative_posthoc.xlsx",
-  sheet = "posthoc",
-  na = "NA")
+data <- read_excel("//10.89.24.15/e/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/hauteur_relative_posthoc.xlsx",
+                   sheet = "posthoc",
+                   na = "NA")
 
 # reshape data ------------------------------------------------------------
 AB <- data %>% 
   filter(comp == 'Interaction AB') %>% 
-  rename(hauteur = facteur2, poids = facteur3) %>% 
-  mutate()
+  rename(hauteur = facteur2, poids = facteur3)
 
 AC <- data %>% 
   filter(comp == 'Interaction AC') %>% 
@@ -43,8 +41,7 @@ AC <- data %>%
 BC <- data %>% 
   filter(comp == 'Interaction BC')
 
-mtcars <- mtcars %>%
-  mutate(mpg=replace(mpg, cyl==4, NA))
+
   
 # Factor ------------------------------------------------------------------
 ## Delta

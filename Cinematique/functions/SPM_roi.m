@@ -1,15 +1,14 @@
-function [ output_args ] = SPM_roi(clusters)
- if anova3.spmilist.SPMs{1, idx}.nClusters > 1
-        disp(['Warning: nCluster > 1'])
-        pause
+function [roi] = SPM_roi(clusters)
+xi = clusters;
+frames = 200;
+taille = length(xi);
+
+roi = false(1, frames);
+
+for iCluster = 1 : taille
+    if xi{1, iCluster}.endpoints(1) == 0
+        xi{1, iCluster}.endpoints(1) = 1;
     end
-    roi = false(1, size(Y,2));
-    if anova3.spmilist.SPMs{1, idx}.clusters{1, 1}.endpoints(1) == 0
-        anova3.spmilist.SPMs{1, idx}.clusters{1, 1}.endpoints(1) = 1;
-    end
-    roi(anova3.spmilist.SPMs{1, idx}.clusters{1, 1}.endpoints(1):anova3.spmilist.SPMs{1, idx}.clusters{1, 1}.endpoints(2)) = true;
-
-
-
+    roi(round(xi{1, iCluster}.endpoints(1)) : round(xi{1, iCluster}.endpoints(2))) = true;
 end
 

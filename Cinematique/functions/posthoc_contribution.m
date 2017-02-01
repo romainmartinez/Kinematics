@@ -9,22 +9,26 @@ perm.factor3 = nchoosek(1:level(3),2);
 idx = find(strcmp([anova3.spmilist.effect_labels], string)); % find engine
 %% factor1:factor2|factor3
 if anova3.spmilist.SPMs{1, idx}.h0reject == 1
-    SPM_roi(anova3.spmilist.SPMs{1, idx}.clusters)
-      % 2-way factor1:factor2|factor3
+    [roi] = SPM_roi(anova3.spmilist.SPMs{1, idx}.clusters);
+    % 2-way factor1:factor2|factor3
     for iFactor3 = 1 : level(3)
-        anova2.spmlist  = spm1d.stats.anova2(Y(factor3 == iFactor3,:), factor1(factor3 == iFactor3), factor2(factor3 == iFactor3));
+        anova2.spmlist  = spm1d.stats.anova2(Y(factor3 == iFactor3,:), factor1(factor3 == iFactor3), factor2(factor3 == iFactor3),'roi',roi);
         anova2.spmilist = anova2.spmlist.inference(p.anova);
         %         disp_summ(anova2.spmilist)
         if anova2.spmilist.SPMs{1, 3}.h0reject == 1
+            clearvars roi
+            [roi] = SPM_roi(anova2.spmilist.SPMs{1, 3}.clusters);
             % 1-way factor1|(factor2,facteur3)
             for iFactor2 = 1 : level(2)
-                anova1.spmlist  = spm1d.stats.anova1(Y(factor2 == iFactor2 & factor3 == iFactor3,:), factor1(factor2 == iFactor2 & factor3 == iFactor3));
+                anova1.spmlist  = spm1d.stats.anova1(Y(factor2 == iFactor2 & factor3 == iFactor3,:), factor1(factor2 == iFactor2 & factor3 == iFactor3),'roi',roi);
                 anova1.spmilist = anova1.spmlist.inference(p.anova);
                 %                 disp(anova1.spmilist)
                 if anova1.spmilist.h0reject == 1
+                    clearvars roi
+                    [roi] = SPM_roi(anova1.spmilist.clusters);
                     % t-test perm.factor1(factor2,facteur3)
                     for iPerm = 1 : size(perm.factor1,1)
-                        ttest.spm = spm1d.stats.ttest2(Y(factor1 == perm.factor1(iPerm,1) & factor2 == iFactor2 & factor3 == iFactor3,:), Y(factor1 == perm.factor1(iPerm,2) & factor2 == iFactor2 & factor3 == iFactor3,:));
+                        ttest.spm = spm1d.stats.ttest2(Y(factor1 == perm.factor1(iPerm,1) & factor2 == iFactor2 & factor3 == iFactor3,:), Y(factor1 == perm.factor1(iPerm,2) & factor2 == iFactor2 & factor3 == iFactor3,:),'roi',roi);
                         ttest.spmi = ttest.spm.inference(p.ttest, 'two_tailed', true);
                         %                         disp(ttest.spmi)
                         if ttest.spmi.h0reject == 1
