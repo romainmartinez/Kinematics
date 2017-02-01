@@ -19,90 +19,75 @@ lapply(c("tidyr", "dplyr", "ggplot2", "readxl", "magrittr", "knitr", "grid", "gg
 setwd("C:/Users/marti/Documents/Codes/Kinematics/Cinematique/R_contribution/")
 
 # switch
-delete.na   <- TRUE
 plot_gantt  <- TRUE
 plot_radar  <- TRUE
-delete.zone <- TRUE
+delete.zone <- FALSE
 
 # load data ---------------------------------------------------------------
-data <- read_excel("//10.89.24.15/e/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/hauteur_relative_posthoc.xlsx",
+data.sex <- read_excel("//10.89.24.15/e/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/hauteur_relative_posthoc.xlsx",
                    sheet = "posthoc",
                    na = "NA")
-
 # reshape data ------------------------------------------------------------
-AB <- data %>% 
+factor.height <- function(x){factor(x = x, 
+                   levels = c(1,2,4,3,5,6),
+                   labels = c("hips-shoulders","hips-eyes","shoulders-eyes","shoulders-hips","eyes-hips","eyes-shoulders"))}
+factor.weight <- function(x){factor(x = x, 
+                    levels = c(1,2),
+                    labels = c("12kg-6kg","18kg-12kg"))}
+factor.sex <- function(x){factor(x = x, 
+                    levels = c(1,2),
+                    labels = c("men","women"))}
+data.sex$delta <- data.sex$delta %>% factor(labels = c("hand + EL", "GH", "SCAC", "RoB"))
+
+# AB
+AB <- data.sex %>% 
   filter(comp == 'Interaction AB') %>% 
-  rename(hauteur = facteur2, poids = facteur3)
+  rename(height = facteur2, weight = facteur3)
+AB$sup <- AB$sup %>% factor.sex
+AB$inf <- AB$inf %>% factor.sex
+AB$height <- AB$height %>% factor.height
+AB$weight <- AB$weight %>% factor.weight
 
-AC <- data %>% 
+# AC
+AC <- data.sex %>% 
   filter(comp == 'Interaction AC') %>% 
-  rename(poids = facteur2, hauteur = facteur3)
+  rename(weight = facteur2, height = facteur3)
+AC$sup <- AC$sup %>% factor.sex
+AC$inf <- AC$inf %>% factor.sex
+AC$height <- AC$height %>% factor.height
+AC$weight <- AC$weight %>% factor.weight
 
-BC <- data %>% 
-  filter(comp == 'Interaction BC')
+# BC
+BC <- data.sex %>% 
+  filter(comp == 'Interaction BC') %>% 
+  rename(weight = facteur2, sexe = facteur3)
+BC$sup <- BC$sup %>% factor.height
+BC$inf <- BC$inf %>% factor.height
+BC$weight <- BC$weight %>% factor.weight
+BC$sexe <- BC$sexe %>% factor.sex 
 
+data.sex <- union(AB,AC); rm(AB,AC)
+data.height <- BC;rm(BC)
 
-  
-# Factor ------------------------------------------------------------------
-## Delta
-data$delta   <- data$delta %>% factor(labels = c("hand + EL", "GH", "SCAC", "RoB"))
-
-## effect
-anova$effect <- anova$effect %>% factor(levels = c("Main A", "Main B", "Main C", "Interaction AB", "Interaction AC", "Interaction BC", "Interaction ABC"),
-                                        labels = c("sexe", "hauteur", "poids", "sexe-hauteur", "sexe-poids", "hauteur-poids", "sexe-hauteur-poids"))
-
-## Height
-height <- c(rep(c("hips-shoulders", "hips-eyes", "shoulders-eyes"), times = 2), 
-            rep(c("shoulders-hips", "eyes-hips", "eyes-shoulders"), times = 2))
-
-posthoc$men <- posthoc$men %>% factor(levels = c(7,8,10,13,14,16,9,11,12,15,17,18), 
-                                      labels = height)
-zeroD$men <- zeroD$men %>% factor(levels = c(7,8,10,13,14,16,9,11,12,15,17,18), 
-                                  labels = height)
-## Weight
-weight <- c(rep("12kg-6kg",  times = 6), 
-            rep("18kg-12kg", times = 6))
-
-posthoc$women <- posthoc$women %>% factor(levels = c(1:12),
-                                          labels = weight)
-zeroD$women <- zeroD$women %>% factor(levels = c(1:12),
-                                      labels = weight)
-
-## Rename column
-posthoc <- posthoc %>%
-  rename(height = men) %>% 
-  rename(weight = women)
-zeroD <- zeroD %>%
-  rename(height = men) %>% 
-  rename(weight = women)
+data.0d.sex <- data.sex %>% select(delta,height,weight,contains("inf"),contains("sup"))
+data.0d.height <- data.height %>% select(delta,weight,sexe,contains("inf"),contains("sup"))
 
 # Delete zone < 10 % ------------------------------------------------------
 if (delete.zone == TRUE) {
-  posthoc <- posthoc %>% filter(end - start > 10)
+  data.sex <- data.sex %>% filter(end - start > 10)
 }
-
-# Delete non-significant row ----------------------------------------------
-if (delete.na == TRUE) {
-  anova   <- anova   %>% filter(h0reject == 1)
-  posthoc <- posthoc %>% filter(h0reject == 1)
-}
-
-# main effect of gender ---------------------------------------------------
-gendereffect <- filter(anova, effect == "sexe")
 
 # Create output table -----------------------------------------------------
-saveRDS(gendereffect,"output/table.gendereffect.rds")
-saveRDS(anova,       "output/table.anova.rds")
-saveRDS(posthoc,     "output/table.posthoc.rds")
-saveRDS(zeroD,       "output/table.zeroD.rds")
+saveRDS(data.sex,"output/table.posthoc.sex.rds")
+saveRDS(data.height,"output/table.posthoc.height.rds")
 
 # gantt plot --------------------------------------------------------------
 source("functions/plot.gantt.R")
-plot.gantt(posthoc, annotation = FALSE, save = TRUE, scale.free = FALSE)
+plot.gantt(data.sex, annotation = FALSE, save = TRUE, scale.free = FALSE)
 
 
 # test --------------------------------------------------------------------
-zeroD_bar <- zeroD %>%
+data.0d.sex <- data.0d.sex  %>%
   gather(key = key, value = value, 4:9) %>%
   separate(key, c("valeur", "sex"), sep = "_") %>%
   spread(valeur, value)
@@ -111,4 +96,3 @@ bar <- ggplot(data = zeroD_bar, aes(x = delta, y = moy, fill = sex))
 bar <- bar + geom_bar(stat = "identity", position = position_dodge())
 bar <- bar + facet_grid(height ~ weight)
 bar
-
