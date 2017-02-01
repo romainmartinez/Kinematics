@@ -10,41 +10,45 @@
 #   Website: https://github.com/romainmartinez
 #_____________________________________________________________________________
 
-# Preparation ----------------------------------------------------------------
-# Packages
+# preparation ----------------------------------------------------------------
+# packages
 lapply(c("tidyr", "dplyr", "ggplot2", "readxl", "magrittr", "knitr", "grid", "ggthemes", "ggradar", "scales"),
        require,
        character.only = T)
-# Path
+# path
 setwd("C:/Users/marti/Documents/Codes/Kinematics/Cinematique/R_contribution/")
 
-# Switch
+# switch
 delete.na   <- TRUE
 plot_gantt  <- TRUE
 plot_radar  <- TRUE
 delete.zone <- TRUE
 
-# Load data ---------------------------------------------------------------
-anova <- read_excel(
-  "Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/hauteur_relative_ANOVA.xlsx",
-  sheet = "anova",
-  na = "NA")
-
-posthoc <- read_excel(
-  "Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/hauteur_relative_ANOVA.xlsx",
+# load data ---------------------------------------------------------------
+data <- read_excel(
+  "Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/hauteur_relative_posthoc.xlsx",
   sheet = "posthoc",
   na = "NA")
 
-zeroD <- read_excel(
-  "Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/hauteur_relative_ANOVA.xlsx",
-  sheet = "zeroD",
-  na = "NA")
+# reshape data ------------------------------------------------------------
+AB <- data %>% 
+  filter(comp == 'Interaction AB') %>% 
+  rename(hauteur = facteur2, poids = facteur3) %>% 
+  mutate()
 
+AC <- data %>% 
+  filter(comp == 'Interaction AC') %>% 
+  rename(poids = facteur2, hauteur = facteur3)
+
+BC <- data %>% 
+  filter(comp == 'Interaction BC')
+
+mtcars <- mtcars %>%
+  mutate(mpg=replace(mpg, cyl==4, NA))
+  
 # Factor ------------------------------------------------------------------
 ## Delta
-anova$delta   <- anova$delta %>% factor(  labels = c("hand + EL", "GH", "SCAC", "RoB"))
-posthoc$delta <- posthoc$delta %>% factor(labels = c("hand + EL", "GH", "SCAC", "RoB"))
-zeroD$delta   <- zeroD$delta %>% factor(  labels = c("hand + EL", "GH", "SCAC", "RoB"))
+data$delta   <- data$delta %>% factor(labels = c("hand + EL", "GH", "SCAC", "RoB"))
 
 ## effect
 anova$effect <- anova$effect %>% factor(levels = c("Main A", "Main B", "Main C", "Interaction AB", "Interaction AC", "Interaction BC", "Interaction ABC"),
