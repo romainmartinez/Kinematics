@@ -34,12 +34,20 @@ if anova3.spmilist.SPMs{1, idx}.h0reject == 1
                             export(index).facteur3 = iFactor3;
                             export(index).df1 = ttest.spmi.df(1);
                             export(index).df2 = ttest.spmi.df(2);
-                            for icluster = 1 : ttest.spmi.nClusters
-                                export(index).cluster{icluster,1} = ttest.spmi.clusters{1, icluster}.P;
-                                export(index).cluster{icluster,2} = round(ttest.spmi.clusters{1, icluster}.endpoints(1));
-                                export(index).cluster{icluster,3} = round(ttest.spmi.clusters{1, icluster}.endpoints(2));
-                                if export(index).cluster{icluster,2} == 0
-                                    export(index).cluster{icluster,2} = 1;
+                            
+                            icluster = 0;
+                            for xi = 1 : ttest.spmi.nClusters
+                                % merge < 10 % area
+                                if xi ~= 1  && round(ttest.spmi.clusters{1, xi}.endpoints(1)/2) - round(ttest.spmi.clusters{1, xi-1}.endpoints(2)/2) < 10
+                                    export(index).cluster{icluster,3} = round(ttest.spmi.clusters{1, xi}.endpoints(2)/2);
+                                else
+                                    icluster = icluster + 1;
+                                    export(index).cluster{icluster,1} = ttest.spmi.clusters{1, xi}.P;
+                                    export(index).cluster{icluster,2} = round(ttest.spmi.clusters{1, xi}.endpoints(1)/2);
+                                    export(index).cluster{icluster,3} = round(ttest.spmi.clusters{1, xi}.endpoints(2)/2);
+                                    if export(index).cluster{icluster,2} == 0
+                                        export(index).cluster{icluster,2} = 1;
+                                    end
                                 end
                                 export(index).cluster{icluster,4} = mean(ttest.spmi.beta(1,export(index).cluster{icluster,2}:export(index).cluster{icluster,3})) - mean(ttest.spmi.beta(2,export(index).cluster{icluster,2}:export(index).cluster{icluster,3}));
                                 if export(index).cluster{icluster,4} > 0
