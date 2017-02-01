@@ -1,20 +1,28 @@
 function gramm_contribution(input)
-plot_data = input;
-plot_data.sexe     = repmat(plot_data.sexe,[1 4]);
-plot_data.hauteur  = repmat(plot_data.hauteur,[1 4]);
-plot_data.poids    = repmat(plot_data.poids,[1 4]);
-plot_data.delta    = kron(transpose(1:4), ones(length(plot_data.condition),1));
-plot_data.data  = vertcat(plot_data.delta_hand, plot_data.delta_GH, plot_data.delta_SCAC, plot_data.delta_RoB);
+%% reshaping data
+sexe     = repmat(input.sexe,[1 4]);
+hauteur  = repmat(input.hauteur,[1 4]);
+poids    = repmat(input.poids,[1 4]);
+delta    = kron(transpose(1:4), ones(length(input.condition),1))';
+data  = vertcat(input.delta_hand, input.delta_GH, input.delta_SCAC, input.delta_RoB);
+time = input.time;
 
 % create figure
 figure('units','normalized','outerposition',[0 0 1 1])
 clear g
 
+% aes
+g = gramm('x', time ,'y', data, 'color', delta, 'linestyle', sexe);
+% facet
+g.facet_grid(hauteur,poids, 'scale', 'independent','space','free');
+% geom
+g.stat_summary('type','sem','geom','area', 'setylim', true);
+% options
+g.axe_property('TickDir','out');
+% titles
+g.set_names()
 
-g(1,1) = gramm('x', plot_data.time ,'y', plot_data.data, 'color', plot_data.sexe, 'subset', plot_data.hauteur == 1 & SPM.delta == 1);
-g(1,1).stat_summary('type','std');
 g.draw();
-
 
 end
 

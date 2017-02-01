@@ -24,11 +24,11 @@ cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteur
 test        =   0;                  % 0 ou 1
-grammplot   =   1;                  % 0 ou 1 ou 2
-plotmean    =   1;                  % 0 ou 1
+grammplot   =   0;                  % 0 ou 1 ou 2
+plotmean    =   0;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
-stat        =   0;                  % 0 ou 1
-exporter    =   0;                  % 0 ou 1
+stat        =   1;                  % 0 ou 1
+exporter    =   1;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
 
