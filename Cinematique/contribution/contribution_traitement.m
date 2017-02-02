@@ -59,6 +59,10 @@ switch comparaison
         for i = length(bigstruct):-1:1
             if bigstruct(i).poids == 18
                 bigstruct(i) = [];
+            elseif bigstruct(i).poids == 6
+                bigstruct(i).poids = 1;
+            elseif bigstruct(i).poids == 12
+                bigstruct(i).poids = 2;
             end
         end
     case '%'
@@ -174,7 +178,7 @@ if grammplot == 1
         g.draw();
     end
 elseif grammplot == 2
-        gramm_contribution(SPM)
+    gramm_contribution(SPM)
 end
 
 
