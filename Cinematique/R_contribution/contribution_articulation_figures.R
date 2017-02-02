@@ -22,9 +22,12 @@ setwd("C:/Users/marti/Documents/Codes/Kinematics/Cinematique/R_contribution/")
 plot_gantt  <- TRUE
 plot_radar  <- TRUE
 delete.zone <- FALSE
+variable    <- 'hauteur'
+comparison  <- 'absolute'
 
 # load data ---------------------------------------------------------------
-data.sex <- read_excel("//10.89.24.15/e/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/hauteur_relative_posthoc.xlsx",
+datapath <- file.path("//10.89.24.15/e/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM", paste(variable,"_",comparison,"_posthoc.xlsx", sep = ""))
+data.sex <- read_excel(datapath,
                    sheet = "posthoc",
                    na = "NA")
 # reshape data ------------------------------------------------------------
