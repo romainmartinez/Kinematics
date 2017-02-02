@@ -31,7 +31,7 @@ model       = 2.1;
 %% Nom des sujets
 Alias.sujet = sujets_valides;
 
-for isujet = 36%length(Alias.sujet) : -1 : 1
+for isujet = length(Alias.sujet) : -1 : 1
     
     disp(['Traitement de ' cell2mat(Alias.sujet(isujet)) ' (' num2str(length(Alias.sujet) - isujet+1) ' sur ' num2str(length(Alias.sujet)) ')'])
     %% Chemin des fichiers
