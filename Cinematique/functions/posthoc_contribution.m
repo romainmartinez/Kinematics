@@ -7,6 +7,7 @@ perm.factor2 = nchoosek(1:level(2),2);
 perm.factor3 = nchoosek(1:level(3),2);
 
 idx = find(strcmp([anova3.spmilist.effect_labels], string)); % find engine
+export = [];
 %% factor1:factor2|factor3
 if anova3.spmilist.SPMs{1, idx}.h0reject == 1
     [roi] = SPM_roi(anova3.spmilist.SPMs{1, idx}.clusters);
@@ -83,7 +84,6 @@ if anova3.spmilist.SPMs{1, idx}.h0reject == 1
         end
     end
 else
-    export = [];
     disp(['No ' string])
 end
 
