@@ -31,15 +31,17 @@ data.sex <- read_excel(datapath,
                    sheet = "posthoc",
                    na = "NA")
 # reshape data ------------------------------------------------------------
-factor.height <- function(x){factor(x = x, 
-                   levels = c(1,2,4,3,5,6),
+factor.height <- function(x){factor(x = x,levels = c(1,2,4,3,5,6),
                    labels = c("hips-shoulders","hips-eyes","shoulders-eyes","shoulders-hips","eyes-hips","eyes-shoulders"))}
-factor.weight <- function(x){factor(x = x, 
-                    levels = c(1,2),
-                    labels = c("12kg-6kg","18kg-12kg"))}
-factor.sex <- function(x){factor(x = x, 
-                    levels = c(1,2),
-                    labels = c("men","women"))}
+factor.weight <- function(x){
+    if (comparison == 'relative'){
+    factor(x = x,levels = c(1,2),labels = c("12kg-6kg","18kg-12kg"))
+    }else if (comparison == 'absolute') {
+    factor(x = x,levels = c(1,2),labels = c("6kg-6kg","12kg-12kg"))  
+    }
+  }
+factor.sex <- function(x){factor(x = x,levels = c(1,2),labels = c("men","women"))}
+
 data.sex$delta <- data.sex$delta %>% factor(labels = c("hand + EL", "GH", "SCAC", "RoB"))
 
 # AB
@@ -90,12 +92,12 @@ plot.gantt(data.sex, annotation = FALSE, save = TRUE, scale.free = FALSE)
 
 
 # test --------------------------------------------------------------------
-data.0d.sex <- data.0d.sex  %>%
-  gather(key = key, value = value, 4:9) %>%
-  separate(key, c("valeur", "sex"), sep = "_") %>%
-  spread(valeur, value)
-
-bar <- ggplot(data = zeroD_bar, aes(x = delta, y = moy, fill = sex))
-bar <- bar + geom_bar(stat = "identity", position = position_dodge())
-bar <- bar + facet_grid(height ~ weight)
-bar
+# data.0d.sex <- data.0d.sex  %>%
+#   gather(key = key, value = value, 4:9) %>%
+#   separate(key, c("valeur", "sex"), sep = "_") %>%
+#   spread(valeur, value)
+# 
+# bar <- ggplot(data = zeroD_bar, aes(x = delta, y = moy, fill = sex))
+# bar <- bar + geom_bar(stat = "identity", position = position_dodge())
+# bar <- bar + facet_grid(height ~ weight)
+# bar
