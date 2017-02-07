@@ -2,9 +2,6 @@
 #       contribution_articulation_traitement is used to generate figures
 #   Output:
 #       contribution_articulation_traitement gives figures in pdf, svg and Rdata
-#   Functions:
-#       contribution_articulation_traitement uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
-#
 #   Author:  Romain Martinez
 #   email:   martinez.staps@gmail.com
 #   Website: https://github.com/romainmartinez
