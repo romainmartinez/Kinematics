@@ -28,6 +28,7 @@ grammplot   =   0;                  % 0 ou 1 ou 2
 plotmean    =   1;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
 stat        =   1;                  % 0 ou 1
+correctbonf =   0;                  % 0 ou 1
 exporter    =   1;                  % 0 ou 1
 comparaison =  '=';                 % '=' (absolu) ou '%' (relatif)
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
@@ -43,6 +44,7 @@ for i = length(alias.matname) : -1 : 1
     
     for u = 1 : length(RAW(i).temp)
         RAW(i).temp(u).sujet = alias.matname(i).name(1:end-4);
+        RAW(i).temp(u).nsujet = i;
         if RAW(i).temp(u).sexe == 'F'
             RAW(i).temp(u).sexe = 2;
         elseif RAW(i).temp(u).sexe == 'H'
@@ -82,16 +84,12 @@ switch comparaison
 end
 
 %% Facteurs
-% Sexe
-SPM.sexe      = vertcat(bigstruct(:).sexe)';
-% Hauteur
-SPM.hauteur   = vertcat(bigstruct(:).hauteur)';
-% Poids
-SPM.poids     = vertcat(bigstruct(:).poids)';
-% Conditions
-SPM.condition = vertcat(bigstruct(:).condition)';
-% Conditions
-SPM.duree      = vertcat(bigstruct(:).time)';
+SPM.sexe    = vertcat(bigstruct(:).sexe)';
+SPM.hauteur = vertcat(bigstruct(:).hauteur)';
+SPM.poids   = vertcat(bigstruct(:).poids)';
+SPM.duree   = vertcat(bigstruct(:).time)';
+SPM.sujet   = vertcat(bigstruct(:).nsujet)';
+
 
 %% Compter le nombre d'hommes et de femmes
 % Nombre de femmes
@@ -185,10 +183,12 @@ end
 %% SPM
 if stat == 1
     for i = 4 : -1 : 1 % nombre de delta
-        %% Choix de la variable
-        [SPM, result(i).test] = selectSPMvariable(SPM,i);
-        %% SPM analysis
-        result(i).posthoc = SPM_contribution(SPM.comp, SPM.sexe, SPM.hauteur, SPM.poids ,i, SPM.duree);
+        for h = 2 : -1 : 1 % nombre de hauteur (montée - descente)
+            %% Choix de la variable
+            [SPM, result(i).test, idx] = selectSPMvariable(SPM,i,h);
+            %% SPM analysis
+            result(i).posthoc = SPM_contribution(SPM.comp(idx,:),SPM.sexe(idx),SPM.poids(idx),SPM.sujet(idx),i,SPM.duree(idx),correctbonf,h);
+        end
     end
 end
 
