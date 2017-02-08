@@ -1,38 +1,48 @@
-function [ output_args ] = SPM_Hotelling( input_args )
+function [ output_args ] = SPM_Hotelling(data)
+hommes = find(data.hauteur == 2 & data.sexe == 1 & data.poids == 1);
+femmes = find(data.hauteur == 2 & data.sexe == 2 & data.poids == 1);
 
-    % MANOVA
-    Y(:,:,1) = SPM.delta_hand(SPM.hauteur == 2 & SPM.poids == 1,:);
-    Y(:,:,2) = SPM.delta_GH(SPM.hauteur == 2 & SPM.poids == 1,:);
-    Y(:,:,3) = SPM.delta_SCAC(SPM.hauteur == 2 & SPM.poids == 1,:);
-    Y(:,:,4) = SPM.delta_RoB(SPM.hauteur == 2 & SPM.poids == 1,:);
-    spm       = spm1d.stats.manova1(Y, SPM.sexe(SPM.hauteur == 2 & SPM.poids == 1));
-    spmi      = spm.inference(0.05);
+YA(:,:,1) = data.delta_hand(hommes,:);
+YA(:,:,2) = data.delta_GH(hommes,:);
+YA(:,:,3) = data.delta_SCAC(hommes,:);
+YA(:,:,4) = data.delta_RoB(hommes,:);
+
+YB(:,:,1) = data.delta_hand(femmes,:);
+YB(:,:,2) = data.delta_GH(femmes,:);
+YB(:,:,3) = data.delta_SCAC(femmes,:);
+YB(:,:,4) = data.delta_RoB(femmes,:);
+
+hotelling.spm  = spm1d.stats.hotellings2(YA, YB);
+hotelling.spmi = hotelling.spm.inference(0.05);
+
+hotelling.spmi.plot();
+hotelling.spmi.plot_threshold_label();
+hotelling.spmi.plot_p_values();
+
+for i = 1 : 4
+    spm  = spm1d.stats.ttest2(YA(:,:,i), YB(:,:,i));
+    spmi = spm.inference(0.05, 'two_tailed',true, 'interp',true);
     disp(spmi)
+    figure
     
-    % H2
-    hommes = find(SPM.hauteur == 1 & SPM.sexe == 1 & SPM.poids == 1);
-    femmes = find(SPM.hauteur == 1 & SPM.sexe == 2 & SPM.poids == 1);
-    
-    YA(:,:,1) = SPM.delta_hand(hommes,:);
-    YA(:,:,2) = SPM.delta_GH(hommes,:);
-    YA(:,:,3) = SPM.delta_SCAC(hommes,:);
-    YA(:,:,4) = SPM.delta_RoB(hommes,:);
-    
-    YB(:,:,1) = SPM.delta_GH(femmes,:);
-    YB(:,:,2) = SPM.delta_GH(femmes,:);
-    YB(:,:,3) = SPM.delta_GH(femmes,:);
-    YB(:,:,4) = SPM.delta_GH(femmes,:);
-    
-    spm       = spm1d.stats.hotellings2(YA, YB);
-    spmi      = spm.inference(0.05);
-    
+    subplot(2,1,1)
     spmi.plot();
     spmi.plot_threshold_label();
     spmi.plot_p_values();
     
-    spm       = spm1d.stats.ttest2(YA, YB);
-spmi      = spm.inference(0.05, 'two_tailed',true, 'interp',true);
-    
-    
+    subplot(2,1,2)
+    plot(mean(YA(:,:,i))); hold on
+    plot(mean(YB(:,:,i)))
+    legend('men','women')
+    switch i
+        case 1
+            title('contribution hand-elbow')
+        case 2
+            title('contribution GH')
+        case 3
+            title('contribution SCAC')
+        case 4
+            title('contribution RoB')
+    end
 end
 
