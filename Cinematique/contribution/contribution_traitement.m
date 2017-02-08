@@ -30,7 +30,7 @@ verif       =   0;                  % 0 ou 1
 stat        =   1;                  % 0 ou 1
 correctbonf =   0;                  % 0 ou 1
 exporter    =   1;                  % 0 ou 1
-comparaison =  '=';                 % '=' (absolu) ou '%' (relatif)
+comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
 
 %% Dossiers
@@ -125,7 +125,7 @@ SPM.time  = linspace(0,100,nbframe);
 
 %% Plot
 if grammplot == 1
-    for i = 6 : -1 : 1
+    for i = 2 : -1 : 1
         figure('units','normalized','outerposition',[0 0 1 1])
         % Delta hand
         g(1,1) = gramm('x', SPM.time ,'y', SPM.delta_hand, 'color', SPM.sexe, 'subset', SPM.hauteur == i);
@@ -187,7 +187,9 @@ if stat == 1
             %% Choix de la variable
             [SPM, result(i).test, idx] = selectSPMvariable(SPM,i,h);
             %% SPM analysis
-            result(i).posthoc = SPM_contribution(SPM.comp(idx,:),SPM.sexe(idx),SPM.poids(idx),SPM.sujet(idx),i,SPM.duree(idx),correctbonf,h);
+             [result(i).interaction(h).h,result(i).mainA(h).h,result(i).mainB(h).h] = SPM_contribution(SPM.comp(idx,:),...
+                 SPM.sexe(idx),SPM.poids(idx),SPM.sujet(idx),i,SPM.duree(idx),correctbonf,h);
+             
         end
     end
 end
@@ -195,7 +197,14 @@ end
 %% Exporter les resultats
 if exporter == 1
     % cat structure
-    export.posthoc = [result(:).posthoc];
+    export.interaction = [result(:).interaction];
+    export.mainA       = [result(:).mainA];
+    export.mainB       = [result(:).mainB];
+    
+    export.interaction = [export(:).interaction.h];
+    export.mainA       = [export(:).mainA.h];
+    export.mainB       = [export(:).mainB.h];
+    
     
     % expand cell
     [export.posthoc]   = expandcellinstruct(export.posthoc  , 'cluster');
