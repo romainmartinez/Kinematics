@@ -193,36 +193,23 @@ end
 
 %% Exporter les resultats
 if exporter == 1
-    % cat structure
-    export.anova       = [result(:).anova];
-    export.interaction = [result(:).interaction];
-    export.mainA       = [result(:).mainA];
-    export.mainB       = [result(:).mainB];
-    
-    export.interaction = [export(:).interaction.h];
-    export.mainA       = [export(:).mainA.h];
-    export.mainB       = [export(:).mainB.h];
-    
-    
-    % expand cell
-    [export.posthoc]   = expandcellinstruct(export.posthoc  , 'cluster');
-    
-    % Headers
-    out_posthoc = fieldnames(export.posthoc)';
-    
-    % transformer en cell
-    export.posthoc = struct2cell(export.posthoc);
-    
-    % 2D to 3D cell
-    export.posthoc = permute(export.posthoc,[3,1,2]);
-    
-    % matrice d'export
-    export.posthoc = vertcat(out_posthoc,export.posthoc);
-    
-    if     comparaison == '%'
-        xlswrite([path.exportpath variable '_relative_posthoc.xlsx'], export.posthoc, 'posthoc');
-    elseif comparaison == '='
-        xlswrite([path.exportpath variable '_absolute_posthoc.xlsx'], export.posthoc, 'posthoc');
+    batch = {'anova', 'interaction', 'mainA', 'mainB'};
+    for ibatch = 1 : length(batch)
+        % cat structure
+        export.(batch{ibatch}) = [result(:).(batch{ibatch})];
+        % headers
+        header.(batch{ibatch}) = fieldnames(export.(batch{ibatch}))';
+        % struct2cell
+        export.(batch{ibatch}) = struct2cell(export.(batch{ibatch}));
+        % 2D cell to 3D cell
+        export.(batch{ibatch}) = permute(export.(batch{ibatch}),[3,1,2]);
+        % export matrix
+        export.(batch{ibatch}) = vertcat(header.(batch{ibatch}),export.(batch{ibatch}));
+        if     comparaison == '%'
+            xlswrite([path.exportpath variable '_relative.xlsx'], export.(batch{ibatch}), batch{ibatch});
+        elseif comparaison == '='
+            xlswrite([path.exportpath variable '_absolute.xlsx'], export.(batch{ibatch}), batch{ibatch});
+        end
     end
 end
 %% Verification
