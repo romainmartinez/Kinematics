@@ -185,14 +185,14 @@ end
 %% SPM
 if stat == 1
     %% test
-    SPM_Hotelling(SPM)
+    result = SPM_Hotelling(SPM);
     
-    for i = 4 : -1 : 1 % nombre de delta
+%     for i = 4 : -1 : 1 % nombre de delta
         %% Choix de la variable
-        [SPM, result(i).test] = selectSPMvariable(SPM,i);
+%         [SPM, result(i).test] = selectSPMvariable(SPM,i);
         %% SPM analysis
-        result(i).posthoc = SPM_contribution(SPM.comp, SPM.sexe, SPM.hauteur, SPM.poids ,i, SPM.duree);
-    end
+%         result(i).posthoc = SPM_contribution(SPM.comp, SPM.sexe, SPM.hauteur, SPM.poids ,i, SPM.duree);
+%     end
 end
 
 %% Exporter les resultats
