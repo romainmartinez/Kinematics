@@ -24,10 +24,11 @@ cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteur
 test        =   0;                  % 0 ou 1
-grammplot   =   0;                  % 0 ou 1 ou 2
+grammplot   =   2;                  % 0 ou 1 ou 2
 plotmean    =   1;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
 stat        =   1;                  % 0 ou 1
+correctbonf =   1;                  % 0 ou 1
 exporter    =   1;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
@@ -37,12 +38,13 @@ path.Datapath = ['\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\matri
 path.exportpath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_articulation\SPM\';
 alias.matname = dir([path.Datapath '*mat']);
 
-%% Chargement des données
+%% Chargement des donnï¿½es
 for i = length(alias.matname) : -1 : 1
     RAW(i) = load([path.Datapath alias.matname(i).name]);
     
     for u = 1 : length(RAW(i).temp)
         RAW(i).temp(u).sujet = alias.matname(i).name(1:end-4);
+        RAW(i).temp(u).nsujet = i;
         if RAW(i).temp(u).sexe == 'F'
             RAW(i).temp(u).sexe = 2;
         elseif RAW(i).temp(u).sexe == 'H'
@@ -50,7 +52,7 @@ for i = length(alias.matname) : -1 : 1
         end
     end
 end
-% Grande structure de données
+% Grande structure de donnï¿½es
 bigstruct  = struct2array(RAW);
 
 %% Choix de la comparaison (absolu ou relatif)
@@ -82,16 +84,12 @@ switch comparaison
 end
 
 %% Facteurs
-% Sexe
-SPM.sexe      = vertcat(bigstruct(:).sexe)';
-% Hauteur
-SPM.hauteur   = vertcat(bigstruct(:).hauteur)';
-% Poids
-SPM.poids     = vertcat(bigstruct(:).poids)';
-% Conditions
-SPM.condition = vertcat(bigstruct(:).condition)';
-% Conditions
-SPM.duree      = vertcat(bigstruct(:).time)';
+SPM.sexe    = vertcat(bigstruct(:).sexe)';
+SPM.hauteur = vertcat(bigstruct(:).hauteur)';
+SPM.poids   = vertcat(bigstruct(:).poids)';
+SPM.duree   = vertcat(bigstruct(:).time)';
+SPM.sujet   = vertcat(bigstruct(:).nsujet)';
+
 
 %% Compter le nombre d'hommes et de femmes
 % Nombre de femmes
@@ -103,10 +101,10 @@ if femmes ~= hommes
     disp('Number of participants is not balanced: please add names in the blacklist')
 end
 %% Variables
-% nombre de frames désirés pour interpolation
+% nombre de frames dï¿½sirï¿½s pour interpolation
 nbframe = 100;
 
-% Transformation des données vers GRAMM & SPM friendly
+% Transformation des donnï¿½es vers GRAMM & SPM friendly
 
 for i = 1 : length(bigstruct)
     % Filtre passe-bas 25Hz
@@ -115,7 +113,7 @@ for i = 1 : length(bigstruct)
     bigstruct(i).deltaSCAC = lpfilter(bigstruct(i).deltaSCAC, 15, 100);
     bigstruct(i).deltaRoB  = lpfilter(bigstruct(i).deltaRoB, 15, 100);
     
-    % Interpolation (pour avoir méme nombre de frames)
+    % Interpolation (pour avoir mï¿½me nombre de frames)
     SPM.delta_hand(i,:) = ScaleTime(bigstruct(i).deltahand, 1, length(bigstruct(i).deltahand), nbframe);
     SPM.delta_GH(i,:)   = ScaleTime(bigstruct(i).deltaGH, 1, length(bigstruct(i).deltaGH), nbframe);
     SPM.delta_SCAC(i,:) = ScaleTime(bigstruct(i).deltaSCAC, 1, length(bigstruct(i).deltaSCAC), nbframe);
@@ -127,7 +125,7 @@ SPM.time  = linspace(0,100,nbframe);
 
 %% Plot
 if grammplot == 1
-    for i = 6 : -1 : 1
+    for i = 2 : -1 : 1
         figure('units','normalized','outerposition',[0 0 1 1])
         % Delta hand
         g(1,1) = gramm('x', SPM.time ,'y', SPM.delta_hand, 'color', SPM.sexe, 'subset', SPM.hauteur == i);
@@ -184,41 +182,34 @@ end
 
 %% SPM
 if stat == 1
-    %% test
-    result = SPM_Hotelling(SPM);
-    
-%     for i = 4 : -1 : 1 % nombre de delta
+    for iDelta = 4 : -1 : 1 % nombre de delta
         %% Choix de la variable
-%         [SPM, result(i).test] = selectSPMvariable(SPM,i);
+        [SPM, result(iDelta).test, idx] = selectSPMvariable(SPM,iDelta);
         %% SPM analysis
-%         result(i).posthoc = SPM_contribution(SPM.comp, SPM.sexe, SPM.hauteur, SPM.poids ,i, SPM.duree);
-%     end
+        [result(iDelta).anova,result(iDelta).interaction,result(iDelta).mainA,result(iDelta).mainB] = SPM_contribution(...
+            SPM.comp(idx,:),SPM.sexe(idx),SPM.hauteur(idx),SPM.sujet(idx),iDelta,SPM.duree(idx),correctbonf);
+    end
 end
 
 %% Exporter les resultats
 if exporter == 1
-    % cat structure
-    export.posthoc = [result(:).posthoc];
-    
-    % expand cell
-    [export.posthoc]   = expandcellinstruct(export.posthoc  , 'cluster');
-    
-    % Headers
-    out_posthoc = fieldnames(export.posthoc)';
-    
-    % transformer en cell
-    export.posthoc = struct2cell(export.posthoc);
-    
-    % 2D to 3D cell
-    export.posthoc = permute(export.posthoc,[3,1,2]);
-    
-    % matrice d'export
-    export.posthoc = vertcat(out_posthoc,export.posthoc);
-    
-    if     comparaison == '%'
-        xlswrite([path.exportpath variable '_relative_posthoc.xlsx'], export.posthoc, 'posthoc');
-    elseif comparaison == '='
-        xlswrite([path.exportpath variable '_absolute_posthoc.xlsx'], export.posthoc, 'posthoc');
+    batch = {'anova', 'interaction', 'mainA', 'mainB'};
+    for ibatch = 1 : length(batch)
+        % cat structure
+        export.(batch{ibatch}) = [result(:).(batch{ibatch})];
+        % headers
+        header.(batch{ibatch}) = fieldnames(export.(batch{ibatch}))';
+        % struct2cell
+        export.(batch{ibatch}) = struct2cell(export.(batch{ibatch}));
+        % 2D cell to 3D cell
+        export.(batch{ibatch}) = permute(export.(batch{ibatch}),[3,1,2]);
+        % export matrix
+        export.(batch{ibatch}) = vertcat(header.(batch{ibatch}),export.(batch{ibatch}));
+        if     comparaison == '%'
+            xlswrite([path.exportpath variable '_relative.xlsx'], export.(batch{ibatch}), batch{ibatch});
+        elseif comparaison == '='
+            xlswrite([path.exportpath variable '_absolute.xlsx'], export.(batch{ibatch}), batch{ibatch});
+        end
     end
 end
 %% Verification

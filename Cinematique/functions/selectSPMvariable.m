@@ -1,5 +1,6 @@
-function [SPM, string] = selectSPMvariable(SPM,i)
-switch i
+function [SPM, string, idx] = selectSPMvariable(SPM,delta)
+
+switch delta
     case 1
         SPM.comp = SPM.delta_hand;
         string   = 'delta_hand';
@@ -12,7 +13,13 @@ switch i
     case 4
         SPM.comp = SPM.delta_RoB;
         string   = 'delta_RoB';
+    otherwise
+        disp('Wrong delta')
 end
+
+        idx = find(SPM.poids == 1); % 12kg - 6 kg
+end
+
 
 
 
