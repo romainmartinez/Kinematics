@@ -1,7 +1,5 @@
-#   Description:
-#       contribution_articulation_traitement is used to generate figures
-#   Output:
-#       contribution_articulation_traitement gives figures in pdf, svg and Rdata
+#   Description: generate figures
+#   Output: gives figures in pdf, svg and Rdata
 #   Author:  Romain Martinez
 #   email:   martinez.staps@gmail.com
 #   Website: https://github.com/romainmartinez
@@ -9,7 +7,7 @@
 
 # preparation ----------------------------------------------------------------
 # packages
-lapply(c("tidyr", "dplyr", "ggplot2", "readxl", "magrittr", "knitr", "grid", "ggthemes", "ggradar", "scales"),
+lapply(c("tidyr", "dplyr", "ggplot2", "readxl", "magrittr", "knitr", "grid", "ggthemes"),
        require,
        character.only = T)
 # path

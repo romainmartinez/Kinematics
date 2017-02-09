@@ -1,10 +1,6 @@
-%   Description:
-%       contribution_hauteur_traitement is used to compute the contribution of each
-%       articulation to the height
-%   Output:
-%       contribution_hauteur_traitement gives SPM output and graph
-%   Functions:
-%       contribution_hauteur_traitement uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
+%   Description: used to compute the contribution of each articulation to the height
+%   Output:  gives SPM output and graph
+%   Functions: uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
 %
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
@@ -23,11 +19,11 @@ end
 cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Switch
-grammplot   =   0;                  % 0 ou 1 ou 2
+grammplot   =   2;                  % 0 ou 1 ou 2
 plotmean    =   0;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
 stat        =   1;                  % 0 ou 1
-correctbonf =   0;                  % 0 ou 1
+correctbonf =   1;                  % 0 ou 1
 exporter    =   1;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
