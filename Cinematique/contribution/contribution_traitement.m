@@ -38,7 +38,7 @@ path.Datapath = ['\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\matri
 path.exportpath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_articulation\SPM\';
 alias.matname = dir([path.Datapath '*mat']);
 
-%% Chargement des données
+%% Chargement des donnï¿½es
 for i = length(alias.matname) : -1 : 1
     RAW(i) = load([path.Datapath alias.matname(i).name]);
     
@@ -52,7 +52,7 @@ for i = length(alias.matname) : -1 : 1
         end
     end
 end
-% Grande structure de données
+% Grande structure de donnï¿½es
 bigstruct  = struct2array(RAW);
 
 %% Choix de la comparaison (absolu ou relatif)
@@ -101,10 +101,10 @@ if femmes ~= hommes
     disp('Number of participants is not balanced: please add names in the blacklist')
 end
 %% Variables
-% nombre de frames désirés pour interpolation
+% nombre de frames dï¿½sirï¿½s pour interpolation
 nbframe = 100;
 
-% Transformation des données vers GRAMM & SPM friendly
+% Transformation des donnï¿½es vers GRAMM & SPM friendly
 
 for i = 1 : length(bigstruct)
     % Filtre passe-bas 25Hz
@@ -113,7 +113,7 @@ for i = 1 : length(bigstruct)
     bigstruct(i).deltaSCAC = lpfilter(bigstruct(i).deltaSCAC, 15, 100);
     bigstruct(i).deltaRoB  = lpfilter(bigstruct(i).deltaRoB, 15, 100);
     
-    % Interpolation (pour avoir méme nombre de frames)
+    % Interpolation (pour avoir mï¿½me nombre de frames)
     SPM.delta_hand(i,:) = ScaleTime(bigstruct(i).deltahand, 1, length(bigstruct(i).deltahand), nbframe);
     SPM.delta_GH(i,:)   = ScaleTime(bigstruct(i).deltaGH, 1, length(bigstruct(i).deltaGH), nbframe);
     SPM.delta_SCAC(i,:) = ScaleTime(bigstruct(i).deltaSCAC, 1, length(bigstruct(i).deltaSCAC), nbframe);
