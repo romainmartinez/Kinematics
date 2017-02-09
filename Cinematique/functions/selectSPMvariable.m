@@ -1,4 +1,4 @@
-function [SPM, string, idx] = selectSPMvariable(SPM,delta,height)
+function [SPM, string, idx] = selectSPMvariable(SPM,delta)
 
 switch delta
     case 1
@@ -17,13 +17,7 @@ switch delta
         disp('Wrong delta')
 end
 
-switch height
-    case 1
-        idx = find(SPM.hauteur == 2); % hips - eyes
-    case 2
-        idx = find(SPM.hauteur == 5); % eyes - hips
-    otherwise
-        disp('Wrong height')
+        idx = find(SPM.poids == 1); % 12kg - 6 kg
 end
 
 

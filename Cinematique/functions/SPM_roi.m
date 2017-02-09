@@ -1,6 +1,6 @@
 function [roi] = SPM_roi(clusters)
 xi = clusters;
-frames = 200;
+frames = 100;
 taille = length(xi);
 
 roi = false(1, frames);

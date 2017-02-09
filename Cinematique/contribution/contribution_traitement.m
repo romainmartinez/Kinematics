@@ -102,7 +102,7 @@ if femmes ~= hommes
 end
 %% Variables
 % nombre de frames désirés pour interpolation
-nbframe = 200;
+nbframe = 100;
 
 % Transformation des données vers GRAMM & SPM friendly
 
@@ -182,21 +182,19 @@ end
 
 %% SPM
 if stat == 1
-    for i = 4 : -1 : 1 % nombre de delta
-        for h = 2 : -1 : 1 % nombre de hauteur (montée - descente)
-            %% Choix de la variable
-            [SPM, result(i).test, idx] = selectSPMvariable(SPM,i,h);
-            %% SPM analysis
-             [result(i).interaction(h).h,result(i).mainA(h).h,result(i).mainB(h).h] = SPM_contribution(SPM.comp(idx,:),...
-                 SPM.sexe(idx),SPM.poids(idx),SPM.sujet(idx),i,SPM.duree(idx),correctbonf,h);
-             
-        end
+    for iDelta = 4 : -1 : 1 % nombre de delta
+        %% Choix de la variable
+        [SPM, result(iDelta).test, idx] = selectSPMvariable(SPM,iDelta);
+        %% SPM analysis
+        [result(iDelta).anova,result(iDelta).interaction,result(iDelta).mainA,result(iDelta).mainB] = SPM_contribution(...
+            SPM.comp(idx,:),SPM.sexe(idx),SPM.hauteur(idx),SPM.sujet(idx),iDelta,SPM.duree(idx),correctbonf);
     end
 end
 
 %% Exporter les resultats
 if exporter == 1
     % cat structure
+    export.anova       = [result(:).anova];
     export.interaction = [result(:).interaction];
     export.mainA       = [result(:).mainA];
     export.mainB       = [result(:).mainB];
