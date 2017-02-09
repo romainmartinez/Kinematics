@@ -15,7 +15,7 @@ g = gramm('x', time ,'y', data, 'color', delta, 'linestyle', sexe);
 % facet
 g.facet_grid(hauteur,[], 'scale', 'independent','space','free');
 % geom
-g.stat_summary('type','sem','geom','area', 'setylim', true);
+g.stat_summary('type','std','geom','area', 'setylim', true);
 % options
 g.axe_property('TickDir','out');
 % titles
