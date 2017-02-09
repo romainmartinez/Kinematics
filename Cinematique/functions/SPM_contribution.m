@@ -4,7 +4,7 @@ if correctbonf == 1
     % 4 ANOVA (for each delta)
     nanova = 4;
     p.anova = spm1d.util.p_critical_bonf(0.05, nanova);
-    % 4 repeated measures (4 delta) for (2 height x 2 sex x 2 weight) = 32 tests
+    % 4 repeated measures (4 delta) for 6 height = 24 tests
     nttest = 4*6;
     p.ttest = spm1d.util.p_critical_bonf(0.05, nttest);
 else
