@@ -29,7 +29,7 @@ plotmean    =   1;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
 stat        =   1;                  % 0 ou 1
 exporter    =   1;                  % 0 ou 1
-comparaison =  '=';                 % '=' (absolu) ou '%' (relatif)
+comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
 
 %% Dossiers
@@ -104,7 +104,7 @@ if femmes ~= hommes
 end
 %% Variables
 % nombre de frames désirés pour interpolation
-nbframe = 200;
+nbframe = 100;
 
 % Transformation des données vers GRAMM & SPM friendly
 
@@ -184,6 +184,9 @@ end
 
 %% SPM
 if stat == 1
+    %% test
+    SPM_Hotelling(SPM)
+    
     for i = 4 : -1 : 1 % nombre de delta
         %% Choix de la variable
         [SPM, result(i).test] = selectSPMvariable(SPM,i);
