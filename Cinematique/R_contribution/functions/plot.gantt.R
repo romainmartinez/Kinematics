@@ -22,19 +22,18 @@ plot.gantt <- function(data, annotation, save, scale.free) {
   
   # Facet
   if (scale.free == TRUE){
-  gantt <- gantt + facet_grid(height ~ weight,
+  gantt <- gantt + facet_grid(height ~.,
                        scales = "free",
                        space = "free")
   } else {
-    gantt <- gantt + facet_grid(height ~ weight)
+    gantt <- gantt + facet_grid(height ~.)
   }
   
   # vLine
-  gantt <-
-    gantt + geom_vline(xintercept = c(20, 80), linetype = "dotted")
+  gantt <- gantt + geom_vline(xintercept = c(20, 80), linetype = "dotted")
   
   # Legend
-  plot.limit <- round(max(abs(data$diff)))
+  plot.limit <- round(max(abs(data$diff)))+1
   gantt <- gantt + scale_colour_gradient2("mean difference\n(% contribution)",
                                           limits=c(-plot.limit, plot.limit),
                                           low  = "firebrick3",

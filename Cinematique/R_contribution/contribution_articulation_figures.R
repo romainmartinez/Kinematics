@@ -18,74 +18,44 @@ setwd("C:/Users/marti/Documents/Codes/Kinematics/Cinematique/R_contribution/")
 # switch
 plot_gantt  <- TRUE
 plot_radar  <- TRUE
-delete.zone <- FALSE
 variable    <- 'hauteur'
-comparison  <- 'absolute'
+comparison  <- 'relative'
 
 # load data ---------------------------------------------------------------
-datapath <- file.path("//10.89.24.15/e/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM", paste(variable,"_",comparison,"_posthoc.xlsx", sep = ""))
-data.sex <- read_excel(datapath,
-                   sheet = "posthoc",
-                   na = "NA")
-# reshape data ------------------------------------------------------------
-factor.height <- function(x){factor(x = x,levels = c(1,2,4,3,5,6),
-                   labels = c("hips-shoulders","hips-eyes","shoulders-eyes","shoulders-hips","eyes-hips","eyes-shoulders"))}
-factor.weight <- function(x){
-    if (comparison == 'relative'){
-    factor(x = x,levels = c(1,2),labels = c("12kg-6kg","18kg-12kg"))
-    }else if (comparison == 'absolute') {
-    factor(x = x,levels = c(1,2),labels = c("6kg-6kg","12kg-12kg"))  
-    }
+datapath <- file.path("//10.89.24.15/e/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM",
+                      paste(variable, "_", comparison, ".xlsx", sep = ""))
+
+data.sheet <- c("anova", "interaction", "mainA", "mainB")
+for (isheet in 1:4) {
+  assign(data.sheet[isheet],
+         read_excel(datapath,
+                    sheet = data.sheet[isheet],
+                    na = "NA"))
   }
-factor.sex <- function(x){factor(x = x,levels = c(1,2),labels = c("men","women"))}
-
-data.sex$delta <- data.sex$delta %>% factor(labels = c("hand + EL", "GH", "SCAC", "RoB"))
-
-# AB
-AB <- data.sex %>% 
-  filter(comp == 'Interaction AB') %>% 
-  rename(height = facteur2, weight = facteur3)
-AB$sup <- AB$sup %>% factor.sex
-AB$inf <- AB$inf %>% factor.sex
-AB$height <- AB$height %>% factor.height
-AB$weight <- AB$weight %>% factor.weight
-
-# AC
-AC <- data.sex %>% 
-  filter(comp == 'Interaction AC') %>% 
-  rename(weight = facteur2, height = facteur3)
-AC$sup <- AC$sup %>% factor.sex
-AC$inf <- AC$inf %>% factor.sex
-AC$height <- AC$height %>% factor.height
-AC$weight <- AC$weight %>% factor.weight
-
-# BC
-BC <- data.sex %>% 
-  filter(comp == 'Interaction BC') %>% 
-  rename(weight = facteur2, sexe = facteur3)
-BC$sup <- BC$sup %>% factor.height
-BC$inf <- BC$inf %>% factor.height
-BC$weight <- BC$weight %>% factor.weight
-BC$sexe <- BC$sexe %>% factor.sex 
-
-data.sex <- union(AB,AC); rm(AB,AC)
-data.height <- BC;rm(BC)
-
-data.0d.sex <- data.sex %>% select(delta,height,weight,contains("inf"),contains("sup"))
-data.0d.height <- data.height %>% select(delta,weight,sexe,contains("inf"),contains("sup"))
-
-# Delete zone < 10 % ------------------------------------------------------
-if (delete.zone == TRUE) {
-  data.sex <- data.sex %>% filter(end - start > 10)
+# reshape data ------------------------------------------------------------
+factor.delta <- function(x){
+  factor(x = x, levels = c(1:4), labels = c("hand + EL", "GH", "SCAC", "RoB"))
 }
 
+factor.height <- function(x){
+  factor(x = x,levels = c(1,2,4,3,5,6),
+                   labels = c("hips-shoulders","hips-eyes","shoulders-eyes","shoulders-hips","eyes-hips","eyes-shoulders"))
+  }
+
+anova$delta <- anova$delta %>% factor.delta
+interaction$delta <- interaction$delta %>% factor.delta
+mainA$delta <- mainA$delta %>% factor.delta
+mainB$delta <- mainB$delta %>% factor.delta
+
+interaction$height <- interaction$height %>% factor.height
+
 # Create output table -----------------------------------------------------
-saveRDS(data.sex,"output/table.posthoc.sex.rds")
-saveRDS(data.height,"output/table.posthoc.height.rds")
+# saveRDS(data.sex,"output/table.posthoc.sex.rds")
+# saveRDS(data.height,"output/table.posthoc.height.rds")
 
 # gantt plot --------------------------------------------------------------
 source("functions/plot.gantt.R")
-plot.gantt(data.sex, annotation = FALSE, save = TRUE, scale.free = FALSE)
+plot.gantt(interaction, annotation = FALSE, save = TRUE, scale.free = FALSE)
 
 
 # test --------------------------------------------------------------------
