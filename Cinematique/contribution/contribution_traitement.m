@@ -13,16 +13,16 @@
 
 clear all; close all; clc
 
-%% Chargement des fonctions
+%% load functions
 if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
-    % Librairie S2M
+    % S2M library
     loadS2MLib;
 end
 
-% Fonctions locales
+% local functions
 cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
-%% Interrupteur
+%% Switch
 test        =   0;                  % 0 ou 1
 grammplot   =   2;                  % 0 ou 1 ou 2
 plotmean    =   1;                  % 0 ou 1
@@ -33,12 +33,12 @@ exporter    =   1;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
 
-%% Dossiers
+%% Path
 path.Datapath = ['\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\' variable '\'];
 path.exportpath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_articulation\SPM\';
 alias.matname = dir([path.Datapath '*mat']);
 
-%% Chargement des donn�es
+%% load data
 for i = length(alias.matname) : -1 : 1
     RAW(i) = load([path.Datapath alias.matname(i).name]);
     
@@ -52,10 +52,10 @@ for i = length(alias.matname) : -1 : 1
         end
     end
 end
-% Grande structure de donn�es
+% big structure of data
 bigstruct  = struct2array(RAW);
 
-%% Choix de la comparaison (absolu ou relatif)
+%% Choice of comparison (absolute or relative)
 switch comparaison
     case '='
         for i = length(bigstruct):-1:1
@@ -83,7 +83,7 @@ switch comparaison
         end
 end
 
-%% Facteurs
+%% Factors
 SPM.sexe    = vertcat(bigstruct(:).sexe)';
 SPM.hauteur = vertcat(bigstruct(:).hauteur)';
 SPM.poids   = vertcat(bigstruct(:).poids)';
@@ -91,36 +91,33 @@ SPM.duree   = vertcat(bigstruct(:).time)';
 SPM.sujet   = vertcat(bigstruct(:).nsujet)';
 
 
-%% Compter le nombre d'hommes et de femmes
-% Nombre de femmes
+%% Number of men & zomen
 femmes = sum(SPM.sexe == 2)/36;
-% Nombre d'hommes
 hommes = sum(SPM.sexe == 1)/36;
-
 if femmes ~= hommes
     disp('Number of participants is not balanced: please add names in the blacklist')
 end
 %% Variables
-% nombre de frames d�sir�s pour interpolation
+% number of frames
 nbframe = 100;
 
-% Transformation des donn�es vers GRAMM & SPM friendly
+% Transform dataframe into GRAMM & SPM friendly
 
 for i = 1 : length(bigstruct)
-    % Filtre passe-bas 25Hz
+    % low-pass filter 25Hz 
     bigstruct(i).deltahand = lpfilter(bigstruct(i).deltahand, 15, 100);
     bigstruct(i).deltaGH   = lpfilter(bigstruct(i).deltaGH, 15, 100);
     bigstruct(i).deltaSCAC = lpfilter(bigstruct(i).deltaSCAC, 15, 100);
     bigstruct(i).deltaRoB  = lpfilter(bigstruct(i).deltaRoB, 15, 100);
     
-    % Interpolation (pour avoir m�me nombre de frames)
+    % interpolation
     SPM.delta_hand(i,:) = ScaleTime(bigstruct(i).deltahand, 1, length(bigstruct(i).deltahand), nbframe);
     SPM.delta_GH(i,:)   = ScaleTime(bigstruct(i).deltaGH, 1, length(bigstruct(i).deltaGH), nbframe);
     SPM.delta_SCAC(i,:) = ScaleTime(bigstruct(i).deltaSCAC, 1, length(bigstruct(i).deltaSCAC), nbframe);
     SPM.delta_RoB(i,:)  = ScaleTime(bigstruct(i).deltaRoB, 1, length(bigstruct(i).deltaRoB), nbframe);
 end
 
-% Vecteur X (temps en %)
+% Vecteur X (time in %)
 SPM.time  = linspace(0,100,nbframe);
 
 %% Plot
@@ -182,8 +179,8 @@ end
 
 %% SPM
 if stat == 1
-    for iDelta = 4 : -1 : 1 % nombre de delta
-        %% Choix de la variable
+    for iDelta = 4 : -1 : 1 % delta
+        %% variable
         [SPM, result(iDelta).test, idx] = selectSPMvariable(SPM,iDelta);
         %% SPM analysis
         [result(iDelta).anova,result(iDelta).interaction,result(iDelta).mainA,result(iDelta).mainB] = SPM_contribution(...
@@ -191,7 +188,7 @@ if stat == 1
     end
 end
 
-%% Exporter les resultats
+%% Export results (xlsx)
 if exporter == 1
     batch = {'anova', 'interaction', 'mainA', 'mainB'};
     for ibatch = 1 : length(batch)
