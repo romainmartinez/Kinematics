@@ -23,12 +23,11 @@ end
 cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Switch
-test        =   0;                  % 0 ou 1
-grammplot   =   2;                  % 0 ou 1 ou 2
-plotmean    =   1;                  % 0 ou 1
+grammplot   =   0;                  % 0 ou 1 ou 2
+plotmean    =   0;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
 stat        =   1;                  % 0 ou 1
-correctbonf =   1;                  % 0 ou 1
+correctbonf =   0;                  % 0 ou 1
 exporter    =   1;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
@@ -90,7 +89,6 @@ SPM.poids   = vertcat(bigstruct(:).poids)';
 SPM.duree   = vertcat(bigstruct(:).time)';
 SPM.sujet   = vertcat(bigstruct(:).nsujet)';
 
-
 %% Number of men & zomen
 femmes = sum(SPM.sexe == 2)/36;
 hommes = sum(SPM.sexe == 1)/36;
@@ -102,7 +100,6 @@ end
 nbframe = 100;
 
 % Transform dataframe into GRAMM & SPM friendly
-
 for i = 1 : length(bigstruct)
     % low-pass filter 25Hz 
     bigstruct(i).deltahand = lpfilter(bigstruct(i).deltahand, 15, 100);
@@ -120,7 +117,39 @@ end
 % Vecteur X (time in %)
 SPM.time  = linspace(0,100,nbframe);
 
-%% Plot
+%% SPM
+if stat == 1
+    for iDelta = 4 : -1 : 1 % delta
+        %% variable
+        [SPM, result(iDelta).test, idx] = selectSPMvariable(SPM,iDelta);
+        %% SPM analysis
+        [result(iDelta).anova,result(iDelta).interaction,result(iDelta).mainA,result(iDelta).mainB] = SPM_contribution(...
+            SPM.comp(idx,:),SPM.sexe(idx),SPM.hauteur(idx),SPM.sujet(idx),iDelta,SPM.duree(idx),correctbonf);
+    end
+end
+
+%% Export results (xlsx)
+if exporter == 1
+    batch = {'anova', 'interaction', 'mainA', 'mainB'};
+    for ibatch = 1 : length(batch)
+        % cat structure
+        export.(batch{ibatch}) = [result(:).(batch{ibatch})];
+        % headers
+        header.(batch{ibatch}) = fieldnames(export.(batch{ibatch}))';
+        % struct2cell
+        export.(batch{ibatch}) = struct2cell(export.(batch{ibatch}));
+        % 2D cell to 3D cell
+        export.(batch{ibatch}) = permute(export.(batch{ibatch}),[3,1,2]);
+        % export matrix
+        export.(batch{ibatch}) = vertcat(header.(batch{ibatch}),export.(batch{ibatch}));
+        if     comparaison == '%'
+            xlswrite([path.exportpath variable '_relative.xlsx'], export.(batch{ibatch}), batch{ibatch});
+        elseif comparaison == '='
+            xlswrite([path.exportpath variable '_absolute.xlsx'], export.(batch{ibatch}), batch{ibatch});
+        end
+    end
+end
+%% plot
 if grammplot == 1
     for i = 2 : -1 : 1
         figure('units','normalized','outerposition',[0 0 1 1])
@@ -176,39 +205,6 @@ elseif grammplot == 2
     gramm_contribution(SPM)
 end
 
-
-%% SPM
-if stat == 1
-    for iDelta = 4 : -1 : 1 % delta
-        %% variable
-        [SPM, result(iDelta).test, idx] = selectSPMvariable(SPM,iDelta);
-        %% SPM analysis
-        [result(iDelta).anova,result(iDelta).interaction,result(iDelta).mainA,result(iDelta).mainB] = SPM_contribution(...
-            SPM.comp(idx,:),SPM.sexe(idx),SPM.hauteur(idx),SPM.sujet(idx),iDelta,SPM.duree(idx),correctbonf);
-    end
-end
-
-%% Export results (xlsx)
-if exporter == 1
-    batch = {'anova', 'interaction', 'mainA', 'mainB'};
-    for ibatch = 1 : length(batch)
-        % cat structure
-        export.(batch{ibatch}) = [result(:).(batch{ibatch})];
-        % headers
-        header.(batch{ibatch}) = fieldnames(export.(batch{ibatch}))';
-        % struct2cell
-        export.(batch{ibatch}) = struct2cell(export.(batch{ibatch}));
-        % 2D cell to 3D cell
-        export.(batch{ibatch}) = permute(export.(batch{ibatch}),[3,1,2]);
-        % export matrix
-        export.(batch{ibatch}) = vertcat(header.(batch{ibatch}),export.(batch{ibatch}));
-        if     comparaison == '%'
-            xlswrite([path.exportpath variable '_relative.xlsx'], export.(batch{ibatch}), batch{ibatch});
-        elseif comparaison == '='
-            xlswrite([path.exportpath variable '_absolute.xlsx'], export.(batch{ibatch}), batch{ibatch});
-        end
-    end
-end
 %% Verification
 if verif == 1
     %         figure('units','normalized','outerposition',[0 0 1 1])
