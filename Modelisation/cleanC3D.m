@@ -1,16 +1,10 @@
-%   Description:
-%       cleanC3D is used to clean and edit c3d
-%       files
-%   Output:
-%       cleanC3D gives clean c3d (appropriate
-%       names, events, force plate)
-%   Functions:
-%       cleanC3D uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
+%   Description: used to clean and edit c3d files
+%   Output: gives clean c3d (appropriate names, events, force plate)
+%   Functions: uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
 %
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
 %   Website: https://github.com/romainmartinez
-%   Date:    02-Nov-2016; Last revision: 15-Nov-2016
 %_____________________________________________________________________________
 
 clear all; close all; clc
