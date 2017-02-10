@@ -19,7 +19,7 @@ end
 cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Switch
-grammplot   =   2;                  % 0 ou 1 ou 2
+grammplot   =   0;                  % 0 ou 1 ou 2
 plotmean    =   0;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
 stat        =   1;                  % 0 ou 1
@@ -27,6 +27,7 @@ correctbonf =   1;                  % 0 ou 1
 exporter    =   1;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
+poids       =   1;                  % 1 (12-6) ou 2 (18-12)
 
 %% Path
 path.Datapath = ['\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\' variable '\'];
@@ -85,7 +86,7 @@ SPM.poids   = vertcat(bigstruct(:).poids)';
 SPM.duree   = vertcat(bigstruct(:).time)';
 SPM.sujet   = vertcat(bigstruct(:).nsujet)';
 
-%% Number of men & zomen
+%% Number of men & women
 femmes = sum(SPM.sexe == 2)/36;
 hommes = sum(SPM.sexe == 1)/36;
 if femmes ~= hommes
@@ -117,7 +118,7 @@ SPM.time  = linspace(0,100,nbframe);
 if stat == 1
     for iDelta = 4 : -1 : 1 % delta
         %% variable
-        [SPM, result(iDelta).test, idx] = selectSPMvariable(SPM,iDelta);
+        [SPM, result(iDelta).test, idx] = selectSPMvariable(SPM,iDelta,poids);
         %% SPM analysis
         [result(iDelta).anova,result(iDelta).interaction,result(iDelta).mainA,result(iDelta).mainB] = SPM_contribution(...
             SPM.comp(idx,:),SPM.sexe(idx),SPM.hauteur(idx),SPM.sujet(idx),iDelta,SPM.duree(idx),correctbonf);
@@ -232,32 +233,33 @@ if verif == 1
     %
     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
     height = 2;
-    
-    idx    = find(SPM.hauteur == height);
-    
-    figure('units','normalized','outerposition',[0 0 1 1])
-    for i = 1 : length(idx)
-        plot(SPM.delta_hand(idx(i),:),'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
-        hold on
+    for ihauteur = 1 : 6
+        idx    = find(SPM.hauteur == ihauteur & SPM.poids == 1);
+        
+%         figure('units','normalized','outerposition',[0 0 1 1])
+%         for i = 1 : length(idx)
+%             plot(SPM.delta_hand(idx(i),:),'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
+%             hold on
+%         end
+        
+        figure('units','normalized','outerposition',[0 0 1 1])
+        for i = 1 : length(idx)
+            plot(SPM.delta_GH(idx(i),:),'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
+            title('GH')
+            hold on
+        end
+        
+%         figure('units','normalized','outerposition',[0 0 1 1])
+%         for i = 1 : length(idx)
+%             plot(SPM.delta_SCAC(idx(i),:),'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
+%             hold on
+%         end
+        
+%         figure('units','normalized','outerposition',[0 0 1 1])
+%         for i = 1 : length(idx)
+%             plot(SPM.delta_RoB(idx(i),:),'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
+%             hold on
+%         end
     end
-    
-    figure('units','normalized','outerposition',[0 0 1 1])
-    for i = 1 : length(idx)
-        plot(SPM.delta_GH(idx(i),:),'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
-        hold on
-    end
-    
-    figure('units','normalized','outerposition',[0 0 1 1])
-    for i = 1 : length(idx)
-        plot(SPM.delta_SCAC(idx(i),:),'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
-        hold on
-    end
-    
-    figure('units','normalized','outerposition',[0 0 1 1])
-    for i = 1 : length(idx)
-        plot(SPM.delta_RoB(idx(i),:),'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
-        hold on
-    end
-    
     
 end
