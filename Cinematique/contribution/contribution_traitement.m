@@ -97,7 +97,7 @@ nbframe = 100;
 
 % Transform dataframe into GRAMM & SPM friendly
 for i = 1 : length(bigstruct)
-    % low-pass filter 25Hz 
+    % low-pass filter 25Hz
     bigstruct(i).deltahand = lpfilter(bigstruct(i).deltahand, 15, 100);
     bigstruct(i).deltaGH   = lpfilter(bigstruct(i).deltaGH, 15, 100);
     bigstruct(i).deltaSCAC = lpfilter(bigstruct(i).deltaSCAC, 15, 100);
@@ -128,20 +128,23 @@ end
 if exporter == 1
     batch = {'anova', 'interaction', 'mainA', 'mainB'};
     for ibatch = 1 : length(batch)
-        % cat structure
-        export.(batch{ibatch}) = [result(:).(batch{ibatch})];
-        % headers
-        header.(batch{ibatch}) = fieldnames(export.(batch{ibatch}))';
-        % struct2cell
-        export.(batch{ibatch}) = struct2cell(export.(batch{ibatch}));
-        % 2D cell to 3D cell
-        export.(batch{ibatch}) = permute(export.(batch{ibatch}),[3,1,2]);
-        % export matrix
-        export.(batch{ibatch}) = vertcat(header.(batch{ibatch}),export.(batch{ibatch}));
-        if     comparaison == '%'
-            xlswrite([path.exportpath variable '_relative.xlsx'], export.(batch{ibatch}), batch{ibatch});
-        elseif comparaison == '='
-            xlswrite([path.exportpath variable '_absolute.xlsx'], export.(batch{ibatch}), batch{ibatch});
+        if isempty([result(:).(batch{ibatch})]) ~= 1
+            % cat structure
+            export.(batch{ibatch}) = [result(:).(batch{ibatch})];
+            % headers
+            header.(batch{ibatch}) = fieldnames(export.(batch{ibatch}))';
+            % struct2cell
+            export.(batch{ibatch}) = struct2cell(export.(batch{ibatch}));
+            % 2D cell to 3D cell
+            export.(batch{ibatch}) = permute(export.(batch{ibatch}),[3,1,2]);
+            % export matrix
+            export.(batch{ibatch}) = vertcat(header.(batch{ibatch}),export.(batch{ibatch}));
+            
+            if     comparaison == '%'
+                xlswrite([path.exportpath variable '_relative.xlsx'], export.(batch{ibatch}), batch{ibatch});
+            elseif comparaison == '='
+                xlswrite([path.exportpath variable '_absolute.xlsx'], export.(batch{ibatch}), batch{ibatch});
+            end
         end
     end
 end
