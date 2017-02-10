@@ -26,7 +26,7 @@ plot.gantt <- function(data, annotation, save, scale.free) {
                        scales = "free",
                        space = "free")
   } else {
-    gantt <- gantt + facet_grid(height ~.)
+    gantt <- gantt + facet_grid(height ~ sens)
   }
   
   # vLine

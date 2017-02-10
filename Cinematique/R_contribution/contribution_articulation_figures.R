@@ -31,21 +31,25 @@ for (isheet in 1:4) {
                     na = "NA"))
   }
 # reshape data ------------------------------------------------------------
+interaction$sens[interaction$height == 1 | interaction$height == 2 | interaction$height == 4] <- "1"
+interaction$sens[interaction$height == 3 | interaction$height == 5 | interaction$height == 6] <- "2"
+
 factor.delta <- function(x){
   factor(x = x, levels = c(1:4), labels = c("hand + EL", "GH", "SCAC", "RoB"))
 }
-
-factor.height <- function(x){
-  factor(x = x,levels = c(1,2,4,3,5,6),
-                   labels = c("hips-shoulders","hips-eyes","shoulders-eyes","shoulders-hips","eyes-hips","eyes-shoulders"))
-  }
 
 anova$delta <- anova$delta %>% factor.delta
 interaction$delta <- interaction$delta %>% factor.delta
 mainA$delta <- mainA$delta %>% factor.delta
 mainB$delta <- mainB$delta %>% factor.delta
 
-interaction$height <- interaction$height %>% factor.height
+interaction$height <- interaction$height %>% 
+  factor(levels = c(1:6),
+         labels = c("hips-shoulder","hips-eyes","hips-shoulder","shoulders-eyes","hips-eyes","shoulders-eyes"))
+
+interaction$sens <- interaction$sens %>% 
+  factor(levels = c(1:2),
+         labels = c("upward","downward"))
 
 # Create output table -----------------------------------------------------
 # saveRDS(data.sex,"output/table.posthoc.sex.rds")
