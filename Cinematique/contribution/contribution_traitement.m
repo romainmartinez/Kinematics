@@ -23,7 +23,7 @@ grammplot   =   0;                  % 0 ou 1 ou 2
 plotmean    =   0;                  % 0 ou 1
 verif       =   0;                  % 0 ou 1
 stat        =   1;                  % 0 ou 1
-correctbonf =   1;                  % 0 ou 1
+correctbonf =   0;                  % 0 ou 1
 exporter    =   1;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
