@@ -7,22 +7,17 @@ long.delta    = kron(transpose(1:4), ones(length(input.sexe(idx)),1))';
 data.data  = vertcat(input.delta_hand(idx,:), input.delta_GH(idx,:),...
     input.delta_SCAC(idx,:), input.delta_RoB(idx,:));
 
-for i = 1 : length(long.hauteur)
-    if  long.hauteur(i) == 1 | long.hauteur(i) == 2 | long.hauteur(i) == 4
-        data.sens{i} = 'up';
-    elseif long.hauteur(i) == 3 | long.hauteur(i) == 5 | long.hauteur(i) == 6
-        data.sens{i} = 'down';
-    end
-end
-
 % convert to string
 convert.sexe = {'men','women'};
 convert.hauteur = {'hips-shoulder','hips-eyes','hips-shoulder','shoulders-eyes','hips-eyes','shoulders-eyes'};
-convert.delta = {'hand + elbow','GH','SCAC','RoB'};
+convert.delta = {'hand + EL','GH','SCAC','RoB'};
+convert.sens  = {'upward', 'downward'};
 
 data.sexe    = convert.sexe(long.sexe);
 data.hauteur = convert.hauteur(long.hauteur);
 data.delta   = convert.delta(long.delta);
+data.sens(long.hauteur == 1 | long.hauteur == 2 | long.hauteur == 4) = convert.sens(1);
+data.sens(long.hauteur == 3 | long.hauteur == 5 | long.hauteur == 6) = convert.sens(2);
 data.time    = input.time;
 
 
