@@ -88,7 +88,7 @@ if anova2.spmilist.SPMs{1, 1}.h0reject == 1
 else
     mainA = [];
 end
-%% 3) Main effect weight
+%% 3) Main effect height
 if anova2.spmilist.SPMs{1, 2}.h0reject == 1
     index = 0;
     for iCluster = 1 : anova2.spmilist.SPMs{1, 2}.nClusters

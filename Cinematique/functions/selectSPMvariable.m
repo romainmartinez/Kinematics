@@ -1,4 +1,4 @@
-function [SPM, string, idx] = selectSPMvariable(SPM,delta)
+function [SPM, string, idx] = selectSPMvariable(SPM,delta,poids)
 
 switch delta
     case 1
@@ -17,7 +17,7 @@ switch delta
         disp('Wrong delta')
 end
 
-        idx = find(SPM.poids == 1); % 12kg - 6 kg
+        idx = find(SPM.poids == poids);
 end
 
 
