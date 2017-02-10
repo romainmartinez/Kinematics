@@ -1,15 +1,10 @@
-%   Description:
-%       ExportC3D is used to export c3d files into
-%       TRC and Mot files
-%   Output:
-%       ExportC3D gives files for input into OpenSim
-%   Functions:
-%       ExportC3D uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
+%   Description: used to export c3d files into TRC and Mot files
+%   Output: gives files for input into OpenSim
+%   Functions: uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
 %
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
 %   Website: https://github.com/romainmartinez
-%   Date:    03-Nov-2016; Last revision: 09-Nov-2016
 %_____________________________________________________________________________
 
 clear all; close all; clc

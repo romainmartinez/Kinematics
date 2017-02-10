@@ -1,11 +1,6 @@
-%   Description:
-%       contribution_getforcedata is used to get the index where the hand
-%       touch the force sensor (start) and leave the handle (end)
-%   Output:
-%       contribution_getforcedata gives starting and ending point of the
-%       trial
-%   Functions:
-%       contribution_getforcedata uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
+%   Description: get the index where the hand touch the force sensor (start) and leave the handle (end)
+%   Output: gives starting and ending point of the trial
+%   Functions: uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
 %
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com

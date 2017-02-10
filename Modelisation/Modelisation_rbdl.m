@@ -1,15 +1,10 @@
-%   Description:
-%       Modelisation_rbdl is used to compute the inverse kinematic with
-%       RBDL model
-%   Output:
-%       Modelisation_rbdl gives IK results
-%   Functions:
-%       Modelisation_rbdl uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
+%   Description: used to compute the inverse kinematic with RBDL model
+%   Output: gives IK results
+%   Functions: uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
 %
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
 %   Website: https://github.com/romainmartinez
-%   Date:    19-Oct-2016; Last revision: 09-Nov-2016
 %_____________________________________________________________________________
 
 clear all; close all; clc

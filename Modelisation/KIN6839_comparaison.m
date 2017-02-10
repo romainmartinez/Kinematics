@@ -1,15 +1,10 @@
-%   Description:
-%       KIN6839_comparaison is used to compare inverse kinematics results
-%       from RBDL, OpenSim and Anybody
-%   Output:
-%       KIN6839_comparaison gives plots to compare those models
-%   Functions:
-%       KIN6839_comparaison uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
+%   Description: used to compare inverse kinematics results from RBDL, OpenSim and Anybody
+%   Output: gives plots to compare those models
+%   Functions: uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
 %
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
 %   Website: https://github.com/romainmartinez
-%   Date:    29-Nov-2016; Last revision: 30-Nov-2016
 %_____________________________________________________________________________
 
 clear all; close all; clc
