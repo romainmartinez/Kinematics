@@ -1,7 +1,5 @@
-#   Description:
-#       contribution_articulation_anthropo is used to get weight and height of all subjects
-#   Output:
-#       contribution_articulation_traitement gives Rdata
+#   Description: used to get weight and height of all subjects
+#   Output: gives Rdata
 #   Author:  Romain Martinez
 #   email:   martinez.staps@gmail.com
 #   Website: https://github.com/romainmartinez
@@ -19,8 +17,15 @@ IRSST <- read_excel(
 
 
 # Reshape data ------------------------------------------------------------------
+men <- IRSST %>% 
+  filter(Sexe == 'H')
+women <- IRSST %>% 
+  filter(Sexe == 'F')
 
-IRSSwT <- IRSST %>% 
-  select(Sexe, Poids, Taille, Traitement)
+# Parameters ------------------------------------------------------------------
+# Numbers
+number.m <- men %>% filter(Traitement == 'x')
+number.w <- women %>% filter(Traitement == 'x')
+# Weight
+# Height
 
-filter(IRSST, Traitement == 'x')
