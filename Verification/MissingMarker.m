@@ -1,15 +1,10 @@
-%   Description:
-%       MissingMarker is used replace a missing marker in
-%       the c3d file
-%   Output:
-%       MissingMarker gives new c3d with a replaced marker
-%   Functions:
-%       MissingMarker uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
+%   Description: used replace a missing marker in the c3d file
+%   Output: gives new c3d with a replaced marker
+%   Functions: uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
 %
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
 %   Website: https://github.com/romainmartinez
-%   Date:    12-Dec-2016; Last revision: 12-Dec-2016
 %_____________________________________________________________________________
 
 clear all; close all; clc
