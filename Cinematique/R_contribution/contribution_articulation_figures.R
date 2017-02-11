@@ -11,7 +11,9 @@ lapply(c("tidyr", "dplyr", "ggplot2", "readxl", "magrittr", "knitr", "grid", "gg
        require,
        character.only = T)
 # path
-setwd("C:/Users/marti/Documents/Codes/Kinematics/Cinematique/R_contribution/")
+path.current <- "C:/Users/marti/Documents/Codes/Kinematics/Cinematique/R_contribution/"
+path.output  <- "C:/Users/marti/Documents/Codes/Writting/article-contributions/inputs/"
+setwd(path.current)
 
 # switch
 plot_gantt  <- TRUE
@@ -57,16 +59,4 @@ interaction$sens <- interaction$sens %>%
 
 # gantt plot --------------------------------------------------------------
 source("functions/plot.gantt.R")
-plot.gantt(interaction, annotation = FALSE, save = TRUE, scale.free = FALSE)
-
-
-# test --------------------------------------------------------------------
-# data.0d.sex <- data.0d.sex  %>%
-#   gather(key = key, value = value, 4:9) %>%
-#   separate(key, c("valeur", "sex"), sep = "_") %>%
-#   spread(valeur, value)
-# 
-# bar <- ggplot(data = zeroD_bar, aes(x = delta, y = moy, fill = sex))
-# bar <- bar + geom_bar(stat = "identity", position = position_dodge())
-# bar <- bar + facet_grid(height ~ weight)
-# bar
+plot.gantt(interaction, path.output, annotation = FALSE, save = TRUE, scale.free = FALSE)

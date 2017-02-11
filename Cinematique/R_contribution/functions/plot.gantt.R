@@ -1,4 +1,4 @@
-plot.gantt <- function(data, annotation, save, scale.free) {
+plot.gantt <- function(data, path.output, annotation, save, scale.free) {
 
   gantt <- ggplot(data, aes())
   # Theme
@@ -66,6 +66,6 @@ plot.gantt <- function(data, annotation, save, scale.free) {
   print(gantt)
   
   if (save == TRUE){
-    save(gantt, file =  "output/plot.gantt.Rdata")
+    save(gantt, file =  file.path(paste(path.output,"plot.gantt.Rdata", sep = "")))
     }
 }
