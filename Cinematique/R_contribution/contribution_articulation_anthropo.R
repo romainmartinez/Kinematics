@@ -10,7 +10,9 @@ lapply(c("tidyr", "dplyr", "readxl", "magrittr", "knitr"),
        require,
        character.only = T)
 # path
-setwd("C:/Users/marti/Documents/Codes/Kinematics/Cinematique/R_contribution/")
+path.current <- "C:/Users/marti/Documents/Codes/Kinematics/Cinematique/R_contribution/"
+path.output  <- "C:/Users/marti/Documents/Codes/Writting/article-contributions/inputs/"
+setwd(path.current)
 
 # Load data ---------------------------------------------------------------
 IRSST <- read_excel(
@@ -33,4 +35,4 @@ anthropo <- data.frame(number = c(men %>% nrow,women %>% nrow),
 
 anthropo[,-1] <- anthropo[,-1] %>% round(digits = 2)
 
-saveRDS(anthropo, "output/anthropo.rds")
+saveRDS(anthropo, file.path(paste(path.output,"output/anthropo.rds", sep = "")))
