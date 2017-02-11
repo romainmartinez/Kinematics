@@ -35,4 +35,4 @@ anthropo <- data.frame(number = c(men %>% nrow,women %>% nrow),
 
 anthropo[,-1] <- anthropo[,-1] %>% round(digits = 2)
 
-saveRDS(anthropo, file.path(paste(path.output,"output/anthropo.rds", sep = "")))
+saveRDS(anthropo, file.path(paste(path.output,"anthropo.rds", sep = "")))
