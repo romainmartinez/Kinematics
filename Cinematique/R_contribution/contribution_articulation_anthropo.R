@@ -16,14 +16,14 @@ setwd(path.current)
 
 # Load data ---------------------------------------------------------------
 IRSST <- read_excel(
-    "Z:/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/IRSST_infos_sujets.xlsx",
+    "//10.89.24.15/e/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/IRSST_infos_sujets.xlsx",
     sheet = "Global")
 
 # Reshape data ------------------------------------------------------------------
 IRSST[, c(5:6)] <- sapply(IRSST[, c(5:6)], as.numeric)
-men <- IRSST %>% 
+men <- IRSST %>%
   filter(Sexe == 'H' & Traitement == 'x')
-women <- IRSST %>% 
+women <- IRSST %>%
   filter(Sexe == 'F' & Traitement == 'x')
 
 # Parameters ------------------------------------------------------------------
@@ -31,7 +31,7 @@ anthropo <- data.frame(number = c(men %>% nrow,women %>% nrow),
                        mean.weight = c(mean(men$Poids), mean(women$Poids)),
                        std.weight = c(sd(men$Poids), sd(women$Poids)),
                        mean.height = c(mean(men$Taille),mean(women$Taille)),
-                       std.height = c(sd(men$Taille), sd(women$Taille))) 
+                       std.height = c(sd(men$Taille), sd(women$Taille)))
 
 anthropo[,-1] <- anthropo[,-1] %>% round(digits = 2)
 
