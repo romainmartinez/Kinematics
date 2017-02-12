@@ -20,7 +20,7 @@ IRSST <- read_excel(
     sheet = "Global")
 
 # Reshape data ------------------------------------------------------------------
-IRSST[, c(5:6)] <- sapply(IRSST[, c(5:6)], as.numeric)
+IRSST[, c(5:7)] <- sapply(IRSST[, c(5:7)], as.numeric)
 men <- IRSST %>%
   filter(Sexe == 'H' & Traitement == 'x')
 women <- IRSST %>%
@@ -28,6 +28,8 @@ women <- IRSST %>%
 
 # Parameters ------------------------------------------------------------------
 anthropo <- data.frame(number = c(men %>% nrow,women %>% nrow),
+                       mean.age = c(mean(men$Age, na.rm = TRUE), mean(women$Age, na.rm = TRUE)),
+                       std.age = c(sd(men$Age, na.rm = TRUE), sd(women$Age, na.rm = TRUE)),
                        mean.weight = c(mean(men$Poids), mean(women$Poids)),
                        std.weight = c(sd(men$Poids), sd(women$Poids)),
                        mean.height = c(mean(men$Taille),mean(women$Taille)),
