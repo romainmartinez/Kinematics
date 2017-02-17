@@ -18,7 +18,7 @@ setwd(path.current)
 # switch
 plot_gantt  <- TRUE
 plot_radar  <- TRUE
-variable    <- 'hauteur'
+variable    <- 'vitesse'
 comparison  <- 'relative'
 
 # load data ---------------------------------------------------------------
@@ -60,3 +60,4 @@ interaction$sens <- interaction$sens %>%
 # gantt plot --------------------------------------------------------------
 source("functions/plot.gantt.R")
 plot.gantt(interaction, path.output, annotation = FALSE, save = TRUE, scale.free = FALSE)
+
