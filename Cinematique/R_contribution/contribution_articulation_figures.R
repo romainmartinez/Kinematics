@@ -18,7 +18,7 @@ setwd(path.current)
 # switch
 plot_gantt  <- TRUE
 plot_radar  <- TRUE
-variable    <- 'vitesse'
+variable    <- 'hauteur'
 comparison  <- 'relative'
 
 # load data ---------------------------------------------------------------

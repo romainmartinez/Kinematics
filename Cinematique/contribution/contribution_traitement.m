@@ -26,7 +26,7 @@ stat        =   1;                  % 0 ou 1
 correctbonf =   0;                  % 0 ou 1
 exporter    =   1;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
-variable    =  'vitesse';           % 'vitesse' ou 'hauteur'
+variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
 poids       =   1;                  % 1 (12-6) ou 2 (18-12)
 
 %% Path
