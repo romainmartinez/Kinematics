@@ -45,11 +45,11 @@ interaction$delta <- interaction$delta %>% factor.delta
 mainA$delta <- mainA$delta %>% factor.delta
 mainB$delta <- mainB$delta %>% factor.delta
 
-interaction$height <- interaction$height %>% 
+interaction$height <- interaction$height %>%
   factor(levels = c(1:6),
-         labels = c("hips-shoulder","hips-eyes","hips-shoulder","shoulders-eyes","hips-eyes","shoulders-eyes"))
+         labels = c("hips-shoulders","hips-eyes","hips-shoulder","shoulders-eyes","hips-eyes","shoulders-eyes"))
 
-interaction$sens <- interaction$sens %>% 
+interaction$sens <- interaction$sens %>%
   factor(levels = c(1:2),
          labels = c("upward","downward"))
 
