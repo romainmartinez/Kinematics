@@ -2,7 +2,7 @@ function [anova,interaction, mainA, mainB] = SPM_contribution(Y, A, B, SUBJ, del
 %% Bonferonni correction
 if correctbonf == 1
     % 4 ANOVA (for each delta)
-    nanova = 4;
+    nanova  = 4;
     p.anova = spm1d.util.p_critical_bonf(0.05, nanova);
     % 4 repeated measures (4 delta) for 6 height = 24 tests
     nttest = 4*6;
@@ -58,7 +58,7 @@ if anova2.spmilist.SPMs{1, 3}.h0reject == 1
                     interaction(index).sup  = num2str('women');
                 end
                 interaction(index).meanM = mean(ttest.spmi.beta(1,:));
-                interaction(index).meanW  = mean(ttest.spmi.beta(2,:));
+                interaction(index).meanW = mean(ttest.spmi.beta(2,:));
                 interaction(index).maxM  = max(ttest.spmi.beta(1,:));
                 interaction(index).maxW  = max(ttest.spmi.beta(2,:));
                 interaction(index).timeM = mean(time(A == 1 & B == iHauteur));

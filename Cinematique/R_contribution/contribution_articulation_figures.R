@@ -47,7 +47,7 @@ mainB$delta <- mainB$delta %>% factor.delta
 
 interaction$height <- interaction$height %>%
   factor(levels = c(1:6),
-         labels = c("hips-shoulders","hips-eyes","hips-shoulder","shoulders-eyes","hips-eyes","shoulders-eyes"))
+         labels = c("hips-shoulders","hips-eyes","hips-shoulders","shoulders-eyes","hips-eyes","shoulders-eyes"))
 
 interaction$sens <- interaction$sens %>%
   factor(levels = c(1:2),
@@ -59,5 +59,5 @@ interaction$sens <- interaction$sens %>%
 
 # gantt plot --------------------------------------------------------------
 source("functions/plot.gantt.R")
-plot.gantt(interaction, path.output, annotation = FALSE, save = TRUE, scale.free = FALSE)
+plot.gantt(interaction, path.output, annotation = TRUE, save = TRUE, scale.free = FALSE)
 
