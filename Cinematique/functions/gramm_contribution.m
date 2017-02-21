@@ -28,7 +28,7 @@ clear g
 % aes
 g = gramm('x', data.time ,'y', data.data, 'color', data.delta, 'linestyle', data.sexe);
 % facet
-g.facet_grid(data.hauteur,data.sens, 'scale', 'fixed','space','free');
+g.facet_grid(data.hauteur,data.sens, 'scale', 'free','space','fixed');
 % geom
 g.stat_summary('type','std','geom','area', 'setylim', true);
 % options
