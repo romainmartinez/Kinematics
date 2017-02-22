@@ -84,6 +84,7 @@ if anova2.spmilist.SPMs{1, 1}.h0reject == 1
         if mainA(index).start == 0
             mainA(index).start = 1;
         end
+        mainA(index).diff = mean2(Y(A == 1,mainA(index).start:mainA(index).end)) - mean2(Y(A == 2,mainA(index).start:mainA(index).end));
     end
 else
     mainA = [];
