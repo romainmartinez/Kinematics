@@ -7,7 +7,7 @@
 
 # preparation ----------------------------------------------------------------
 # packages
-lapply(c("tidyr", "dplyr", "ggplot2", "readxl", "magrittr", "knitr", "grid", "ggthemes"),
+lapply(c("tidyr", "dplyr", "cowplot", "readxl", "magrittr", "knitr", "grid", "ggthemes", "gridExtra"),
        require,
        character.only = T)
 # path
@@ -53,11 +53,22 @@ interaction$sens <- interaction$sens %>%
   factor(levels = c(1:2),
          labels = c("upward","downward"))
 
+# gantt plot --------------------------------------------------------------
+source("functions/plot.gantt.R")
+plot.gantt(interaction, mainA, path.output, scale.free = FALSE)
+TODO : rajouter les couleurs dans maineffect
+# source("functions/plot.gantt.interaction.R")
+# gantt.interaction <- plot.gantt.interaction(interaction, path.output, scale.free = FALSE)
+# source("functions/plot.gantt.main.R")
+# gantt.main <- plot.gantt.main(mainA, path.output)
+
+
+
+
 # Create output table -----------------------------------------------------
 # saveRDS(data.sex,"output/table.posthoc.sex.rds")
 # saveRDS(data.height,"output/table.posthoc.height.rds")
 
-# gantt plot --------------------------------------------------------------
-source("functions/plot.gantt.R")
-plot.gantt(interaction, path.output, annotation = TRUE, save = TRUE, scale.free = FALSE)
+# zone de test ------------------------------------------------------------
+
 
