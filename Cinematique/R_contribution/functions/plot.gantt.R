@@ -1,4 +1,4 @@
-plot.gantt <- function(data1, data2, path.output, scale.free) {
+plot.gantt <- function(data1, data2, path.output, scale.free, save.fig) {
   # interaction -------------------------------------------------------------
   gantt1 <- ggplot(data1, aes())
   # create segment
@@ -16,7 +16,7 @@ plot.gantt <- function(data1, data2, path.output, scale.free) {
   # Y axis
   gantt1 <- gantt1 + ylab("delta")
   # Facet
-  if (scale.free == TRUE){
+  if (scale.free == TRUE) {
     gantt1 <- gantt1 + facet_grid(height ~.,
                                   scales = "free",
                                   space = "free")
@@ -26,20 +26,17 @@ plot.gantt <- function(data1, data2, path.output, scale.free) {
   # vLine
   gantt1 <- gantt1 + geom_vline(xintercept = c(20, 80), linetype = "dotted")
   # Legend
-  plot.limit <- round(max(abs(data1$diff)))+1
+  plot.limit <- round(max(abs(data1$diff))) + 1
   gantt1 <- gantt1 + scale_colour_gradient2("mean difference\n(% contribution)",
-                                            limits=c(-plot.limit, plot.limit),
+                                            limits = c(-plot.limit, plot.limit),
                                             low  = "firebrick3",
                                             mid  = "white",
                                             high = "deepskyblue2")
   # Theme
-  gantt1 <-gantt1 + theme_classic() +
-    theme(panel.border = element_rect(colour = "black", fill=NA, size=0.5)) + 
+  gantt1 <- gantt1 + theme_classic() +
+    theme(panel.border = element_rect(colour = "black", fill = NA, size = 0.5)) + 
     theme(text = element_text(size = 12)) + 
     theme(legend.key = element_rect(colour = NA),legend.position = "top")
-  # Print graph
-  print(gantt1)
-  
   # main effect -------------------------------------------------------------
   gantt2 <- ggplot(data2, aes())
   # create segment
@@ -47,7 +44,8 @@ plot.gantt <- function(data1, data2, path.output, scale.free) {
     x     = start,
     xend  = end,
     y     = delta,
-    yend  = delta),size = 4)
+    yend  = delta,
+    color = diff),size = 4)
   # X axis
   gantt2 <- gantt2 + scale_x_continuous(
     name   = "normalized time (% of trial)",
@@ -57,25 +55,30 @@ plot.gantt <- function(data1, data2, path.output, scale.free) {
   gantt2 <- gantt2 + ylab("delta")
   # vLine
   gantt2 <- gantt2 + geom_vline(xintercept = c(20, 80), linetype = "dotted")
+  # Legend
+  gantt2 <- gantt2 + scale_colour_gradient2("mean difference\n(% contribution)",
+                                            limits = c(-plot.limit, plot.limit),
+                                            low  = "firebrick3",
+                                            mid  = "white",
+                                            high = "deepskyblue2")
   # Theme
-  gantt2 <-gantt2 + theme_classic() +
-    theme(panel.border = element_rect(colour = "black", fill=NA, size=0.5)) +
+  gantt2 <- gantt2 + theme_classic() +
+    theme(panel.border = element_rect(colour = "black", fill = NA, size = 0.5)) +
     theme(text = element_text(size = 12)) +
     theme(legend.key = element_rect(colour = NA),legend.position = "top")
-  # Print graph
-  print(gantt2)
+# combine -----------------------------------------------------------------
+gantt <- plot_grid(gantt1 + theme(legend.position = "none",axis.title.x = element_blank(),axis.title.y = element_blank()),
+                   gantt2 + theme(legend.position = "none",axis.title.x = element_blank(),axis.title.y = element_blank()),
+                   nrow = 2, labels = "AUTO", label_size = 14, rel_heights  = c(4,1))
+legend_top <- get_legend(gantt1 + theme(legend.position = "bottom"))
+gantt <- plot_grid(legend_top, gantt, ncol = 1, rel_heights = c(0.05, 1))
+# ggdraw(add_sub(gantt,
+#                "normalized time (% of trial)", vpadding = grid::unit(0,"lines"),
+#                y = 5, x = 0.5, vjust = 4.5))
+# save --------------------------------------------------------------------
+if (save.fig == TRUE) {
+save(gantt, file = file.path(path.output, "plot.gantt.Rdata"))
 }
 
-# combine -----------------------------------------------------------------
-ggdraw() +
-  draw_plot(gantt1, 0, .5, 1, .5) +
-  draw_plot(gantt2, 0, 0, .5, .5) + 
-  draw_plot_label(c("A", "B"), c(0, 0, 0.5), c(1, 0.5, 0.5), size = 15)
-
-
-plot_grid(gantt1, gantt2, labels=c("A", "B"), ncol = 1, nrow = 2)
-plot_grid(gantt1, gantt2, nrow=2, labels="AUTO", label_size=12, rel_heights  = c(4,1))
-
-# save --------------------------------------------------------------------
-path.output <- 'coucou'
-
+print(gantt)
+}

@@ -16,8 +16,6 @@ path.output  <- "C:/Users/marti/Documents/Codes/Writting/article-contributions/i
 setwd(path.current)
 
 # switch
-plot_gantt  <- TRUE
-plot_radar  <- TRUE
 variable    <- 'hauteur'
 comparison  <- 'relative'
 
@@ -55,20 +53,7 @@ interaction$sens <- interaction$sens %>%
 
 # gantt plot --------------------------------------------------------------
 source("functions/plot.gantt.R")
-plot.gantt(interaction, mainA, path.output, scale.free = FALSE)
-TODO : rajouter les couleurs dans maineffect
-# source("functions/plot.gantt.interaction.R")
-# gantt.interaction <- plot.gantt.interaction(interaction, path.output, scale.free = FALSE)
-# source("functions/plot.gantt.main.R")
-# gantt.main <- plot.gantt.main(mainA, path.output)
-
-
-
-
+plot.gantt(interaction, mainA, path.output, scale.free = FALSE, save.fig = TRUE)
 # Create output table -----------------------------------------------------
 # saveRDS(data.sex,"output/table.posthoc.sex.rds")
 # saveRDS(data.height,"output/table.posthoc.height.rds")
-
-# zone de test ------------------------------------------------------------
-
-
