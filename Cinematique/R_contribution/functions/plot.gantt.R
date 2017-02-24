@@ -37,6 +37,7 @@ plot.gantt <- function(data1, data2, path.output, scale.free, save.fig) {
     theme(panel.border = element_rect(colour = "black", fill = NA, size = 0.5)) + 
     theme(text = element_text(size = 12)) + 
     theme(legend.key = element_rect(colour = NA),legend.position = "top")
+    
   # main effect -------------------------------------------------------------
   gantt2 <- ggplot(data2, aes())
   # create segment
@@ -67,11 +68,11 @@ plot.gantt <- function(data1, data2, path.output, scale.free, save.fig) {
     theme(text = element_text(size = 12)) +
     theme(legend.key = element_rect(colour = NA),legend.position = "top")
 # combine -----------------------------------------------------------------
-gantt <- plot_grid(gantt1 + theme(legend.position = "none",axis.title.x = element_blank(),axis.title.y = element_blank()),
-                   gantt2 + theme(legend.position = "none",axis.title.x = element_blank(),axis.title.y = element_blank()),
-                   nrow = 2, labels = "AUTO", label_size = 14, rel_heights  = c(4,1))
+gantt <- plot_grid(gantt2 + theme(legend.position = "none",axis.title.x = element_blank(),axis.title.y = element_blank()),
+                   gantt1 + theme(legend.position = "none",axis.title.x = element_blank(),axis.title.y = element_blank()),
+                   nrow = 2, labels = "AUTO", label_size = 12, rel_heights  = c(1,4))
 legend_top <- get_legend(gantt1 + theme(legend.position = "bottom"))
-gantt <- plot_grid(legend_top, gantt, ncol = 1, rel_heights = c(0.05, 1))
+gantt <- plot_grid(legend_top, gantt, ncol = 1, rel_heights = c(0.09, 1))
 # ggdraw(add_sub(gantt,
 #                "normalized time (% of trial)", vpadding = grid::unit(0,"lines"),
 #                y = 5, x = 0.5, vjust = 4.5))
@@ -82,3 +83,5 @@ save(gantt, file = file.path(path.output, "plot.gantt.Rdata"))
 
 print(gantt)
 }
+
+# ggsave(file="test.svg", plot=gantt, width=10, height=8)
