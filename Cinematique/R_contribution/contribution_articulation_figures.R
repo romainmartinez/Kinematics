@@ -35,7 +35,7 @@ interaction$sens[interaction$height == 1 | interaction$height == 2 | interaction
 interaction$sens[interaction$height == 3 | interaction$height == 5 | interaction$height == 6] <- "2"
 
 factor.delta <- function(x){
-  factor(x = x, levels = c(1:4), labels = c("hand + EL", "GH", "Clavicule", "tronc + pelvis"))
+  factor(x = x, levels = c(1:4), labels = c("hand + EL", "GH", "SCAC", "RoB"))
 }
 
 anova$delta <- anova$delta %>% factor.delta
@@ -45,11 +45,11 @@ mainB$delta <- mainB$delta %>% factor.delta
 
 interaction$height <- interaction$height %>%
   factor(levels = c(1:6),
-         labels = c("hanches-épaules","hanches-yeux","hanches-épaules","épaules-yeux","hanches-yeux","épaules-yeux"))
+         labels = c("hips-shoulders","hips-eyes","hips-shoulders","shoulders-eyes","hips-eyes","shoulders-eyes"))
 
 interaction$sens <- interaction$sens %>%
   factor(levels = c(1:2),
-         labels = c("montée","descente"))
+         labels = c("upward","downward"))
 
 # gantt plot --------------------------------------------------------------
 source("functions/plot.gantt.R")
