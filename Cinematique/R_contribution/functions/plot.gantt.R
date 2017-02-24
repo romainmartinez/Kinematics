@@ -70,7 +70,7 @@ plot.gantt <- function(data1, data2, path.output, scale.free, save.fig) {
 # combine -----------------------------------------------------------------
 gantt <- plot_grid(gantt2 + theme(legend.position = "none",axis.title.x = element_blank(),axis.title.y = element_blank()),
                    gantt1 + theme(legend.position = "none",axis.title.x = element_blank(),axis.title.y = element_blank()),
-                   nrow = 2, labels = "AUTO", label_size = 12, rel_heights  = c(1,4))
+                   nrow = 2, rel_heights  = c(1,4))
 legend_top <- get_legend(gantt1 + theme(legend.position = "bottom"))
 gantt <- plot_grid(legend_top, gantt, ncol = 1, rel_heights = c(0.09, 1))
 # ggdraw(add_sub(gantt,
