@@ -35,7 +35,7 @@ interaction$sens[interaction$height == 1 | interaction$height == 2 | interaction
 interaction$sens[interaction$height == 3 | interaction$height == 5 | interaction$height == 6] <- "2"
 
 factor.delta <- function(x){
-  factor(x = x, levels = c(1:4), labels = c("hand + EL", "GH", "SCAC", "RoB"))
+  factor(x = x, levels = c(1:4), labels = c("WR/EL", "GH", "SC/AC", "TR/PE"))
 }
 
 anova$delta <- anova$delta %>% factor.delta
