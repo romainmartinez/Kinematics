@@ -28,7 +28,7 @@ plot.gantt <- function(data1, data2, path.output, scale.free, save.fig) {
   # Legend
   plot.limit <- round(max(abs(data1$diff))) + 1
   gantt1 <- gantt1 + scale_colour_gradient2("mean difference\n(% contribution)",
-                                            limits = c(-plot.limit, plot.limit),
+                                            limits = c(-20, 20),
                                             low  = "firebrick3",
                                             mid  = "white",
                                             high = "deepskyblue2")
@@ -37,7 +37,7 @@ plot.gantt <- function(data1, data2, path.output, scale.free, save.fig) {
     theme(panel.border = element_rect(colour = "black", fill = NA, size = 0.5)) +
     theme(text = element_text(size = 12)) +
     theme(legend.key = element_rect(colour = NA),legend.position = "top") +
-    theme(strip.background = element_blank(), strip.text.y = element_blank())
+    theme(strip.background = element_blank(), strip.text.y = element_blank(), strip.text.x = element_blank())
 
   # main effect -------------------------------------------------------------
   gantt2 <- ggplot(data2, aes())
