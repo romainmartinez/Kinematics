@@ -36,7 +36,8 @@ plot.gantt <- function(data1, data2, path.output, scale.free, save.fig) {
   gantt1 <- gantt1 + theme_classic() +
     theme(panel.border = element_rect(colour = "black", fill = NA, size = 0.5)) +
     theme(text = element_text(size = 12)) +
-    theme(legend.key = element_rect(colour = NA),legend.position = "top")
+    theme(legend.key = element_rect(colour = NA),legend.position = "top") +
+    theme(strip.background = element_blank(), strip.text.y = element_blank())
 
   # main effect -------------------------------------------------------------
   gantt2 <- ggplot(data2, aes())
