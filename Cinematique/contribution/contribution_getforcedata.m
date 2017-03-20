@@ -130,6 +130,8 @@ for isujet = length(alias.sujet) : -1 : 1
         if ~exist(path.savepath, 'file')
             mkdir(path.savepath);
         end
-        save([path.savepath cell2mat(alias.sujet(isujet)) '_forceindex.mat'],'forceindex')
+        save(['\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\forceindex\' cell2mat(alias.sujet(isujet)) '_forceindex.mat'],'forceindex')
+        
     end
+    clearvars forceindex
 end

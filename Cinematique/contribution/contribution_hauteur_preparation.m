@@ -65,8 +65,7 @@ for isujet = length(Alias.sujet) : -1 : 1
    end
    
     %% Obtenir les onset et offset de force
-    load(['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\forceindex\' Alias.sujet{isujet} '_forceindex'])
-    
+    load(['\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\forceindex\' cell2mat(Alias.sujet(isujet)) '_forceindex.mat'])
     for trial = length(Alias.Qnames) : -1 : 1
         %% Caractéristique de l'essai
         % Sexe du sujet
