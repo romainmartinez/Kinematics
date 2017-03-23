@@ -7,7 +7,7 @@
 %   Website: https://github.com/romainmartinez
 %_____________________________________________________________________________
 
-clear all; close all; clc
+clear variables; close all; clc
 
 %% load functions
 if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
@@ -19,9 +19,7 @@ end
 cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Switch
-grammplot   =   0;                  % 0 ou 1 ou 2
-plotmean    =   0;                  % 0 ou 1
-verif       =   0;                  % 0 ou 1
+grammplot   =   1;                  % 0 ou 1 ou 2
 stat        =   1;                  % 0 ou 1
 correctbonf =   0;                  % 0 ou 1
 exporter    =   1;                  % 0 ou 1
@@ -151,115 +149,5 @@ if exporter == 1
 end
 %% plot
 if grammplot == 1
-    for i = 2 : -1 : 1
-        figure('units','normalized','outerposition',[0 0 1 1])
-        % Delta hand
-        g(1,1) = gramm('x', SPM.time ,'y', SPM.delta_hand, 'color', SPM.sexe, 'subset', SPM.hauteur == i);
-        g(1,1).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
-        g(1,1).set_title('Contribution of the hand and elbow');
-        
-        % Delta GH
-        g(1,2) = gramm('x',SPM.time,'y',SPM.delta_GH,'color',SPM.sexe, 'subset', SPM.hauteur == i);
-        g(1,2).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
-        g(1,2).set_title('Contribution of GH');
-        
-        % Delta SCAC
-        g(2,1) = gramm('x',SPM.time,'y',SPM.delta_SCAC,'color',SPM.sexe, 'subset', SPM.hauteur == i);
-        g(2,1).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
-        g(2,1).set_title('Contribution of SC & AC');
-        
-        % Delta RoB
-        g(2,2) = gramm('x',SPM.time,'y',SPM.delta_RoB,'color',SPM.sexe, 'subset', SPM.hauteur == i);
-        g(2,2).set_names('x','Normalized time (% of trial)','y','Contribution to the height (% of max height)','color','Sex');
-        g(2,2).set_title('Contribution of the rest of the body');
-        
-        if plotmean == 1
-            g(1,1).stat_summary('type','std');
-            g(1,2).stat_summary('type','std');
-            g(2,1).stat_summary('type','std');
-            g(2,2).stat_summary('type','std');
-        else
-            g(1,1).geom_line();
-            g(1,2).geom_line();
-            g(2,1).geom_line();
-            g(2,2).geom_line();
-        end
-        
-        switch i
-            case 1
-                g.set_title([' Hips - Shoulders (H' num2str(i) ')']);
-            case 2
-                g.set_title([' Hips - Eyes (H' num2str(i) ')']);
-            case 3
-                g.set_title([' Shoulders - Hips (H' num2str(i) ')']);
-            case 4
-                g.set_title([' Shoulders - Eyes (H' num2str(i) ')']);
-            case 5
-                g.set_title([' Eyes - Hips (H' num2str(i) ')']);
-            case 6
-                g.set_title([' Eyes - Shoulders (H' num2str(i) ')']);
-        end
-        g.draw();
-    end
-elseif grammplot == 2
     gramm_contribution(SPM)
-end
-
-%% Verification
-if verif == 1
-    %         figure('units','normalized','outerposition',[0 0 1 1])
-    %         for i = 1 : length(SPM.delta_hand)
-    %             plot(SPM.delta_hand(i,:),'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-    %             hold on
-    %         end
-    %
-    %         figure('units','normalized','outerposition',[0 0 1 1])
-    %         for i = 1 : length(SPM.delta_GH)
-    %             plot(SPM.delta_GH(i,:),'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-    %             hold on
-    %         end
-    %
-    %         figure('units','normalized','outerposition',[0 0 1 1])
-    %         for i = 1 : length(SPM.delta_SCAC)
-    %             plot(SPM.delta_SCAC(i,:),'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-    %             hold on
-    %         end
-    %
-    %         figure('units','normalized','outerposition',[0 0 1 1])
-    %         for i = 1 : length(SPM.delta_RoB)
-    %             plot(SPM.delta_RoB(i,:),'DisplayName',[num2str(i) ' : ' bigstruct(i).sujet bigstruct(i).trialname]);
-    %             hold on
-    %         end
-    %
-    %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-    height = 2;
-    for ihauteur = 1 : 6
-        idx    = find(SPM.hauteur == ihauteur & SPM.poids == 1);
-        
-%         figure('units','normalized','outerposition',[0 0 1 1])
-%         for i = 1 : length(idx)
-%             plot(SPM.delta_hand(idx(i),:),'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
-%             hold on
-%         end
-        
-        figure('units','normalized','outerposition',[0 0 1 1])
-        for i = 1 : length(idx)
-            plot(SPM.delta_GH(idx(i),:),'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
-            title('GH')
-            hold on
-        end
-        
-%         figure('units','normalized','outerposition',[0 0 1 1])
-%         for i = 1 : length(idx)
-%             plot(SPM.delta_SCAC(idx(i),:),'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
-%             hold on
-%         end
-        
-%         figure('units','normalized','outerposition',[0 0 1 1])
-%         for i = 1 : length(idx)
-%             plot(SPM.delta_RoB(idx(i),:),'DisplayName',[num2str(idx(i)) ' : ' bigstruct(idx(i)).sujet bigstruct(idx(i)).trialname]);
-%             hold on
-%         end
-    end
-    
 end
