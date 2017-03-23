@@ -19,7 +19,7 @@ end
 cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteurs
-saveresults = 0;
+saveresults = 1;
 anato       = 1;
 model       = 2.1;
 
@@ -111,17 +111,6 @@ for isujet = length(Alias.sujet) : -1 : 1
         
         % position verticale au moment de la prise et lâché caisse (pour normalisation plus tard)
         Data(trial).normalization = [Data(trial).H(1,:,1) Data(trial).H(end,:,1)];
-        %         % Moment de prise et lâché de caisse
-        %         hstart    = H1(1);
-        %         hend      = H1(end);
-        %         h         = [hstart hend];
-        %
-        %         % Pour différencier entre essai de montée et descente
-        %         bas       = min(h);
-        %         haut      = max(h);
-        %
-        %         % normalisation
-        %         H1 = (H1 - bas) / (haut - bas)*100;
         
         % Blocage des q du segment
         q1(Alias.segmentDoF.handelbow,:) = repmat(q_correct(Alias.segmentDoF.handelbow), 1, length(q1));
@@ -131,13 +120,7 @@ for isujet = length(Alias.sujet) : -1 : 1
         
         % Marqueurs du segment en cours avec q bloqués
         Data(trial).H(:,:,2) = squeeze(T(3,39,:));
-        
-        %         % normalisation avec 100 = max de H1
-        %         H2 = (H2 - bas) / (haut - bas)*100;
-        
-        %         % Delta entre les deux matrices de marqueurs en Z
-        %         Data(trial).deltahand  = H1 - H2;
-        
+              
         %% Articulation 2 : GH
         % Blocage des q du segment
         q1(Alias.segmentDoF.GH,:) = repmat(q_correct(Alias.segmentDoF.GH), 1, length(q1));
@@ -147,14 +130,7 @@ for isujet = length(Alias.sujet) : -1 : 1
         
         % Marqueurs du segment en cours avec q bloqués
         Data(trial).H(:,:,3) = squeeze(T(3,39,:));
-        
-        
-        %         % normalisation avec 100 = max de H1
-        %         H3 = (H3 - bas) / (haut - bas)*100;
-        
-        %         % Delta entre les deux matrices de marqueurs en Z
-        %         Data(trial).deltaGH  = H2 - H3;
-        
+              
         %% Articulation 3 : GH
         % Blocage des q du segment
         q1(Alias.segmentDoF.SCAC,:) = repmat(q_correct(Alias.segmentDoF.SCAC), 1, length(q1));
@@ -164,13 +140,7 @@ for isujet = length(Alias.sujet) : -1 : 1
         
         % Marqueurs du segment en cours avec q bloqués
         Data(trial).H(:,:,4) = squeeze(T(3,39,:));
-        
-        %         % normalisation avec 100 = max de H1
-        %         H4 = (H4 - bas) / (haut - bas)*100;
-        
-        %         % Delta entre les deux matrices de marqueurs en Z
-        %         Data(trial).deltaSCAC  = H3 - H4;
-        
+             
         %% Articulation 4 : Reste du corps (pelvis + thorax)
         % Blocage des q du segment
         q1(Alias.segmentDoF.RoB,:) = repmat(q_correct(Alias.segmentDoF.RoB), 1, length(q1));
@@ -180,12 +150,7 @@ for isujet = length(Alias.sujet) : -1 : 1
         
         % Marqueurs du segment en cours avec q bloqués
         Data(trial).H(:,:,5) = squeeze(T(3,39,:));
-        
-        %         % normalisation avec 100 = max de H1
-        %         H5 = (H5 - bas) / (haut - bas)*100;
-        
-        %         % Delta entre les deux matrices de marqueurs en Z
-        %         Data(trial).deltaRoB  = H4 - H5;
+      
     end
     
     %% Condition de l'essai
@@ -194,18 +159,13 @@ for isujet = length(Alias.sujet) : -1 : 1
     
     S2M_rbdl('delete', Alias.model);
     
-    %% Normalisation avec la hauteur des hanches et des yeux de la moyenne des essais hanches-yeux
-%     HipsEyes = [Data.hauteur] == 2;
-%     norma = vertcat(Data.norma);
-%     hips = mean(norma(HipsEyes,1));  % hauteur des hanches moyenne
-%     eyes = mean(norma(HipsEyes,2));  % hauteur des yeux moyenne
-    
+    %% calcul de la contribution à la hauteur
     Data = contrib_height(Data);
 
     %% Sauvegarde de la matrice
     if saveresults == 1
         % hauteur
-        temp = rmfield(Data,'Qdata','norma');
+        temp = rmfield(Data,{'Qdata','normalization','H'});
         save([Path.exportPath 'hauteur\' Alias.sujet{1,isujet} '.mat'],'temp')
         clearvars temp
         % cinématique
