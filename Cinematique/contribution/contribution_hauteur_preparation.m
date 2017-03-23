@@ -20,7 +20,6 @@ cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteurs
 saveresults = 0;
-test        = 0;
 anato       = 1;
 model       = 2.1;
 
@@ -58,7 +57,7 @@ for isujet = length(Alias.sujet) : -1 : 1
     
     %% Anatomical position correction
     if anato == 1
-        save_fig = 1;
+        save_fig = 0;
         [q_correct] = anatomical_correction(Alias.sujet{isujet}, model, Alias.model, save_fig);
     elseif anato == 0
         q_correct = 0;
@@ -108,19 +107,21 @@ for isujet = length(Alias.sujet) : -1 : 1
         T = S2M_rbdl('Tags', Alias.model, q1);
         
         % Marqueurs du segment en cours ('3' correspond à Z car on s'intéresse à la hauteur)
-        H1 = squeeze(T(3,39,:));
-        Data(trial).norma = [H1(1),H1(end)];
-%         % Moment de prise et lâché de caisse
-%         hstart    = H1(1);
-%         hend      = H1(end);
-%         h         = [hstart hend];
-%         
-%         % Pour différencier entre essai de montée et descente
-%         bas       = min(h);
-%         haut      = max(h);
-%         
-%         % normalisation
-%         H1 = (H1 - bas) / (haut - bas)*100;
+        Data(trial).H(:,:,1) = squeeze(T(3,39,:));
+        
+        % position verticale au moment de la prise et lâché caisse (pour normalisation plus tard)
+        Data(trial).normalization = [Data(trial).H(1,:,1) Data(trial).H(end,:,1)];
+        %         % Moment de prise et lâché de caisse
+        %         hstart    = H1(1);
+        %         hend      = H1(end);
+        %         h         = [hstart hend];
+        %
+        %         % Pour différencier entre essai de montée et descente
+        %         bas       = min(h);
+        %         haut      = max(h);
+        %
+        %         % normalisation
+        %         H1 = (H1 - bas) / (haut - bas)*100;
         
         % Blocage des q du segment
         q1(Alias.segmentDoF.handelbow,:) = repmat(q_correct(Alias.segmentDoF.handelbow), 1, length(q1));
@@ -129,13 +130,13 @@ for isujet = length(Alias.sujet) : -1 : 1
         T = S2M_rbdl('Tags', Alias.model, q1);
         
         % Marqueurs du segment en cours avec q bloqués
-        H2 = squeeze(T(3,39,:));
+        Data(trial).H(:,:,2) = squeeze(T(3,39,:));
         
-%         % normalisation avec 100 = max de H1
-%         H2 = (H2 - bas) / (haut - bas)*100;
+        %         % normalisation avec 100 = max de H1
+        %         H2 = (H2 - bas) / (haut - bas)*100;
         
-        % Delta entre les deux matrices de marqueurs en Z
-        Data(trial).deltahand  = H1 - H2;
+        %         % Delta entre les deux matrices de marqueurs en Z
+        %         Data(trial).deltahand  = H1 - H2;
         
         %% Articulation 2 : GH
         % Blocage des q du segment
@@ -145,13 +146,14 @@ for isujet = length(Alias.sujet) : -1 : 1
         T = S2M_rbdl('Tags', Alias.model,q1);
         
         % Marqueurs du segment en cours avec q bloqués
-        H3 = squeeze(T(3,39,:));
+        Data(trial).H(:,:,3) = squeeze(T(3,39,:));
         
-%         % normalisation avec 100 = max de H1
-%         H3 = (H3 - bas) / (haut - bas)*100;
         
-        % Delta entre les deux matrices de marqueurs en Z
-        Data(trial).deltaGH  = H2 - H3;
+        %         % normalisation avec 100 = max de H1
+        %         H3 = (H3 - bas) / (haut - bas)*100;
+        
+        %         % Delta entre les deux matrices de marqueurs en Z
+        %         Data(trial).deltaGH  = H2 - H3;
         
         %% Articulation 3 : GH
         % Blocage des q du segment
@@ -161,13 +163,13 @@ for isujet = length(Alias.sujet) : -1 : 1
         T = S2M_rbdl('Tags', Alias.model, q1);
         
         % Marqueurs du segment en cours avec q bloqués
-        H4 = squeeze(T(3,39,:));
+        Data(trial).H(:,:,4) = squeeze(T(3,39,:));
         
-%         % normalisation avec 100 = max de H1
-%         H4 = (H4 - bas) / (haut - bas)*100;
+        %         % normalisation avec 100 = max de H1
+        %         H4 = (H4 - bas) / (haut - bas)*100;
         
-        % Delta entre les deux matrices de marqueurs en Z
-        Data(trial).deltaSCAC  = H3 - H4;
+        %         % Delta entre les deux matrices de marqueurs en Z
+        %         Data(trial).deltaSCAC  = H3 - H4;
         
         %% Articulation 4 : Reste du corps (pelvis + thorax)
         % Blocage des q du segment
@@ -177,13 +179,13 @@ for isujet = length(Alias.sujet) : -1 : 1
         T = S2M_rbdl('Tags', Alias.model, q1);
         
         % Marqueurs du segment en cours avec q bloqués
-        H5 = squeeze(T(3,39,:));
+        Data(trial).H(:,:,5) = squeeze(T(3,39,:));
         
-%         % normalisation avec 100 = max de H1
-%         H5 = (H5 - bas) / (haut - bas)*100;
+        %         % normalisation avec 100 = max de H1
+        %         H5 = (H5 - bas) / (haut - bas)*100;
         
-        % Delta entre les deux matrices de marqueurs en Z
-        Data(trial).deltaRoB  = H4 - H5;
+        %         % Delta entre les deux matrices de marqueurs en Z
+        %         Data(trial).deltaRoB  = H4 - H5;
     end
     
     %% Condition de l'essai
@@ -192,16 +194,14 @@ for isujet = length(Alias.sujet) : -1 : 1
     
     S2M_rbdl('delete', Alias.model);
     
-    %% Normalisation avec la hauteur des hanches et des yeux de la moyenne des essais hanches-yeux    
-    HipsEyes = [Data.hauteur] == 2;
-    norma = vertcat(Data.norma);
-    hips = mean(norma(HipsEyes,1));  % hauteur des hanches moyenne
-    eyes = mean(norma(HipsEyes,2));  % hauteur des yeux moyenne
+    %% Normalisation avec la hauteur des hanches et des yeux de la moyenne des essais hanches-yeux
+%     HipsEyes = [Data.hauteur] == 2;
+%     norma = vertcat(Data.norma);
+%     hips = mean(norma(HipsEyes,1));  % hauteur des hanches moyenne
+%     eyes = mean(norma(HipsEyes,2));  % hauteur des yeux moyenne
     
-    %TODO IL MANQUE JUSTE A APPLIQUER CETTE FONCTION SUR TOUTES LES STRUCTURES
-    Data(1) = (Data(1).deltahand - hips) / (hips - eyes)*100;
-    
-   
+    Data = contrib_height(Data);
+
     %% Sauvegarde de la matrice
     if saveresults == 1
         % hauteur
