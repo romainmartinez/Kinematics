@@ -7,7 +7,7 @@
 %   Website: https://github.com/romainmartinez
 %_____________________________________________________________________________
 
-clear all; close all; clc
+clear variables; close all; clc
 
 %% load functions
 if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
