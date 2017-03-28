@@ -10,7 +10,7 @@
 clear variables; close all; clc
 
 %% load functions
-if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
+if ~contains(path, '\\10.89.24.15\e\Librairies\S2M_Lib\')
     % S2M library
     loadS2MLib;
 end
@@ -21,7 +21,7 @@ cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 %% Switch
 grammplot   =   1;                  % 0 ou 1 ou 2
 stat        =   1;                  % 0 ou 1
-correctbonf =   0;                  % 0 ou 1
+correctbonf =   1;                  % 0 ou 1
 exporter    =   1;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'

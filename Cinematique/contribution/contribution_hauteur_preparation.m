@@ -10,7 +10,7 @@
 clear variables; close all; clc
 
 %% Chargement des fonctions
-if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
+if ~contains(path, '\\10.89.24.15\e\Librairies\S2M_Lib\')
     % Librairie S2M
     loadS2MLib;
 end

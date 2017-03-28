@@ -38,7 +38,7 @@ plot.gantt <-
     plot.limit <- round(max(abs(data1$diff))) + 1
     gantt1 <-
       gantt1 + scale_colour_gradient2(
-        "mean difference\n(% contribution)",
+        "mean difference\n(% height)",
         limits = c(-plot.limit, plot.limit),
         low  = "firebrick3",
         mid  = "white",
@@ -59,7 +59,7 @@ plot.gantt <-
         strip.text.y = element_blank(),
         strip.text.x = element_blank()
       )
-    
+
     # main effect -------------------------------------------------------------
     gantt2 <- ggplot(data2, aes())
     # create segment
@@ -130,7 +130,7 @@ plot.gantt <-
     if (save.fig == TRUE) {
       save(gantt, file = file.path(path.output, "plot.gantt.Rdata"))
     }
-    
+
     print(gantt)
   }
 
