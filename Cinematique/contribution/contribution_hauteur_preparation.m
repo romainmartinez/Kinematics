@@ -169,7 +169,7 @@ for isujet = length(Alias.sujet) : -1 : 1
         save([Path.exportPath 'hauteur\' Alias.sujet{1,isujet} '.mat'],'temp')
         clearvars temp
         % cinématique
-        temp = rmfield(Data, {'deltahand', 'deltaGH', 'deltaSCAC', 'deltaRoB'});
+        temp = rmfield(Data, {'deltahand', 'deltaGH', 'deltaSCAC', 'deltaRoB','normalization','H'});
         save([Path.exportPath 'cinematique\' Alias.sujet{1,isujet} '.mat'],'temp')
         clearvars temp
     end
