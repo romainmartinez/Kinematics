@@ -7,10 +7,10 @@
 %   Website: https://github.com/romainmartinez
 %_____________________________________________________________________________
 
-clear all; close all; clc
+clear variables; close all; clc
 
 %% Chargement des fonctions
-if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
+if ~contains(path, '\\10.89.24.15\e\Librairies\S2M_Lib\')
     % Librairie S2M
     loadS2MLib;
 end
@@ -20,7 +20,6 @@ cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
 
 %% Interrupteurs
 saveresults = 1;
-test        = 0;
 anato       = 1;
 model       = 2.1;
 
@@ -56,17 +55,16 @@ for isujet = length(Alias.sujet) : -1 : 1
     [Alias.segmentMarkers, Alias.segmentDoF] = segment_RBDL(round(model));
     
     
-   %% Anatomical position correction
-   if anato == 1
-       save_fig = 1;
-       [q_correct] = anatomical_correction(Alias.sujet{isujet}, model, Alias.model, save_fig);
-   elseif anato == 0
-       q_correct = 0;
-   end
-   
-    %% Obtenir les onset et offset de force
-    load(['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\forceindex\' Alias.sujet{isujet} '_forceindex'])
+    %% Anatomical position correction
+    if anato == 1
+        save_fig = 0;
+        [q_correct] = anatomical_correction(Alias.sujet{isujet}, model, Alias.model, save_fig);
+    elseif anato == 0
+        q_correct = 0;
+    end
     
+    %% Obtenir les onset et offset de force
+    load(['\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\forceindex\' cell2mat(Alias.sujet(isujet)) '_forceindex.mat'])
     for trial = length(Alias.Qnames) : -1 : 1
         %% Caractéristique de l'essai
         % Sexe du sujet
@@ -101,7 +99,7 @@ for isujet = length(Alias.sujet) : -1 : 1
             q1 = Data(trial).Qdata.Q1(:,round(Data(trial).start:Data(trial).end));
         end
         
-        %% Filtre passe-bas 25Hz
+        %% Filtre passe-bas 15Hz
         q1 = transpose(lpfilter(q1', 15, 100));
         
         %% Articulation 1 : Poignet + coude
@@ -109,19 +107,10 @@ for isujet = length(Alias.sujet) : -1 : 1
         T = S2M_rbdl('Tags', Alias.model, q1);
         
         % Marqueurs du segment en cours ('3' correspond à Z car on s'intéresse à la hauteur)
-        H1 = squeeze(T(3,39,:));
+        Data(trial).H(:,:,1) = squeeze(T(3,39,:));
         
-        % Moment de prise et lâché de caisse
-        hstart    = H1(1);
-        hend      = H1(end);
-        h         = [hstart hend];
-        
-        % Pour différencier entre essai de montée et descente
-        bas       = min(h);
-        haut      = max(h);
-        
-        % normalisation
-        H1 = (H1 - bas) / (haut - bas)*100;
+        % position verticale au moment de la prise et lâché caisse (pour normalisation plus tard)
+        Data(trial).normalization = [Data(trial).H(1,:,1) Data(trial).H(end,:,1)];
         
         % Blocage des q du segment
         q1(Alias.segmentDoF.handelbow,:) = repmat(q_correct(Alias.segmentDoF.handelbow), 1, length(q1));
@@ -130,14 +119,8 @@ for isujet = length(Alias.sujet) : -1 : 1
         T = S2M_rbdl('Tags', Alias.model, q1);
         
         % Marqueurs du segment en cours avec q bloqués
-        H2 = squeeze(T(3,39,:));
-        
-        % normalisation avec 100 = max de H1
-        H2 = (H2 - bas) / (haut - bas)*100;
-        
-        % Delta entre les deux matrices de marqueurs en Z
-        Data(trial).deltahand  = H1 - H2;
-        
+        Data(trial).H(:,:,2) = squeeze(T(3,39,:));
+              
         %% Articulation 2 : GH
         % Blocage des q du segment
         q1(Alias.segmentDoF.GH,:) = repmat(q_correct(Alias.segmentDoF.GH), 1, length(q1));
@@ -146,14 +129,8 @@ for isujet = length(Alias.sujet) : -1 : 1
         T = S2M_rbdl('Tags', Alias.model,q1);
         
         % Marqueurs du segment en cours avec q bloqués
-        H3 = squeeze(T(3,39,:));
-        
-        % normalisation avec 100 = max de H1
-        H3 = (H3 - bas) / (haut - bas)*100;
-        
-        % Delta entre les deux matrices de marqueurs en Z
-        Data(trial).deltaGH  = H2 - H3;
-        
+        Data(trial).H(:,:,3) = squeeze(T(3,39,:));
+              
         %% Articulation 3 : GH
         % Blocage des q du segment
         q1(Alias.segmentDoF.SCAC,:) = repmat(q_correct(Alias.segmentDoF.SCAC), 1, length(q1));
@@ -162,14 +139,8 @@ for isujet = length(Alias.sujet) : -1 : 1
         T = S2M_rbdl('Tags', Alias.model, q1);
         
         % Marqueurs du segment en cours avec q bloqués
-        H4 = squeeze(T(3,39,:));
-        
-        % normalisation avec 100 = max de H1
-        H4 = (H4 - bas) / (haut - bas)*100;
-        
-        % Delta entre les deux matrices de marqueurs en Z
-        Data(trial).deltaSCAC  = H3 - H4;
-        
+        Data(trial).H(:,:,4) = squeeze(T(3,39,:));
+             
         %% Articulation 4 : Reste du corps (pelvis + thorax)
         % Blocage des q du segment
         q1(Alias.segmentDoF.RoB,:) = repmat(q_correct(Alias.segmentDoF.RoB), 1, length(q1));
@@ -178,15 +149,8 @@ for isujet = length(Alias.sujet) : -1 : 1
         T = S2M_rbdl('Tags', Alias.model, q1);
         
         % Marqueurs du segment en cours avec q bloqués
-        H5 = squeeze(T(3,39,:));
-        
-        % normalisation avec 100 = max de H1
-        H5 = (H5 - bas) / (haut - bas)*100;
-        
-        % Delta entre les deux matrices de marqueurs en Z
-        Data(trial).deltaRoB  = H4 - H5;
-        
-        
+        Data(trial).H(:,:,5) = squeeze(T(3,39,:));
+      
     end
     
     %% Condition de l'essai
@@ -195,14 +159,17 @@ for isujet = length(Alias.sujet) : -1 : 1
     
     S2M_rbdl('delete', Alias.model);
     
+    %% calcul de la contribution à la hauteur
+    Data = contrib_height(Data);
+
     %% Sauvegarde de la matrice
     if saveresults == 1
         % hauteur
-        temp = rmfield(Data,'Qdata');
+        temp = rmfield(Data,{'Qdata','normalization','H'});
         save([Path.exportPath 'hauteur\' Alias.sujet{1,isujet} '.mat'],'temp')
-        clearvars temp 
+        clearvars temp
         % cinématique
-        temp = rmfield(Data, {'deltahand', 'deltaGH', 'deltaSCAC', 'deltaRoB'});
+        temp = rmfield(Data, {'deltahand', 'deltaGH', 'deltaSCAC', 'deltaRoB','normalization','H'});
         save([Path.exportPath 'cinematique\' Alias.sujet{1,isujet} '.mat'],'temp')
         clearvars temp
     end
