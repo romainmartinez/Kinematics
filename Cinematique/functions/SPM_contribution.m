@@ -25,10 +25,6 @@ for ieffect = 1 : 3
         anova(index).p      = anova2.spmilist.SPMs{1, ieffect}.p(icluster);
         anova(index).start  = round(anova2.spmilist.SPMs{1, ieffect}.clusters{1, icluster}.endpoints(1));
         anova(index).end    = round(anova2.spmilist.SPMs{1, ieffect}.clusters{1, icluster}.endpoints(2));
-        if anova(index).start == 0
-            anova(index).start = 1;
-        end
-        anova(index).diff = mean2(Y(A == 1,anova(index).start:anova(index).end)) - mean2(Y(A == 2,anova(index).start:anova(index).end));
     end
 end
 %% 1) Interaction sex - height

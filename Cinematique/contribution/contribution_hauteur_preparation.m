@@ -108,7 +108,6 @@ for isujet = length(Alias.sujet) : -1 : 1
         
         % Marqueurs du segment en cours ('3' correspond à Z car on s'intéresse à la hauteur)
         Data(trial).H(:,:,1) = squeeze(T(3,39,:));
-        Data(trial).boite = Data(trial).H(:,:,1);
         
         % position verticale au moment de la prise et lâché caisse (pour normalisation plus tard)
         Data(trial).normalization = [Data(trial).H(1,:,1) Data(trial).H(end,:,1)];

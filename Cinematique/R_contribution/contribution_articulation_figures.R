@@ -25,9 +25,11 @@ datapath <- file.path("//10.89.24.15/e/Projet_IRSST_LeverCaisse/ElaboratedData/c
 
 data.sheet <- c("anova", "interaction", "mainA", "mainB")
 for (isheet in 1:4) {
-  assign(data.sheet[isheet],read_excel(datapath,sheet = data.sheet[isheet],na = "NA"))
-}
-
+  assign(data.sheet[isheet],
+         read_excel(datapath,
+                    sheet = data.sheet[isheet],
+                    na = "NA"))
+  }
 # reshape data ------------------------------------------------------------
 interaction$sens[interaction$height == 1 | interaction$height == 2 | interaction$height == 4] <- "1"
 interaction$sens[interaction$height == 3 | interaction$height == 5 | interaction$height == 6] <- "2"
@@ -38,10 +40,8 @@ factor.delta <- function(x){
 
 anova$delta <- anova$delta %>% factor.delta
 interaction$delta <- interaction$delta %>% factor.delta
-
-anova$effect <- anova$effect %>%
-  factor(levels = c('Main A', 'Main B', 'Interaction AB'),
-         labels = c("main effect: sex","main effect: task","interaction: sex-task"))
+mainA$delta <- mainA$delta %>% factor.delta
+mainB$delta <- mainB$delta %>% factor.delta
 
 interaction$height <- interaction$height %>%
   factor(levels = c(1:6),
@@ -51,11 +51,9 @@ interaction$sens <- interaction$sens %>%
   factor(levels = c(1:2),
          labels = c("upward","downward"))
 
-# delete diff < 1%
-anova <- anova %>% filter(abs(diff) > 1)
-
 # gantt plot --------------------------------------------------------------
-plot_limit <- c(interaction$diff,anova$diff) %>% abs() %>% max() %>% round() + 1
-source("functions/plot_gantt.R")
-plot_gantt(anova,plot_limit,case='anova')
-plot_gantt(interaction,plot_limit,case='interaction')
+source("functions/plot.gantt.R")
+plot.gantt(interaction, mainA, path.output, scale.free = FALSE, save.fig = TRUE)
+# Create output table -----------------------------------------------------
+# saveRDS(data.sex,"output/table.posthoc.sex.rds")
+# saveRDS(data.height,"output/table.posthoc.height.rds")

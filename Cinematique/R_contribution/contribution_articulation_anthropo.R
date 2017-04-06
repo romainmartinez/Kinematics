@@ -35,6 +35,6 @@ anthropo <- data.frame(number = c(men %>% nrow,women %>% nrow),
                        mean.height = c(mean(men$Taille),mean(women$Taille)),
                        std.height = c(sd(men$Taille), sd(women$Taille)))
 
-anthropo[,-1] <- anthropo[,-1] %>% round(digits = 1)
+anthropo[,-1] <- anthropo[,-1] %>% round(digits = 2)
 
 saveRDS(anthropo, file.path(paste(path.output,"anthropo.rds", sep = "")))
