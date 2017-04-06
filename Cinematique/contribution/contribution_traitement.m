@@ -107,6 +107,7 @@ for i = 1 : length(bigstruct)
     SPM.delta_GH(i,:)   = ScaleTime(bigstruct(i).deltaGH, 1, length(bigstruct(i).deltaGH), nbframe);
     SPM.delta_SCAC(i,:) = ScaleTime(bigstruct(i).deltaSCAC, 1, length(bigstruct(i).deltaSCAC), nbframe);
     SPM.delta_RoB(i,:)  = ScaleTime(bigstruct(i).deltaRoB, 1, length(bigstruct(i).deltaRoB), nbframe);
+    SPM.boite(i,:) = ScaleTime(bigstruct(i).boite, 1, length(bigstruct(i).boite), nbframe)';
 end
 
 % Vecteur X (time in %)
@@ -149,5 +150,6 @@ if exporter == 1
 end
 %% plot
 if grammplot == 1
-    gramm_contribution(SPM)
+    gramm_contribution(SPM);
+    gramm_boite(SPM);
 end
