@@ -1,5 +1,5 @@
-function [anova,interaction, mainA, mainB] = SPM_contribution(Y, A, B, SUBJ, delta, time, correctbonf)
-%% Bonferonni correction
+function [anova,interaction] = SPM_contribution(Y, A, B, SUBJ, delta, time, correctbonf)
+% Bonferonni correction
 if correctbonf == 1
     % 4 ANOVA (for each delta)
     nanova  = 4;
@@ -11,7 +11,8 @@ else
     p.anova = 0.05;
     p.ttest = 0.05;
 end
-%% Two-way ANOVA with repeated-measures on one factor
+
+% Two-way ANOVA with repeated-measures on one factor
 anova2.spmlist  = spm1d.stats.anova2onerm(Y, A, B, SUBJ);
 anova2.spmilist = anova2.spmlist.inference(p.anova);
 index = 0;
@@ -25,9 +26,14 @@ for ieffect = 1 : 3
         anova(index).p      = anova2.spmilist.SPMs{1, ieffect}.p(icluster);
         anova(index).start  = round(anova2.spmilist.SPMs{1, ieffect}.clusters{1, icluster}.endpoints(1));
         anova(index).end    = round(anova2.spmilist.SPMs{1, ieffect}.clusters{1, icluster}.endpoints(2));
+        if anova(index).start == 0
+            anova(index).start = 1;
+        end
+        anova(index).diff = mean2(Y(A == 1,anova(index).start:anova(index).end)) - mean2(Y(A == 2,anova(index).start:anova(index).end));
     end
 end
-%% 1) Interaction sex - height
+
+% 1) Interaction sex - height
 if anova2.spmilist.SPMs{1, 3}.h0reject == 1
     [roi] = SPM_roi(anova2.spmilist.SPMs{1, 3}.clusters);     % Region of Interest
     index = 0;
@@ -68,43 +74,4 @@ if anova2.spmilist.SPMs{1, 3}.h0reject == 1
     end
 else
     interaction = [];
-end
-%% 2) Main effect sex
-if anova2.spmilist.SPMs{1, 1}.h0reject == 1
-    index = 0;
-    for iCluster = 1 : anova2.spmilist.SPMs{1, 1}.nClusters
-        index = index + 1;
-        mainA(index).delta = delta;
-        mainA(index).comp  = 'Main A';
-        mainA(index).df1 = anova2.spmilist.SPMs{1, 1}.df(1);
-        mainA(index).df2 = anova2.spmilist.SPMs{1, 1}.df(2);
-        mainA(index).p = anova2.spmilist.SPMs{1, 1}.p(iCluster);
-        mainA(index).start = round(anova2.spmilist.SPMs{1, 1}.clusters{1, iCluster}.endpoints(1));
-        mainA(index).end = round(anova2.spmilist.SPMs{1, 1}.clusters{1, iCluster}.endpoints(2));
-        if mainA(index).start == 0
-            mainA(index).start = 1;
-        end
-        mainA(index).diff = mean2(Y(A == 1,mainA(index).start:mainA(index).end)) - mean2(Y(A == 2,mainA(index).start:mainA(index).end));
-    end
-else
-    mainA = [];
-end
-%% 3) Main effect height
-if anova2.spmilist.SPMs{1, 2}.h0reject == 1
-    index = 0;
-    for iCluster = 1 : anova2.spmilist.SPMs{1, 2}.nClusters
-        index = index + 1;
-        mainB(index).delta = delta;
-        mainB(index).comp  = 'Main B';
-        mainB(index).df1 = anova2.spmilist.SPMs{1, 2}.df(1);
-        mainB(index).df2 = anova2.spmilist.SPMs{1, 2}.df(2);
-        mainB(index).p = anova2.spmilist.SPMs{1, 2}.p(iCluster);
-        mainB(index).start = round(anova2.spmilist.SPMs{1, 2}.clusters{1, iCluster}.endpoints(1));
-        mainB(index).end = round(anova2.spmilist.SPMs{1, 2}.clusters{1, iCluster}.endpoints(2));
-        if mainB(index).start == 0
-            mainB(index).start = 1;
-        end
-    end
-else
-    mainB = [];
 end
