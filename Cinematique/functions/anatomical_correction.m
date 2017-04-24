@@ -1,7 +1,7 @@
-function [q_correct] = anatomical_correction(sujet, num_model, model, save_fig)
+function [q_correct] = anatomical_correction(sujet, num_model, model, save_fig, path2)
 % Path
-importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' sujet 'd\MODEL' num2str(round(num_model)) '\'];
-exportPath = ['\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_articulation\figures\anatomical_corrected\'];
+importPath = [path2.E '\Projet_Reconstructions\DATA\Romain\' sujet 'd\MODEL' num2str(round(num_model)) '\'];
+exportPath = [path2.E '\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_articulation\figures\anatomical_corrected\'];
 Qnames     = dir([importPath '*_MOD' num2str(num_model) '*' 'r' '*.Q*']);
 
 % load relax trial

@@ -1,6 +1,6 @@
 %   Description: used to compute the contribution of each articulation to the height
 %   Output:  gives SPM output and graph
-%   Functions: uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
+%   Functions: uses functions present in //10.89.24.15/e/Project_IRSST_LeverCaisse/Codes/Functions_Matlab
 %
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
@@ -9,32 +9,25 @@
 
 clear variables; close all; clc
 
-%% load functions
-if ~contains(path, '\\10.89.24.15\e\Librairies\S2M_Lib\')
-    % S2M library
-    loadS2MLib;
-end
-
-% local functions
-cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
+path2 = load_functions('linux', 'Kinematics/Cinematique');
 
 %% Switch
 grammplot   =   1;                  % 0 ou 1 ou 2
 stat        =   1;                  % 0 ou 1
 correctbonf =   1;                  % 0 ou 1
-exporter    =   1;                  % 0 ou 1
+exporter    =   0;                  % 0 ou 1
 comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
 poids       =   1;                  % 1 (12-6) ou 2 (18-12)
 
 %% Path
-path.Datapath = ['\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\' variable '\'];
-path.exportpath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_articulation\SPM\';
-alias.matname = dir([path.Datapath '*mat']);
+path2.Datapath = [path2.E '/Projet_IRSST_LeverCaisse/ElaboratedData/matrices/' variable '/'];
+path2.exportpath = [path2.E '/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/'];
+alias.matname = dir([path2.Datapath '*mat']);
 
 %% load data
 for i = length(alias.matname) : -1 : 1
-    RAW(i) = load([path.Datapath alias.matname(i).name]);
+    RAW(i) = load([path2.Datapath alias.matname(i).name]);
     
     for u = 1 : length(RAW(i).temp)
         RAW(i).temp(u).sujet = alias.matname(i).name(1:end-4);
@@ -141,13 +134,14 @@ if exporter == 1
             export.(batch{ibatch}) = vertcat(header.(batch{ibatch}),export.(batch{ibatch}));
             
             if     comparaison == '%'
-                xlswrite([path.exportpath variable '_relative.xlsx'], export.(batch{ibatch}), batch{ibatch});
+                xlswrite([path2.exportpath variable '_relative.xlsx'], export.(batch{ibatch}), batch{ibatch});
             elseif comparaison == '='
-                xlswrite([path.exportpath variable '_absolute.xlsx'], export.(batch{ibatch}), batch{ibatch});
+                xlswrite([path2.exportpath variable '_absolute.xlsx'], export.(batch{ibatch}), batch{ibatch});
             end
         end
     end
 end
+
 %% plot
 if grammplot == 1
     gramm_contribution(SPM);

@@ -1,5 +1,5 @@
 function [ sujets_export ] = sujets_valides
-%% Importer la feuille exce
+%% Importer la feuille excel
 [~, ~, sujets] = xlsread('\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_articulation\IRSST_infos_sujets.xlsx',...
     'Global','A2:K61');
 

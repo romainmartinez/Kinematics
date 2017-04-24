@@ -1,6 +1,6 @@
 %   Description: used to compute the contribution of each articulation to the height
 %   Output: gives matrix for input in SPM1D and GRAMM
-%   Functions: uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
+%   Functions: uses functions present in //10.89.24.15/e/Project_IRSST_LeverCaisse/Codes/Functions_Matlab
 %
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
@@ -9,14 +9,7 @@
 
 clear variables; close all; clc
 
-%% Chargement des fonctions
-if ~contains(path, '\\10.89.24.15\e\Librairies\S2M_Lib\')
-    % Librairie S2M
-    loadS2MLib;
-end
-
-% Fonctions locales
-cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
+path2 = load_functions('linux', 'Kinematics/Cinematique');
 
 %% Interrupteurs
 saveresults = 1;
@@ -24,58 +17,56 @@ anato       = 1;
 model       = 2.1;
 
 %% Nom des sujets
-Alias.sujet = sujets_valides;
+alias.sujet = IRSST_participants('IRSST');
 
-for isujet = length(Alias.sujet) : -1 : 1
+for isujet = length(alias.sujet) : -1 : 1
     
-    disp(['Traitement de ' cell2mat(Alias.sujet(isujet)) ' (' num2str(length(Alias.sujet) - isujet+1) ' sur ' num2str(length(Alias.sujet)) ')'])
+    disp(['Traitement de ' cell2mat(alias.sujet(isujet)) ' (' num2str(length(alias.sujet) - isujet+1) ' sur ' num2str(length(alias.sujet)) ')'])
     %% Chemin des fichiers
     % Dossier du sujet
-    Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\' Alias.sujet{isujet} 'd\Model_' num2str(round(model)) '\'];
-    % Dossier du modèle pour le sujet
-    Path.pathModel  = [Path.DirModels 'Model.s2mMod'];
+    path2.DirModels  = [path2.F '/Data/Shoulder/Lib/' alias.sujet{isujet} 'd/Model_' num2str(round(model)) '/' 'Model.s2mMod'];
     % Dossier des data
-    Path.importPath = ['\\10.89.24.15\e\Projet_Reconstructions\DATA\Romain\' Alias.sujet{isujet} 'd\Trials\'];
+    path2.importPath = [path2.E '/Projet_Reconstructions/DATA/Romain/' alias.sujet{isujet} 'd/trials/'];
     % Dossier d'exportation
-    Path.exportPath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\';
+    path2.exportPath = [path2.E '/Projet_IRSST_LeverCaisse/ElaboratedData/matrices/'];
     % Noms des fichiers data
-    Alias.Qnames    = dir([Path.importPath '*_MOD' num2str(model) '_*' 'r' '*.Q*']);
+    alias.Qnames    = dir([path2.importPath '*_MOD' num2str(model) '_*' 'r' '*.Q*']);
     
-    %% Ouverture et information du modèle
-    % Ouverture du modèle
-    Alias.model    = S2M_rbdl('new',Path.pathModel);
+    %% Ouverture et information du modï¿½le
+    % Ouverture du modï¿½le
+    alias.model    = S2M_rbdl('new',path2.DirModels);
     % Noms et nombre de DoF
-    Alias.nameDof  = S2M_rbdl('nameDof', Alias.model);
-    Alias.nDof     = S2M_rbdl('nDof', Alias.model);
+    alias.nameDof  = S2M_rbdl('nameDof', alias.model);
+    alias.nDof     = S2M_rbdl('nDof', alias.model);
     % Noms et nombre de marqueurs
-    Alias.nameTags = S2M_rbdl('nameTags', Alias.model);
-    Alias.nTags    = S2M_rbdl('nTags', Alias.model);
+    alias.nameTags = S2M_rbdl('nameTags', alias.model);
+    alias.nTags    = S2M_rbdl('nTags', alias.model);
     % Nom des segments
-    Alias.nameBody = S2M_rbdl('nameBody', Alias.model);
-    [Alias.segmentMarkers, Alias.segmentDoF] = segment_RBDL(round(model));
+    alias.nameBody = S2M_rbdl('nameBody', alias.model);
+    [alias.segmentMarkers, alias.segmentDoF] = segment_RBDL(round(model));
     
     
     %% Anatomical position correction
     if anato == 1
         save_fig = 0;
-        [q_correct] = anatomical_correction(Alias.sujet{isujet}, model, Alias.model, save_fig);
+        [q_correct] = anatomical_correction(alias.sujet{isujet}, model, alias.model, save_fig, path2);
     elseif anato == 0
         q_correct = 0;
     end
     
     %% Obtenir les onset et offset de force
-    load(['\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\forceindex\' cell2mat(Alias.sujet(isujet)) '_forceindex.mat'])
-    for trial = length(Alias.Qnames) : -1 : 1
-        %% Caractéristique de l'essai
+    load([path2.E '/Projet_IRSST_LeverCaisse/ElaboratedData/matrices/forceindex/' alias.sujet{isujet} '_forceindex.mat'])
+    for trial = length(alias.Qnames) : -1 : 1
+        %% Caractï¿½ristique de l'essai
         % Sexe du sujet
-        if     length(Alias.Qnames) == 54
+        if     length(alias.Qnames) == 54
             Data(trial).sexe = 'H';
-        elseif length(Alias.Qnames) == 36
+        elseif length(alias.Qnames) == 36
             Data(trial).sexe = 'F';
         end
         
         % Noms des essais
-        Data(trial).trialname = Alias.Qnames(trial).name(5:11);
+        Data(trial).trialname = alias.Qnames(trial).name(5:11);
         
         if Data(trial).trialname(end) == '_'
             Data(trial).trialname = Data(trial).trialname(1:end-1);
@@ -89,9 +80,9 @@ for isujet = length(Alias.sujet) : -1 : 1
         Data(trial).time   = forceindex{row,4};
         
         %% Importation des Q,QDOT,QDDOT
-        Data(trial).Qdata = load([Path.importPath Alias.Qnames(trial).name], '-mat');
+        Data(trial).Qdata = load([path2.importPath alias.Qnames(trial).name], '-mat');
         
-        %% Contribution des articulation à la hauteur
+        %% Contribution des articulation ï¿½ la hauteur
         % Initialisation des Q
         if length(fieldnames(Data(trial).Qdata)) == 3
             q1 = Data(trial).Qdata.Q2(:,round(Data(trial).start:Data(trial).end));
@@ -103,52 +94,52 @@ for isujet = length(Alias.sujet) : -1 : 1
         q1 = transpose(lpfilter(q1', 15, 100));
         
         %% Articulation 1 : Poignet + coude
-        % Coordonnées des marqueurs dans le repère global
-        T = S2M_rbdl('Tags', Alias.model, q1);
+        % Coordonnï¿½es des marqueurs dans le repï¿½re global
+        T = S2M_rbdl('Tags', alias.model, q1);
         
-        % Marqueurs du segment en cours ('3' correspond à Z car on s'intéresse à la hauteur)
+        % Marqueurs du segment en cours ('3' correspond ï¿½ Z car on s'intï¿½resse ï¿½ la hauteur)
         Data(trial).H(:,:,1) = squeeze(T(3,39,:));
         
-        % position verticale au moment de la prise et lâché caisse (pour normalisation plus tard)
+        % position verticale au moment de la prise et lï¿½chï¿½ caisse (pour normalisation plus tard)
         Data(trial).normalization = [Data(trial).H(1,:,1) Data(trial).H(end,:,1)];
         
         % Blocage des q du segment
-        q1(Alias.segmentDoF.handelbow,:) = repmat(q_correct(Alias.segmentDoF.handelbow), 1, length(q1));
+        q1(alias.segmentDoF.handelbow,:) = repmat(q_correct(alias.segmentDoF.handelbow), 1, length(q1));
         
-        % Redefinition des marqueurs avec les q bloqués
-        T = S2M_rbdl('Tags', Alias.model, q1);
+        % Redefinition des marqueurs avec les q bloquï¿½s
+        T = S2M_rbdl('Tags', alias.model, q1);
         
-        % Marqueurs du segment en cours avec q bloqués
+        % Marqueurs du segment en cours avec q bloquï¿½s
         Data(trial).H(:,:,2) = squeeze(T(3,39,:));
               
         %% Articulation 2 : GH
         % Blocage des q du segment
-        q1(Alias.segmentDoF.GH,:) = repmat(q_correct(Alias.segmentDoF.GH), 1, length(q1));
+        q1(alias.segmentDoF.GH,:) = repmat(q_correct(alias.segmentDoF.GH), 1, length(q1));
         
-        % Redefinition des marqueurs avec les q bloqués
-        T = S2M_rbdl('Tags', Alias.model,q1);
+        % Redefinition des marqueurs avec les q bloquï¿½s
+        T = S2M_rbdl('Tags', alias.model,q1);
         
-        % Marqueurs du segment en cours avec q bloqués
+        % Marqueurs du segment en cours avec q bloquï¿½s
         Data(trial).H(:,:,3) = squeeze(T(3,39,:));
               
         %% Articulation 3 : GH
         % Blocage des q du segment
-        q1(Alias.segmentDoF.SCAC,:) = repmat(q_correct(Alias.segmentDoF.SCAC), 1, length(q1));
+        q1(alias.segmentDoF.SCAC,:) = repmat(q_correct(alias.segmentDoF.SCAC), 1, length(q1));
         
-        % Redefinition des marqueurs avec les q bloqués
-        T = S2M_rbdl('Tags', Alias.model, q1);
+        % Redefinition des marqueurs avec les q bloquï¿½s
+        T = S2M_rbdl('Tags', alias.model, q1);
         
-        % Marqueurs du segment en cours avec q bloqués
+        % Marqueurs du segment en cours avec q bloquï¿½s
         Data(trial).H(:,:,4) = squeeze(T(3,39,:));
              
         %% Articulation 4 : Reste du corps (pelvis + thorax)
         % Blocage des q du segment
-        q1(Alias.segmentDoF.RoB,:) = repmat(q_correct(Alias.segmentDoF.RoB), 1, length(q1));
+        q1(alias.segmentDoF.RoB,:) = repmat(q_correct(alias.segmentDoF.RoB), 1, length(q1));
         
-        % Redefinition des marqueurs avec les q bloqués
-        T = S2M_rbdl('Tags', Alias.model, q1);
+        % Redefinition des marqueurs avec les q bloquï¿½s
+        T = S2M_rbdl('Tags', alias.model, q1);
         
-        % Marqueurs du segment en cours avec q bloqués
+        % Marqueurs du segment en cours avec q bloquï¿½s
         Data(trial).H(:,:,5) = squeeze(T(3,39,:));
       
     end
@@ -157,20 +148,20 @@ for isujet = length(Alias.sujet) : -1 : 1
     [Data]    = getcondition(Data);
     [~,index] = sortrows([Data.condition].'); Data = Data(index); clear index
     
-    S2M_rbdl('delete', Alias.model);
+    S2M_rbdl('delete', alias.model);
     
-    %% calcul de la contribution à la hauteur
+    %% calcul de la contribution ï¿½ la hauteur
     Data = contrib_height(Data);
 
     %% Sauvegarde de la matrice
     if saveresults == 1
         % hauteur
         temp = rmfield(Data,{'Qdata','normalization','H'});
-        save([Path.exportPath 'hauteur\' Alias.sujet{1,isujet} '.mat'],'temp')
+        save([path2.exportPath 'hauteur/' alias.sujet{1,isujet} '.mat'],'temp')
         clearvars temp
-        % cinématique
+        % cinï¿½matique
         temp = rmfield(Data, {'deltahand', 'deltaGH', 'deltaSCAC', 'deltaRoB','normalization','H'});
-        save([Path.exportPath 'cinematique\' Alias.sujet{1,isujet} '.mat'],'temp')
+        save([path2.exportPath 'cinematique/' alias.sujet{1,isujet} '.mat'],'temp')
         clearvars temp
     end
     
