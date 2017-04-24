@@ -12,13 +12,12 @@ clear variables; close all; clc
 path2 = load_functions('linux', 'Kinematics/Cinematique');
 
 %% Switch
-grammplot   =   1;                  % 0 ou 1 ou 2
+variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
+weight      =   [12,6];             % first: men's weight | second: women's weight
 stat        =   1;                  % 0 ou 1
 correctbonf =   1;                  % 0 ou 1
-exporter    =   0;                  % 0 ou 1
-comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
-variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
-poids       =   1;                  % 1 (12-6) ou 2 (18-12)
+exporter    =   1;                  % 0 ou 1
+grammplot   =   1;                  % 0 ou 1 ou 2
 
 %% Path
 path2.Datapath = [path2.E '/Projet_IRSST_LeverCaisse/ElaboratedData/matrices/' variable '/'];
@@ -42,33 +41,8 @@ end
 % big structure of data
 bigstruct  = struct2array(RAW);
 
-%% Choice of comparison (absolute or relative)
-switch comparaison
-    case '='
-        for i = length(bigstruct):-1:1
-            if bigstruct(i).poids == 18
-                bigstruct(i) = [];
-            elseif bigstruct(i).poids == 6
-                bigstruct(i).poids = 1;
-            elseif bigstruct(i).poids == 12
-                bigstruct(i).poids = 2;
-            end
-        end
-    case '%'
-        for i = length(bigstruct):-1:1
-            if bigstruct(i).poids == 6 && bigstruct(i).sexe == 1
-                bigstruct(i) = [];
-            elseif bigstruct(i).poids == 12 && bigstruct(i).sexe == 1
-                bigstruct(i).poids = 1;
-            elseif bigstruct(i).poids == 18 && bigstruct(i).sexe == 1
-                bigstruct(i).poids = 2;
-            elseif bigstruct(i).poids == 6 && bigstruct(i).sexe == 2
-                bigstruct(i).poids = 1;
-            elseif bigstruct(i).poids == 12 && bigstruct(i).sexe == 2
-                bigstruct(i).poids = 2;
-            end
-        end
-end
+% select weight
+bigstruct = select_weight(bigstruct, weight);
 
 %% Factors
 SPM.sexe    = vertcat(bigstruct(:).sexe)';
@@ -110,16 +84,16 @@ SPM.time  = linspace(0,100,nbframe);
 if stat == 1
     for iDelta = 4 : -1 : 1 % delta
         %% variable
-        [SPM, result(iDelta).test, idx] = selectSPMvariable(SPM,iDelta,poids);
+        [SPM, result(iDelta).test] = selectSPMvariable(SPM,iDelta);
         %% SPM analysis
-        [result(iDelta).anova,result(iDelta).interaction,result(iDelta).mainA,result(iDelta).mainB] = SPM_contribution(...
-            SPM.comp(idx,:),SPM.sexe(idx),SPM.hauteur(idx),SPM.sujet(idx),iDelta,SPM.duree(idx),correctbonf);
+        [result(iDelta).anova,result(iDelta).interaction] = SPM_contribution(...
+            SPM.comp,SPM.sexe,SPM.hauteur,SPM.sujet,iDelta,SPM.duree,correctbonf);
     end
 end
 
 %% Export results (xlsx)
 if exporter == 1
-    batch = {'anova', 'interaction', 'mainA', 'mainB'};
+    batch = {'anova', 'interaction'};
     for ibatch = 1 : length(batch)
         if isempty([result(:).(batch{ibatch})]) ~= 1
             % cat structure
@@ -132,12 +106,8 @@ if exporter == 1
             export.(batch{ibatch}) = permute(export.(batch{ibatch}),[3,1,2]);
             % export matrix
             export.(batch{ibatch}) = vertcat(header.(batch{ibatch}),export.(batch{ibatch}));
-            
-            if     comparaison == '%'
-                xlswrite([path2.exportpath variable '_relative.xlsx'], export.(batch{ibatch}), batch{ibatch});
-            elseif comparaison == '='
-                xlswrite([path2.exportpath variable '_absolute.xlsx'], export.(batch{ibatch}), batch{ibatch});
-            end
+                        
+            cell2csv([path2.exportpath variable batch{ibatch} num2str(weight(1)) 'vs' num2str(weight(2)) '.csv'], export.(batch{ibatch}), ',');
         end
     end
 end
