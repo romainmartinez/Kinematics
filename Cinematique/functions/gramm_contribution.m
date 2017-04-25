@@ -1,11 +1,10 @@
 function gramm_contribution(input)
-idx = find(input.poids == 1);
 %% reshaping data
-long.sexe     = repmat(input.sexe(idx),[1 4]);
-long.hauteur  = repmat(input.hauteur(idx),[1 4]);
-long.delta    = kron(transpose(1:4), ones(length(input.sexe(idx)),1))';
-data.data  = vertcat(input.delta_hand(idx,:), input.delta_GH(idx,:),...
-    input.delta_SCAC(idx,:), input.delta_RoB(idx,:));
+long.sexe     = repmat(input.sexe,[1 4]);
+long.hauteur  = repmat(input.hauteur,[1 4]);
+long.delta    = kron(transpose(1:4), ones(length(input.sexe),1))';
+data.data  = vertcat(input.delta_hand, input.delta_GH,...
+    input.delta_SCAC, input.delta_RoB);
 
 % convert to string
 convert.sexe = {'men','women'};
