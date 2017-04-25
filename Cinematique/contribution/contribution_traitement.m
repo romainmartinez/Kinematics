@@ -14,6 +14,7 @@ path2 = load_functions('linux', 'Kinematics/Cinematique');
 %% Switch
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
 weight      =   [12,6];             % first: men's weight | second: women's weight
+samesex     =   1;                  % 0 ou 1 (men) ou 2 (women)
 stat        =   1;                  % 0 ou 1
 correctbonf =   1;                  % 0 ou 1
 exporter    =   1;                  % 0 ou 1
@@ -42,7 +43,7 @@ end
 bigstruct  = struct2array(RAW);
 
 % select weight
-bigstruct = select_weight(bigstruct, weight);
+bigstruct = select_weight(bigstruct, weight, samesex);
 
 %% Factors
 SPM.sexe    = vertcat(bigstruct(:).sexe)';
@@ -106,7 +107,7 @@ if exporter == 1
             export.(batch{ibatch}) = permute(export.(batch{ibatch}),[3,1,2]);
             % export matrix
             export.(batch{ibatch}) = vertcat(header.(batch{ibatch}),export.(batch{ibatch}));
-                        
+            
             cell2csv([path2.exportpath variable batch{ibatch} num2str(weight(1)) 'vs' num2str(weight(2)) '.csv'], export.(batch{ibatch}), ',');
         end
     end

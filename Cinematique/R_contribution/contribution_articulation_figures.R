@@ -18,7 +18,7 @@ setwd(path.current)
 
 # switch
 variable    <- 'hauteur'
-comparison  <- '12vs6'
+comparison  <- '18vs6'
 keepMainB <- 0
 
 # load data ---------------------------------------------------------------
@@ -50,6 +50,7 @@ if (keepMainB == 0) {
 
 # gantt plot --------------------------------------------------------------
 plot_limit <- c(interaction$diff,anova$diff) %>% abs() %>% max() %>% round() + 1
+#plot_limit <- 15
 source("functions/plot_gantt.R")
 plot_gantt(anova, plot_limit, case = 'anova')
 plot_gantt(interaction, plot_limit, case = 'interaction')
