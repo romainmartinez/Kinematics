@@ -15,7 +15,6 @@ path2 = load_functions('linux', 'Kinematics/Cinematique');
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
 weight      =   [12,6];             % first: men's weight | second: women's weight
 samesex     =   1;                  % 0 ou 1 (men) ou 2 (women)
-stat        =   1;                  % 0 ou 1
 correctbonf =   1;                  % 0 ou 1
 exporter    =   1;                  % 0 ou 1
 grammplot   =   1;                  % 0 ou 1 ou 2
@@ -82,14 +81,12 @@ end
 SPM.time  = linspace(0,100,nbframe);
 
 %% SPM
-if stat == 1
-    for iDelta = 4 : -1 : 1 % delta
-        %% variable
-        [SPM, result(iDelta).test] = selectSPMvariable(SPM,iDelta);
-        %% SPM analysis
-        [result(iDelta).anova,result(iDelta).interaction] = SPM_contribution(...
-            SPM.comp,SPM.sexe,SPM.hauteur,SPM.sujet,iDelta,SPM.duree,correctbonf);
-    end
+for iDelta = 4 : -1 : 1 % delta
+    %% variable
+    [SPM, result(iDelta).test] = selectSPMvariable(SPM,iDelta);
+    %% SPM analysis
+    [result(iDelta).anova,result(iDelta).interaction] = SPM_contribution(...
+        SPM.comp,SPM.sexe,SPM.hauteur,SPM.sujet,iDelta,SPM.duree,correctbonf);
 end
 
 %% Export results (xlsx)
@@ -116,5 +113,4 @@ end
 %% plot
 if grammplot == 1
     gramm_contribution(SPM);
-    gramm_boite(SPM);
 end
