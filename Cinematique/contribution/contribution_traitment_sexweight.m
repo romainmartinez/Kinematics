@@ -62,6 +62,16 @@ for i = 1 : length(bigstruct)
     end
 end
 
+% plot
+if verif
+    % verif
+%     plot_verif(SPM)
+end
+
+if grammplot == 1
+    gramm_contribution(SPM);
+end
+
 % Vecteur X (time in %)
 SPM.time  = linspace(0,100,nbframe);
 
@@ -76,7 +86,7 @@ for idelta = 4 : -1 : 1 % delta
     %         SPM.comp,SPM.sexe,SPM.poids,SPM.sujet,idelta,SPM.duree,correctbonf);
 end
 
-%% Export results (csv)
+% Export results (csv)
 if exporter == 1
     batch = {'anova', 'interaction'};
     for ibatch = 1 : length(batch)
@@ -95,9 +105,4 @@ if exporter == 1
             cell2csv([path2.exportpath variable batch{ibatch} num2str(weight(1)) 'vs' num2str(weight(2)) '.csv'], export.(batch{ibatch}), ',');
         end
     end
-end
-
-%% plot
-if grammplot == 1
-    gramm_contribution(SPM);
 end
