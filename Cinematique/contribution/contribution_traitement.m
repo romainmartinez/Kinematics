@@ -9,14 +9,14 @@
 
 clear variables; close all; clc
 
-path2 = load_functions('linux', 'Kinematics/Cinematique');
+path2 = load_functions('windo', 'Kinematics/Cinematique');
 
 %% Switch
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
 weight      =   [12,6];             % first: men's weight | second: women's weight
 samesex     =   1;                  % 0 ou 1 (men) ou 2 (women)
 correctbonf =   1;                  % 0 ou 1
-exporter    =   1;                  % 0 ou 1
+exporter    =   0;                  % 0 ou 1
 grammplot   =   1;                  % 0 ou 1 ou 2
 
 %% Path

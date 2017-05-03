@@ -9,7 +9,7 @@
 
 clear variables; close all; clc
 
-path2 = load_functions('linux', 'Kinematics/Cinematique');
+path2 = load_functions('windo', 'Kinematics/Cinematique');
 
 %% Interrupteurs
 saveresults = 1;
@@ -34,17 +34,16 @@ for isujet = length(alias.sujet) : -1 : 1
     
     %% Ouverture et information du mod�le
     % Ouverture du mod�le
-    alias.model    = S2M_rbdl('new',path2.DirModels);
+    alias.model = S2M_rbdl('new',path2.DirModels);
     % Noms et nombre de DoF
-    alias.nameDof  = S2M_rbdl('nameDof', alias.model);
-    alias.nDof     = S2M_rbdl('nDof', alias.model);
+    alias.nameDof = S2M_rbdl('nameDof', alias.model);
+    %     alias.nDof = S2M_rbdl('nDof', alias.model);
     % Noms et nombre de marqueurs
     alias.nameTags = S2M_rbdl('nameTags', alias.model);
-    alias.nTags    = S2M_rbdl('nTags', alias.model);
+    alias.nTags = S2M_rbdl('nTags', alias.model);
     % Nom des segments
     alias.nameBody = S2M_rbdl('nameBody', alias.model);
     [alias.segmentMarkers, alias.segmentDoF] = segment_RBDL(round(model));
-    
     
     %% Anatomical position correction
     if anato == 1
@@ -84,6 +83,9 @@ for isujet = length(alias.sujet) : -1 : 1
         
         %% Contribution des articulation � la hauteur
         % Initialisation des Q
+        if round(Data(trial).start) == 0
+            Data(trial).start = 1;
+        end
         if length(fieldnames(Data(trial).Qdata)) == 3
             q1 = Data(trial).Qdata.Q2(:,round(Data(trial).start:Data(trial).end));
         elseif length(fieldnames(Data(trial).Qdata)) == 1
@@ -111,7 +113,7 @@ for isujet = length(alias.sujet) : -1 : 1
         
         % Marqueurs du segment en cours avec q bloqu�s
         Data(trial).H(:,:,2) = squeeze(T(3,39,:));
-              
+        
         %% Articulation 2 : GH
         % Blocage des q du segment
         q1(alias.segmentDoF.GH,:) = repmat(q_correct(alias.segmentDoF.GH), 1, length(q1));
@@ -121,7 +123,7 @@ for isujet = length(alias.sujet) : -1 : 1
         
         % Marqueurs du segment en cours avec q bloqu�s
         Data(trial).H(:,:,3) = squeeze(T(3,39,:));
-              
+        
         %% Articulation 3 : GH
         % Blocage des q du segment
         q1(alias.segmentDoF.SCAC,:) = repmat(q_correct(alias.segmentDoF.SCAC), 1, length(q1));
@@ -131,7 +133,7 @@ for isujet = length(alias.sujet) : -1 : 1
         
         % Marqueurs du segment en cours avec q bloqu�s
         Data(trial).H(:,:,4) = squeeze(T(3,39,:));
-             
+        
         %% Articulation 4 : Reste du corps (pelvis + thorax)
         % Blocage des q du segment
         q1(alias.segmentDoF.RoB,:) = repmat(q_correct(alias.segmentDoF.RoB), 1, length(q1));
@@ -141,7 +143,7 @@ for isujet = length(alias.sujet) : -1 : 1
         
         % Marqueurs du segment en cours avec q bloqu�s
         Data(trial).H(:,:,5) = squeeze(T(3,39,:));
-      
+        
     end
     
     %% Condition de l'essai
@@ -152,16 +154,16 @@ for isujet = length(alias.sujet) : -1 : 1
     
     %% calcul de la contribution � la hauteur
     Data = contrib_height(Data);
-
+    
     %% Sauvegarde de la matrice
     if saveresults == 1
         % hauteur
         temp = rmfield(Data,{'Qdata','normalization','H'});
-        save([path2.exportPath 'hauteur/' alias.sujet{1,isujet} '.mat'],'temp')
+        save([path2.exportPath 'hauteur/' alias.sujet{isujet} '.mat'],'temp')
         clearvars temp
         % cin�matique
         temp = rmfield(Data, {'deltahand', 'deltaGH', 'deltaSCAC', 'deltaRoB','normalization','H'});
-        save([path2.exportPath 'cinematique/' alias.sujet{1,isujet} '.mat'],'temp')
+        save([path2.exportPath 'cinematique/' alias.sujet{isujet} '.mat'],'temp')
         clearvars temp
     end
     
