@@ -15,7 +15,6 @@ path2 = load_functions('linux', 'Kinematics/Cinematique');
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
 weight      =   [12,6];             % first: men's weight | second: women's weight
 samesex     =   1;                  % 0 ou 1 (men) ou 2 (women)
-stat        =   1;                  % 0 ou 1
 correctbonf =   1;                  % 0 ou 1
 exporter    =   1;                  % 0 ou 1
 grammplot   =   1;                  % 0 ou 1 ou 2
@@ -46,11 +45,11 @@ bigstruct  = struct2array(RAW);
 bigstruct = select_weight(bigstruct, weight, samesex);
 
 %% Factors
-SPM.sexe    = vertcat(bigstruct(:).sexe)';
-SPM.hauteur = vertcat(bigstruct(:).hauteur)';
-SPM.poids   = vertcat(bigstruct(:).poids)';
-SPM.duree   = vertcat(bigstruct(:).time)';
-SPM.sujet   = vertcat(bigstruct(:).nsujet)';
+SPM.sex = vertcat(bigstruct(:).sexe)';
+SPM.height = vertcat(bigstruct(:).hauteur)';
+SPM.weight = vertcat(bigstruct(:).poids)';
+SPM.time = vertcat(bigstruct(:).time)';
+SPM.subject = vertcat(bigstruct(:).nsujet)';
 
 %% Number of men & women
 femmes = sum(SPM.sexe == 2)/36;
@@ -71,10 +70,10 @@ for i = 1 : length(bigstruct)
     bigstruct(i).deltaRoB  = lpfilter(bigstruct(i).deltaRoB, 15, 100);
     
     % interpolation
-    SPM.delta_hand(i,:) = ScaleTime(bigstruct(i).deltahand, 1, length(bigstruct(i).deltahand), nbframe);
-    SPM.delta_GH(i,:)   = ScaleTime(bigstruct(i).deltaGH, 1, length(bigstruct(i).deltaGH), nbframe);
-    SPM.delta_SCAC(i,:) = ScaleTime(bigstruct(i).deltaSCAC, 1, length(bigstruct(i).deltaSCAC), nbframe);
-    SPM.delta_RoB(i,:)  = ScaleTime(bigstruct(i).deltaRoB, 1, length(bigstruct(i).deltaRoB), nbframe);
+    SPM.deltahand(i,:) = ScaleTime(bigstruct(i).deltahand, 1, length(bigstruct(i).deltahand), nbframe);
+    SPM.deltaGH(i,:)   = ScaleTime(bigstruct(i).deltaGH, 1, length(bigstruct(i).deltaGH), nbframe);
+    SPM.deltaSCAC(i,:) = ScaleTime(bigstruct(i).deltaSCAC, 1, length(bigstruct(i).deltaSCAC), nbframe);
+    SPM.deltaRoB(i,:)  = ScaleTime(bigstruct(i).deltaRoB, 1, length(bigstruct(i).deltaRoB), nbframe);
     SPM.boite(i,:) = ScaleTime(bigstruct(i).boite, 1, length(bigstruct(i).boite), nbframe)';
 end
 
@@ -82,14 +81,12 @@ end
 SPM.time  = linspace(0,100,nbframe);
 
 %% SPM
-if stat == 1
-    for iDelta = 4 : -1 : 1 % delta
-        %% variable
-        [SPM, result(iDelta).test] = selectSPMvariable(SPM,iDelta);
-        %% SPM analysis
-        [result(iDelta).anova,result(iDelta).interaction] = SPM_contribution(...
-            SPM.comp,SPM.sexe,SPM.hauteur,SPM.sujet,iDelta,SPM.duree,correctbonf);
-    end
+for iDelta = 4 : -1 : 1 % delta
+    %% variable
+    [SPM, result(iDelta).test] = selectSPMvariable(SPM,iDelta);
+    %% SPM analysis
+    [result(iDelta).anova,result(iDelta).interaction] = SPM_contribution(...
+        SPM.comp,SPM.sexe,SPM.hauteur,SPM.sujet,iDelta,SPM.duree,correctbonf);
 end
 
 %% Export results (xlsx)
@@ -116,5 +113,4 @@ end
 %% plot
 if grammplot == 1
     gramm_contribution(SPM);
-    gramm_boite(SPM);
 end

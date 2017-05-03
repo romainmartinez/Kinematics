@@ -1,18 +1,13 @@
-function [SPM, string, idx] = selectSPMvariable(SPM,delta)
-
+function [SPM, string] = selectSPMvariable(SPM,delta)
 switch delta
     case 1
-        SPM.comp = SPM.delta_hand;
-        string   = 'delta_hand';
+        SPM.comp = SPM.deltahand;
     case 2
-        SPM.comp = SPM.delta_GH;
-        string   = 'delta_GH';
+        SPM.comp = SPM.deltaGH;
     case 3
-        SPM.comp = SPM.delta_SCAC;
-        string   = 'delta_SCAC';
+        SPM.comp = SPM.deltaSCAC;
     case 4
-        SPM.comp = SPM.delta_RoB;
-        string   = 'delta_RoB';
+        SPM.comp = SPM.deltaRoB;
     otherwise
         disp('Wrong delta')
 end
