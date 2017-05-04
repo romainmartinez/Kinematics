@@ -17,8 +17,8 @@ path2 = load_functions('linux', 'Kinematics/Cinematique');
 % Switch
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
 verif       =   1;                  % 0 or 1
-exporter    =   1;                  % 0 or 1
 grammplot   =   1;                  % 0 or 1
+exporter    =   1;                  % 0 or 1
 
 % Path
 path2.Datapath = [path2.E '/Projet_IRSST_LeverCaisse/ElaboratedData/matrices/' variable '/'];
@@ -39,18 +39,15 @@ bigstruct  = struct2array(RAW);
 % select data
 bigstruct = select_data(bigstruct, 2);
 
+% number of frames needed (interpolation)
+nbframe = 100;
+
 % Factors
 SPM.sex = vertcat(bigstruct(:).sexe)';
 SPM.weight = vertcat(bigstruct(:).poids)';
-SPM.time = vertcat(bigstruct(:).time)';
+SPM.duration = vertcat(bigstruct(:).time)';
 SPM.subject = vertcat(bigstruct(:).nsujet)';
-
-% Number of men & women
-isbalanced(SPM.sex)
-
-% Variables
-% number of frames
-nbframe = 100;
+SPM.time  = linspace(0,100,nbframe); % Vecteur X (time in %)
 
 % Transform dataframe into GRAMM & SPM friendly
 for i = 1 : length(bigstruct)
@@ -62,18 +59,16 @@ for i = 1 : length(bigstruct)
     end
 end
 
-% plot
 if verif
-    % verif
-%     plot_verif(SPM)
+    gramm_contribution(SPM, 'verif');
 end
 
-if grammplot == 1
+if grammplot
     gramm_contribution(SPM);
 end
 
-% Vecteur X (time in %)
-SPM.time  = linspace(0,100,nbframe);
+% Number of men & women
+isbalanced(SPM.sex)
 
 % SPM
 for idelta = 4 : -1 : 1 % delta
@@ -87,7 +82,7 @@ for idelta = 4 : -1 : 1 % delta
 end
 
 % Export results (csv)
-if exporter == 1
+if exporter
     batch = {'anova', 'interaction'};
     for ibatch = 1 : length(batch)
         if isempty([result(:).(batch{ibatch})]) ~= 1
