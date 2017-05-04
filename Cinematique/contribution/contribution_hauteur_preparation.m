@@ -9,7 +9,7 @@
 
 clear variables; close all; clc
 
-path2 = load_functions('linux', 'Kinematics/Cinematique');
+path2 = load_functions('windo', 'Kinematics/Cinematique');
 
 %% Interrupteurs
 saveresults = 1;
@@ -34,17 +34,16 @@ for isujet = length(alias.sujet) : -1 : 1
     
     %% Ouverture et information du mod�le
     % Ouverture du mod�le
-    alias.model    = S2M_rbdl('new',path2.DirModels);
+    alias.model = S2M_rbdl('new',path2.DirModels);
     % Noms et nombre de DoF
-    alias.nameDof  = S2M_rbdl('nameDof', alias.model);
-    alias.nDof     = S2M_rbdl('nDof', alias.model);
+    alias.nameDof = S2M_rbdl('nameDof', alias.model);
+%     alias.nDof = S2M_rbdl('nDof', alias.model);
     % Noms et nombre de marqueurs
     alias.nameTags = S2M_rbdl('nameTags', alias.model);
-    alias.nTags    = S2M_rbdl('nTags', alias.model);
+    alias.nTags = S2M_rbdl('nTags', alias.model);
     % Nom des segments
     alias.nameBody = S2M_rbdl('nameBody', alias.model);
     [alias.segmentMarkers, alias.segmentDoF] = segment_RBDL(round(model));
-    
     
     %% Anatomical position correction
     if anato == 1
@@ -157,11 +156,11 @@ for isujet = length(alias.sujet) : -1 : 1
     if saveresults == 1
         % hauteur
         temp = rmfield(Data,{'Qdata','normalization','H'});
-        save([path2.exportPath 'hauteur/' alias.sujet{1,isujet} '.mat'],'temp')
+        save([path2.exportPath 'hauteur/' alias.sujet{isujet} '.mat'],'temp')
         clearvars temp
         % cin�matique
         temp = rmfield(Data, {'deltahand', 'deltaGH', 'deltaSCAC', 'deltaRoB','normalization','H'});
-        save([path2.exportPath 'cinematique/' alias.sujet{1,isujet} '.mat'],'temp')
+        save([path2.exportPath 'cinematique/' alias.sujet{isujet} '.mat'],'temp')
         clearvars temp
     end
     

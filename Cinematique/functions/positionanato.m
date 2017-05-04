@@ -15,7 +15,7 @@ Wrist = 27:28;
 % lsqnonlin parameters
 options = optimoptions('lsqnonlin','Display','iter');
 
-%%
+%
 % RL = S2M_rbdl('globalJCS', model ,Q0);
     function val = obj1(x)
         q = Q0;
@@ -71,33 +71,33 @@ options = optimoptions('lsqnonlin','Display','iter');
 % axis tight
 
 
-%% 1. | zThorax | zArm |
+% 1. | zThorax | zArm |
 RL = S2M_rbdl('globalJCS', model ,Q0);
 zThorax  = [0 0 1]'; %RL(1:3,3,2);
 Q0(Arm(1:2)) = lsqnonlin(@obj1,[0,0],[],[],options);
 
-%% 2. | xScapula | xArm |
+% 2. | xScapula | xArm |
 RL = S2M_rbdl('globalJCS', model ,Q0);
 xScapula = RL(1:3,1,4);
 Q0(Arm(3))   = lsqnonlin(@obj2,0,[],[],options);
 
-%% 3. | zArm | zLoArm |
+% 3. | zArm | zLoArm |
 RL = S2M_rbdl('globalJCS', model ,Q0);
 zArm  = RL(1:3,3,5);
 Q0(loArm1)   = lsqnonlin(@obj3,0,[],[],options);
 
-%% 4. | xLowArm2 | xArm |
+% 4. | xLowArm2 | xArm |
 RL = S2M_rbdl('globalJCS', model ,Q0);
 xArm  = RL(1:3,1,5);
 Q0(loArm2)   = lsqnonlin(@obj4,0,[],[],options);
 
-%% 5. | Wrist | LoArm2 |
+% 5. | Wrist | LoArm2 |
 RL = S2M_rbdl('globalJCS', model ,Q0);
 RLowArm2  = RL(1:3,2:3,7); RLowArm2 = RLowArm2(:);
 Q0(Wrist)   = lsqnonlin(@obj5,[0 0],[],[],options);
 
 
-%% plot
+% plot
 if trace == 1
     S2M_rbdl_ShowModel(model, Q0, 'rt', true, 'comi', false, 'tags', true, 'com', false, 'view', [-30 50])
     axis equal
