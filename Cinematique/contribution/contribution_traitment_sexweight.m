@@ -60,7 +60,10 @@ for i = 1 : length(bigstruct)
 end
 
 if verif
-    gramm_contribution(SPM, 'verif');
+    selected = gramm_contribution(SPM, 'verif');
+    export_selected = [cellstr(str2mat(bigstruct(selected).sujet)) cellstr(str2mat(bigstruct(selected).trialname))];
+    cell2csv('verif.csv', export_selected, ',');
+    
 end
 
 if grammplot

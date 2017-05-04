@@ -1,4 +1,4 @@
-function gramm_contribution(inputData, varargin)
+function selected = gramm_contribution(inputData, varargin)
 % reshape data
 long.sex = repmat(inputData.sex,[1 4]);
 long.weight = repmat(inputData.weight,[1 4]);
