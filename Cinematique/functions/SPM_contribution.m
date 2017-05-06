@@ -1,4 +1,4 @@
-function result = SPM_contribution(SPM, idelta, varargin)
+function result = SPM_contribution(SPM, idelta)
 % Bonferonni correction
 if nargin > 2 % bonferroni
     % 4 ANOVA (for each delta)
@@ -22,10 +22,10 @@ result.anova = SPM2mat(anova2, index, idelta, SPM, 'anova2w');
 
 % posthoc
 if anova2.spmilist.SPMs{1, 3}.h0reject == 1
-    [roi] = SPM_roi(anova2.spmilist.SPMs{1, 3}.clusters);     % Region of Interest
+    roi = SPM_roi(anova2.spmilist.SPMs{1, 3}.clusters);     % Region of Interest
     index = 0;
     
-    SPM_posthoc(SPM)
+    SPM_posthoc(SPM, roi)
     % export result
     result.posthoc = SPM2mat(anova2, index, idelta, SPM, 'posthoc');
 end
