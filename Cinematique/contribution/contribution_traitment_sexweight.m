@@ -12,11 +12,11 @@
 
 clear variables; close all; clc
 
-path2 = load_functions('linux', 'Kinematics/Cinematique');
+path2 = load_functions('windo', 'Kinematics/Cinematique');
 
 % Switch
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
-verif       =   1;                  % 0 or 1
+verif       =   0;                  % 0 or 1
 grammplot   =   0;                  % 0 or 1
 exporter    =   1;                  % 0 or 1
 
@@ -78,7 +78,7 @@ for idelta = 4 : -1 : 1 % delta
     % variable
     [SPM] = selectSPMvariable(SPM,idelta);
     % SPM analysis
-    [result(idelta)] = SPM_contribution(SPM, idelta);
+    [result(idelta).anova, result(idelta).posthoc]  = SPM_contribution(SPM, idelta);
     
     %     [result(idelta).anova,result(idelta).interaction] = SPM_contribution(...
     %         SPM.comp,SPM.sexe,SPM.poids,SPM.sujet,idelta,SPM.duree,correctbonf);
@@ -86,7 +86,27 @@ end
 
 % Export results (csv)
 if exporter
-    batch = {'anova', 'interaction'};
+    for ibatch = {'anova', 'posthoc'};
+%         if isempty([result(:).(ibatch{:})]) ~= 1
+            % cat structure
+            export.(ibatch{:}) = [result(:).(ibatch{:})];
+            % headers
+            header.(ibatch{:}) = fieldnames(export.(ibatch{:}))';
+            % struct2cell
+            export.(ibatch{:}) = struct2cell(export.(ibatch{:}));
+            % 2D cell to 3D cell
+            export.(ibatch{:}) = permute(export.(ibatch{:}),[3,1,2]);
+            % export matrix
+            export.(ibatch{:}) = vertcat(header.(ibatch{:}),export.(ibatch{:}));
+            
+            cell2csv([path2.exportpath variable ibatch{:} '.csv'], export.(ibatch{:}), ',');
+%         end
+    end
+end
+
+% Export results (csv)
+if exporter
+    batch = {'anova', 'posthoc'};
     for ibatch = 1 : length(batch)
         if isempty([result(:).(batch{ibatch})]) ~= 1
             % cat structure
@@ -100,7 +120,7 @@ if exporter
             % export matrix
             export.(batch{ibatch}) = vertcat(header.(batch{ibatch}),export.(batch{ibatch}));
             
-            cell2csv([path2.exportpath variable batch{ibatch} num2str(weight(1)) 'vs' num2str(weight(2)) '.csv'], export.(batch{ibatch}), ',');
+            cell2csv([path2.exportpath variable ibatch{:} '.csv'], export.(ibatch{:}), ',');
         end
     end
 end
