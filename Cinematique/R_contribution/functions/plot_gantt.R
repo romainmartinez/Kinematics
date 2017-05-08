@@ -3,8 +3,8 @@ plot_gantt <- function(data,plot_limit,case='None') {
 # plot theme --------------------------------------------------------------
 gantt_theme <- theme_classic() + theme(panel.border = element_rect(colour = "black",fill = NA,size = 0.5)) +
   theme(text = element_text(size = 12)) +
-  theme(legend.key = element_rect(colour = NA),legend.position = "top") +
-  theme(strip.background = element_blank(),strip.text.y = element_blank(),strip.text.x = element_blank())
+  theme(legend.key = element_rect(colour = NA),legend.position = "top")
+  #theme(strip.background = element_blank(),strip.text.y = element_blank(),strip.text.x = element_blank())
 
 # plot --------------------------------------------------------------------
 
@@ -16,8 +16,8 @@ gantt_theme <- theme_classic() + theme(panel.border = element_rect(colour = "bla
   # Y axis
   gantt <- gantt + ylab("DoF")
   # Facet
-  if (case == 'interaction') {
-    gantt <- gantt + facet_grid(height ~ sens)
+  if (case == 'posthoc') {
+    gantt <- gantt + facet_grid(weight ~ sex)
   } else {
     gantt <- gantt + facet_grid(effect ~ .)
   }

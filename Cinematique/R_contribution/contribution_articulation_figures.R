@@ -18,39 +18,32 @@ setwd(path.current)
 
 # switch
 variable    <- 'hauteur'
-comparison  <- '18vs6'
-keepMainB <- 0
+#comparison  <- '18vs6'
+#keepMainB <- 0
 
 # load data ---------------------------------------------------------------
-anova <- read.table(file.path(datapath, variable, 'anova', comparison, '.csv', fsep = ''), header = TRUE, sep = ",")
-interaction <- read.table(file.path(datapath, variable, 'interaction', comparison, '.csv', fsep = ''), header = TRUE, sep = ",")
+anova <- read.table(file.path(datapath, variable, 'anova.csv', fsep = ''), header = TRUE, sep = ",")
+posthoc <- read.table(file.path(datapath, variable, 'posthoc.csv', fsep = ''), header = TRUE, sep = ",")
 
 # reshape data ------------------------------------------------------------
-source("functions/reshape_interaction.R")
-interaction <- reshape_interaction(interaction)
-
 anova$delta <- anova$delta %>% factor(levels = c(1:4), labels = c("WR/EL", "GH", "SC/AC", "TR/PE"))
-interaction$delta <- interaction$delta %>% factor(levels = c(1:4), labels = c("WR/EL", "GH", "SC/AC", "TR/PE"))
+posthoc$delta <- posthoc$delta %>% factor(levels = c(1:4), labels = c("WR/EL", "GH", "SC/AC", "TR/PE"))
 
 anova$effect <- anova$effect %>%
   factor(levels = c('Main A', 'Main B', 'Interaction AB'),
-         labels = c("main effect: sex","main effect: task","interaction: sex-task"))
+         labels = c("main effect: sex","main effect: mass","interaction: sex-mass"))
 
-interaction$height <- interaction$height %>% factor(levels = c('hips-shoulders','hips-eyes','shoulders-eyes') )
+posthoc$sex <- posthoc$sex %>%
+  factor(levels = c('1-1', '2-2', '1-2'),
+         labels = c("men vs. men", "women vs. women", "men vs. women"))
 
-interaction$sens <- interaction$sens %>% factor(levels = c(1:2), labels = c("upward","downward"))
-
-# delete diff < 1%
-anova <- anova %>% filter(abs(diff) > 1)
-
-# delete main effect task (not needed)
-if (keepMainB == 0) {
-  anova <- anova %>% filter(effect != 'main effect: task')
-}
+posthoc$weight <- posthoc$weight %>%
+  factor(levels = c('12-6','6-6', '12-12', '6-12'),
+         labels = c("12\ kg vs. 6\ kg (50%)", "6\ kg vs. 6\ kg (100%)", "12\ kg vs. 12\ kg (100%)", "6\ kg vs. 12\ kg (200%)"))
 
 # gantt plot --------------------------------------------------------------
-plot_limit <- c(interaction$diff,anova$diff) %>% abs() %>% max() %>% round() + 1
+plot_limit <- c(posthoc$diff,anova$diff) %>% abs() %>% max() %>% round() + 1
 #plot_limit <- 15
 source("functions/plot_gantt.R")
 plot_gantt(anova, plot_limit, case = 'anova')
-plot_gantt(interaction, plot_limit, case = 'interaction')
+plot_gantt(posthoc, plot_limit, case = 'posthoc')
