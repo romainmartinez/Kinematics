@@ -79,9 +79,6 @@ for idelta = 4 : -1 : 1 % delta
     [SPM] = selectSPMvariable(SPM,idelta);
     % SPM analysis
     [result(idelta).anova, result(idelta).posthoc]  = SPM_contribution(SPM, idelta);
-    
-    %     [result(idelta).anova,result(idelta).interaction] = SPM_contribution(...
-    %         SPM.comp,SPM.sexe,SPM.poids,SPM.sujet,idelta,SPM.duree,correctbonf);
 end
 
 % Export results (csv)
