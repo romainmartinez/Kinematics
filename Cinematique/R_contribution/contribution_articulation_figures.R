@@ -12,8 +12,10 @@ lapply(c("tidyr", "dplyr", "cowplot", "magrittr", "knitr", "grid", "ggthemes", "
        character.only = T)
 
 # path
-datapath <- "/media/E/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/"
-path.current <- '/home/romain/Documents/codes/Kinematics/Cinematique/R_contribution'
+# datapath <- "/media/E/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/"
+# path.current <- '/home/romain/Documents/codes/Kinematics/Cinematique/R_contribution'
+datapath <- "//10.89.24.15/e/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/"
+path.current <- 'C:/Users/marti/Documents/Codes/Kinematics/Cinematique/R_contribution'
 setwd(path.current)
 
 # switch
