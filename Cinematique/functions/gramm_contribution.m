@@ -6,7 +6,7 @@ long.delta = kron(transpose(1:4), ones(length(inputData.sex),1))';
 data.data = vertcat(inputData.deltahand, inputData.deltaGH, inputData.deltaSCAC, inputData.deltaRoB);
 
 if nargin > 1 && contains(varargin, 'verif')
-   selected = verif_gui(inputData);
+    selected = verif_gui(inputData);
 else
     % gramm plot (for publication)
     % convert to string
@@ -30,9 +30,9 @@ else
     % aes
     g = gramm('x', data.time ,'y', data.data, 'color', data.delta, 'linestyle', data.sex);
     % facet
-    g.facet_grid(data.weight, data.sexe, 'scale', 'fixed','space','free');
+    g.facet_grid(data.weight, data.sex, 'scale', 'fixed','space','free');
     % geom
-    g.stat_summary('type','std','geom','area', 'setylim', true);
+    g.stat_summary('type','std','geom','lines', 'setylim', true);
     % options
     g.axe_property('TickDir','out');
     % titles
@@ -42,6 +42,6 @@ else
     g.draw();
     
     % export
-    % g.export('file_name','test2','file_type','pdf','units','inches','width',10,'weight',6)
+    % g.export('file_name','test2','file_type','pdf','units','inches','width',10,'height',6)
 end
 

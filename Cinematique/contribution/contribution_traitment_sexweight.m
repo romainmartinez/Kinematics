@@ -17,8 +17,8 @@ path2 = load_functions('windo', 'Kinematics/Cinematique');
 % Switch
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
 verif       =   0;                  % 0 or 1
-grammplot   =   0;                  % 0 or 1
-exporter    =   1;                  % 0 or 1
+grammplot   =   1;                  % 0 or 1
+exporter    =   0;                  % 0 or 1
 
 % Path
 path2.Datapath = [path2.E '/Projet_IRSST_LeverCaisse/ElaboratedData/matrices/' variable '/'];
@@ -84,7 +84,27 @@ end
 % Export results (csv)
 if exporter
     for ibatch = {'anova', 'posthoc'};
-%         if isempty([result(:).(ibatch{:})]) ~= 1
+        %         if isempty([result(:).(ibatch{:})]) ~= 1
+        % cat structure
+        export.(ibatch{:}) = [result(:).(ibatch{:})];
+        % headers
+        header.(ibatch{:}) = fieldnames(export.(ibatch{:}))';
+        % struct2cell
+        export.(ibatch{:}) = struct2cell(export.(ibatch{:}));
+        % 2D cell to 3D cell
+        export.(ibatch{:}) = permute(export.(ibatch{:}),[3,1,2]);
+        % export matrix
+        export.(ibatch{:}) = vertcat(header.(ibatch{:}),export.(ibatch{:}));
+        
+        cell2csv([path2.exportpath variable ibatch{:} '.csv'], export.(ibatch{:}), ',');
+        %         end
+    end
+end
+
+% Export results (csv)
+if exporter
+    for ibatch = {'anova', 'posthoc'}
+        if isempty([result(:).(ibatch{:})]) ~= 1
             % cat structure
             export.(ibatch{:}) = [result(:).(ibatch{:})];
             % headers
@@ -95,27 +115,6 @@ if exporter
             export.(ibatch{:}) = permute(export.(ibatch{:}),[3,1,2]);
             % export matrix
             export.(ibatch{:}) = vertcat(header.(ibatch{:}),export.(ibatch{:}));
-            
-            cell2csv([path2.exportpath variable ibatch{:} '.csv'], export.(ibatch{:}), ',');
-%         end
-    end
-end
-
-% Export results (csv)
-if exporter
-    batch = {'anova', 'posthoc'};
-    for ibatch = 1 : length(batch)
-        if isempty([result(:).(batch{ibatch})]) ~= 1
-            % cat structure
-            export.(batch{ibatch}) = [result(:).(batch{ibatch})];
-            % headers
-            header.(batch{ibatch}) = fieldnames(export.(batch{ibatch}))';
-            % struct2cell
-            export.(batch{ibatch}) = struct2cell(export.(batch{ibatch}));
-            % 2D cell to 3D cell
-            export.(batch{ibatch}) = permute(export.(batch{ibatch}),[3,1,2]);
-            % export matrix
-            export.(batch{ibatch}) = vertcat(header.(batch{ibatch}),export.(batch{ibatch}));
             
             cell2csv([path2.exportpath variable ibatch{:} '.csv'], export.(ibatch{:}), ',');
         end
