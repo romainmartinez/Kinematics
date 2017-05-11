@@ -12,8 +12,10 @@ lapply(c("tidyr", "dplyr", "cowplot", "magrittr", "knitr", "grid", "ggthemes", "
        character.only = T)
 
 # path
-datapath <- "/media/E/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/"
-path.current <- '/home/romain/Documents/codes/Kinematics/Cinematique/R_contribution'
+# datapath <- "/media/E/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/"
+# path.current <- '/home/romain/Documents/codes/Kinematics/Cinematique/R_contribution'
+datapath <- "//10.89.24.15/e/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/"
+path.current <- 'C:/Users/marti/Documents/Codes/Kinematics/Cinematique/R_contribution'
 setwd(path.current)
 
 # switch
@@ -26,6 +28,11 @@ anova <- read.table(file.path(datapath, variable, 'anova.csv', fsep = ''), heade
 posthoc <- read.table(file.path(datapath, variable, 'posthoc.csv', fsep = ''), header = TRUE, sep = ",")
 
 # reshape data ------------------------------------------------------------
+# format p-value
+source("functions/format_pvalue.R")
+anova$p <- format_pvalue(anova$p)
+posthoc$p <- format_pvalue(posthoc$p)
+
 anova$delta <- anova$delta %>% factor(levels = c(1:4), labels = c("WR/EL", "GH", "SC/AC", "TR/PE"))
 posthoc$delta <- posthoc$delta %>% factor(levels = c(1:4), labels = c("WR/EL", "GH", "SC/AC", "TR/PE"))
 
