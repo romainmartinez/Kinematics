@@ -31,6 +31,7 @@ posthoc <- read.table(file.path(datapath, variable, 'posthoc.csv', fsep = ''), h
 # format p-value
 source("functions/format_pvalue.R")
 anova$p <- format_pvalue(anova$p)
+posthoc$p <- format_pvalue(posthoc$p)
 
 anova$delta <- anova$delta %>% factor(levels = c(1:4), labels = c("WR/EL", "GH", "SC/AC", "TR/PE"))
 posthoc$delta <- posthoc$delta %>% factor(levels = c(1:4), labels = c("WR/EL", "GH", "SC/AC", "TR/PE"))
