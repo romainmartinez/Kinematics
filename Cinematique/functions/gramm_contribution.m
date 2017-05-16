@@ -1,41 +1,57 @@
 function selected = gramm_contribution(inputData, varargin)
-% reshape data
-long.sex = repmat(inputData.sex,[1 4]);
-long.weight = repmat(inputData.weight,[1 4]);
-long.delta = kron(transpose(1:4), ones(length(inputData.sex),1))';
-data.data = vertcat(inputData.deltahand, inputData.deltaGH, inputData.deltaSCAC, inputData.deltaRoB);
 
 if nargin > 1 && contains(varargin, 'verif')
     selected = verif_gui(inputData);
 else
     % gramm plot (for publication)
-    % convert to string
-    convert.sex = {'men','women'};
-    convert.weight = {'6 kg','12 kg'};
-    convert.delta = {'WR/EL','GH','SC/AC','TR/PE'};
-    
-    long.weight([long.weight] == 6) = 1;
-    long.weight([long.weight] == 12) = 2;
-    
-    data.sex = convert.sex(long.sex);
-    data.weight = convert.weight(long.weight);
-    data.delta = convert.delta(long.delta);
-    data.time = inputData.time;
-    
+    % reshape data
+    df.sex = repmat(inputData.sex,[1 4]);
+    df.weight = repmat(inputData.weight,[1 4]);
+    df.delta = kron(transpose(1:4), ones(length(inputData.sex),1))';
+    df.data = vertcat(inputData.deltahand, inputData.deltaGH, inputData.deltaSCAC, inputData.deltaRoB);
+    df.time = inputData.time;
+
+    if nargin > 1 && contains(varargin, 'corr')
+        %         method = 'drop'; % interaction or drop
+        %         if contains(method, 'interaction')
+        %             zone.WREL = 63:69;
+        %             zone.GH = 55:72;
+        %             zone.SCAC = 60:100;
+        %             zone.TRPE = 60:100;
+        %         elseif contains(method, 'drop')
+        %             zone.WREL = 60:100;
+        %             zone.GH = 60:100;
+        %             zone.SCAC = 60:100;
+        %             zone.TRPE = 60:100;
+        %         else
+        %             error('Choose valid method (interaction or drop)')
+        %         end
+        zone = 60:100;
+        df.scalar = mean(df.data(:,zone), 2)';
+        df.subjweight = repmat(inputData.subjweight,[1 4]);
+        
+        g=gramm('x',df.subjweight,'y',df.scalar,'color',df.sex);
+        
+        g.geom_point();
+        g.stat_glm();
+        g.draw();
+        
+        % faire avec for
+        
+        id = contains(df.delta, 'GH');
+        xi = df.data(id,:);
+        
+        
+    end
     
     % create figure
     figure('units','normalized','outerposition',[0 0 1 1])
     clear g
     
-    % aes
-    g = gramm('x', data.time ,'y', data.data, 'color', data.delta, 'linestyle', data.sex);
-    % facet
-    g.facet_grid(data.weight, data.sex, 'scale', 'fixed','space','free');
-    % geom
+    g = gramm('x', df.time ,'y', df.data, 'color', df.delta, 'linestyle', df.sex);
+    g.facet_grid(df.weight, df.sex, 'scale', 'fixed','space','free');
     g.stat_summary('type','std','geom','lines', 'setylim', true);
-    % options
     g.axe_property('TickDir','out');
-    % titles
     g.set_names('column','','row','','x','time (% trial)','y','contribution (% weight)','color','Contribution','linestyle','sex');
     
     
@@ -44,4 +60,3 @@ else
     % export
     % g.export('file_name','test2','file_type','pdf','units','inches','width',10,'height',6)
 end
-
