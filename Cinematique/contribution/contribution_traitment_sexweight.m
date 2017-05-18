@@ -17,8 +17,9 @@ path2 = load_functions('windo', 'Kinematics/Cinematique');
 % Switch
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
 verif       =   0;                  % 0 or 1
-grammplot   =   1;                  % 0 or 1
+grammplot   =   0;                  % 0 or 1
 exporter    =   0;                  % 0 or 1
+correlation =   1;                  % 0 or 1
 
 % Path
 path2.Datapath = [path2.E '/Projet_IRSST_LeverCaisse/ElaboratedData/matrices/' variable '/'];
@@ -63,11 +64,22 @@ if verif
     selected = gramm_contribution(SPM, 'verif');
     export_selected = [cellstr(str2mat(bigstruct(selected).sujet)) cellstr(str2mat(bigstruct(selected).trialname))];
     cell2csv('verif.csv', export_selected, ',');
-    
 end
 
 if grammplot
     gramm_contribution(SPM);
+end
+
+if correlation
+    alias.participantWeight = IRSST_participants('weight');
+% assign participant mass    
+    for isubject = length(alias.participantWeight) : -1 : 1
+        loc = contains(cellstr(vertcat(bigstruct.sujet)), alias.participantWeight(isubject,1));
+        [bigstruct(loc).weight] =  deal(alias.participantWeight{isubject, 2});
+        clear loc
+    end
+    SPM.subjweight = vertcat(bigstruct(:).weight)';
+    gramm_contribution(SPM, 'corr');
 end
 
 % Number of men & women
@@ -83,7 +95,7 @@ end
 
 % Export results (csv)
 if exporter
-    for ibatch = {'anova', 'posthoc'};
+    for ibatch = {'anova', 'posthoc'}
         %         if isempty([result(:).(ibatch{:})]) ~= 1
         % cat structure
         export.(ibatch{:}) = [result(:).(ibatch{:})];
