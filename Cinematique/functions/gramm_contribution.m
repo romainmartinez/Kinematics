@@ -1,16 +1,18 @@
-function selected = gramm_contribution(inputData, varargin)
+function selected = gramm_contribution(input, varargin)
 
 if nargin > 1 && contains(varargin, 'verif')
-    selected = verif_gui(inputData);
+    selected = verif_gui(input);
 else
     % gramm plot (for publication)
     % reshape data
-    df.sex = repmat(inputData.sex,[1 4]);
-    df.weight = repmat(inputData.weight,[1 4]);
-    df.delta = kron(transpose(1:4), ones(length(inputData.sex),1))';
-    df.data = vertcat(inputData.deltahand, inputData.deltaGH, inputData.deltaSCAC, inputData.deltaRoB);
-    df.time = inputData.time;
-
+    df.sex = repmat(input.sex,[1 4]);
+    df.weight = repmat(input.weight,[1 4]);
+    df.delta = kron(transpose(1:4), ones(length(input.sex),1))';
+    df.data = vertcat(input.deltahand, input.deltaGH, input.deltaSCAC, input.deltaRoB);
+    df.time = input.time;
+    
+    
+    
     if nargin > 1 && contains(varargin, 'corr')
         %         method = 'drop'; % interaction or drop
         %         if contains(method, 'interaction')
@@ -28,20 +30,21 @@ else
         %         end
         zone = 60:100;
         df.scalar = mean(df.data(:,zone), 2)';
-        df.subjweight = repmat(inputData.subjweight,[1 4]);
+        % normalization with box mass/subject mass
+        df.normalizedweight = repmat(input.weight ./ input.subjweight,[1 4]);
         
-        g=gramm('x',df.subjweight,'y',df.scalar,'color',df.sex);
         
-        g.geom_point();
-        g.stat_glm();
+        figure('units','normalized','outerposition',[0 0 1 1])
+        clear g
+        g=gramm('x',df.normalizedweight,'y',df.scalar,'color',df.sex);
+        g.facet_grid([], df.delta, 'scale', 'fixed','space','free');
+        g.geom_point('alpha', 0.5);
+        g.set_point_options('base_size', 3)
+        g.stat_glm('disp_fit', true, 'geom', 'lines');
         g.draw();
         
-        % faire avec for
-        
-        id = contains(df.delta, 'GH');
-        xi = df.data(id,:);
-        
-        
+%         subset = df.delta == 1 & df.sex == 2;
+%         [Rho, pvalue] = corr(df.normalizedweight(subset)', df.scalar(subset)', 'type', 'Pearson')   
     end
     
     % create figure
