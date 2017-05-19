@@ -17,6 +17,7 @@ if varargin{1} == 'anova2w'
                 output(index).start = 1;
             end
             output(index).diff = mean2(SPM.comp(SPM.sex == 1,output(index).start:output(index).end)) - mean2(SPM.comp(SPM.sex == 2,output(index).start:output(index).end));
+            output(index).F    = nanmean(test.spmilist.SPMs{1, ieffect}.z(output(index).start:output(index).end));
         end
     end
     
@@ -37,7 +38,8 @@ elseif varargin{1} == 'posthoc'
                 if output(index).start == 0
                     output(index).start = 1;
                 end
-                output(index).diff = mean(test(itest).spmi.beta(1,output(index).start:output(index).end)) - mean(test(itest).spmi.beta(2,output(index).start:output(index).end));
+                output(index).diff = mean2(test(itest).spmi.beta(1,output(index).start:output(index).end)) - mean2(test(itest).spmi.beta(2,output(index).start:output(index).end));
+                output(index).F = nanmean(test(itest).spmi.z(output(index).start:output(index).end));
                 if output(index).diff > 0
                     output(index).sup  = num2str('1st');
                 elseif output(index).diff < 0

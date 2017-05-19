@@ -16,24 +16,27 @@ setwd(path.current)
 
 # Load data ---------------------------------------------------------------
 IRSST <- read_excel(
-    "//10.89.24.15/e/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/IRSST_infos_sujets.xlsx",
+    "//10.89.24.15/e/Projet_IRSST_LeverCaisse/ElaboratedData/IRSST_subjects.xlsx",
     sheet = "Global")
 
 # Reshape data ------------------------------------------------------------------
 IRSST[, c(5:7)] <- sapply(IRSST[, c(5:7)], as.numeric)
+IRSST <- IRSST[ !(IRSST$Modèle %in% 'x'), ]
+
 men <- IRSST %>%
-  filter(Sexe == 'H' & Traitement == 'x')
+  filter(sex == 'H')
+
 women <- IRSST %>%
-  filter(Sexe == 'F' & Traitement == 'x')
+  filter(sex == 'F')
 
 # Parameters ------------------------------------------------------------------
 anthropo <- data.frame(number = c(men %>% nrow,women %>% nrow),
-                       mean.age = c(mean(men$Age, na.rm = TRUE), mean(women$Age, na.rm = TRUE)),
-                       std.age = c(sd(men$Age, na.rm = TRUE), sd(women$Age, na.rm = TRUE)),
-                       mean.weight = c(mean(men$Poids), mean(women$Poids)),
-                       std.weight = c(sd(men$Poids), sd(women$Poids)),
-                       mean.height = c(mean(men$Taille),mean(women$Taille)),
-                       std.height = c(sd(men$Taille), sd(women$Taille)))
+                       mean.age = c(mean(men$age, na.rm = TRUE), mean(women$age, na.rm = TRUE)),
+                       std.age = c(sd(men$age, na.rm = TRUE), sd(women$age, na.rm = TRUE)),
+                       mean.weight = c(mean(men$weight), mean(women$weight)),
+                       std.weight = c(sd(men$weight), sd(women$weight)),
+                       mean.height = c(mean(men$height),mean(women$height)),
+                       std.height = c(sd(men$height), sd(women$height)))
 
 anthropo[,-1] <- anthropo[,-1] %>% round(digits = 2)
 
