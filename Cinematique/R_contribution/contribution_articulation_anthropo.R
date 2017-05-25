@@ -39,5 +39,17 @@ anthropo <- data.frame(number = c(men %>% nrow,women %>% nrow),
                        std.height = c(sd(men$height), sd(women$height)))
 
 anthropo[,-1] <- anthropo[,-1] %>% round(digits = 2)
-
 saveRDS(anthropo, file.path(paste(path.output,"anthropo.rds", sep = "")))
+
+
+# density plot --------------------------------------------------------------------------------
+# Find the mean of each group
+library(plyr)
+library(ggplot2)
+cdat <- ddply(IRSST, "sex", summarise, weight.mean=mean(weight))
+
+p <- ggplot(IRSST, aes(x=weight, fill=sex)) +
+  geom_density(alpha=0.4) + 
+  geom_vline(data=cdat, aes(xintercept=weight.mean, color=sex),
+             linetype="dashed")
+p

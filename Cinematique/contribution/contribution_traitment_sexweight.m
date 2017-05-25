@@ -16,9 +16,9 @@ path2 = load_functions('windo', 'Kinematics/Cinematique');
 
 % Switch
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
-verif       =   0;                  % 0 or 1
+verif       =   1;                  % 0 or 1
 grammplot   =   0;                  % 0 or 1
-exporter    =   1;                  % 0 or 1
+exporter    =   0;                  % 0 or 1
 correlation =   0;                  % 0 or 1
 
 % Path

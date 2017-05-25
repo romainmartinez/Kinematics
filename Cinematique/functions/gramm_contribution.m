@@ -51,15 +51,19 @@ else
     figure('units','normalized','outerposition',[0 0 1 1])
     clear g
     
-    g = gramm('x', df.time ,'y', df.data, 'color', df.delta, 'linestyle', df.sex);
-    g.facet_grid(df.weight, df.sex, 'scale', 'fixed','space','free');
+    g = gramm('x',df.time,'y',df.data, 'color',df.delta,'linestyle',df.sex);
+    g.facet_grid(df.weight, df.sex,'scale','fixed','space','free');
     g.stat_summary('type','std','geom','lines', 'setylim', true);
     g.axe_property('TickDir','out');
     g.set_names('column','','row','','x','time (% trial)','y','contribution (% weight)','color','Contribution','linestyle','sex');
-    
-    
     g.draw();
     
+    g = gramm('x', df.time ,'y', df.data, 'color', df.delta);
+    g.stat_summary('type','std','geom','lines', 'setylim', true);
+    g.axe_property('TickDir','out');
+    g.set_names('column','','row','','x','time (% trial)','y','contribution (% weight)','color','Contribution','linestyle','sex');
+    g.draw();
+         
     % export
     % g.export('file_name','test2','file_type','pdf','units','inches','width',10,'height',6)
 end
