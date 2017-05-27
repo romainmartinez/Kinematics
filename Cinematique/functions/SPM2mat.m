@@ -16,7 +16,13 @@ if varargin{1} == 'anova2w'
             if output(index).start == 0
                 output(index).start = 1;
             end
-            output(index).diff = mean2(SPM.comp(SPM.sex == 1,output(index).start:output(index).end)) - mean2(SPM.comp(SPM.sex == 2,output(index).start:output(index).end));
+            %%%
+            if ieffect == 2
+                output(index).diff = mean2(SPM.comp(SPM.weight == 6,output(index).start:output(index).end)) - mean2(SPM.comp(SPM.weight == 12,output(index).start:output(index).end));
+            else
+                output(index).diff = mean2(SPM.comp(SPM.sex == 1,output(index).start:output(index).end)) - mean2(SPM.comp(SPM.sex == 2,output(index).start:output(index).end));
+            end
+            %%%
             output(index).F    = nanmean(test.spmilist.SPMs{1, ieffect}.z(output(index).start:output(index).end));
         end
     end
