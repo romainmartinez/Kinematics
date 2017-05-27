@@ -16,10 +16,10 @@ path2 = load_functions('windo', 'Kinematics/Cinematique');
 
 % Switch
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
-verif       =   1;                  % 0 or 1
+verif       =   0;                  % 0 or 1
 grammplot   =   0;                  % 0 or 1
 exporter    =   0;                  % 0 or 1
-correlation =   0;                  % 0 or 1
+correlation =   1;                  % 0 or 1
 
 % Path
 path2.Datapath = [path2.E '/Projet_IRSST_LeverCaisse/ElaboratedData/matrices/' variable '/'];

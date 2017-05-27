@@ -33,17 +33,20 @@ else
         % normalization with box mass/subject mass
         df.normalizedweight = repmat(input.weight ./ input.subjweight,[1 4]);
         
+        df.sex(df.sex == 1) = 3;
+        df.sex(df.sex == 2) = 1;
+        df.sex(df.sex == 3) = 2;
         
         figure('units','normalized','outerposition',[0 0 1 1])
         clear g
-        g=gramm('x',df.normalizedweight,'y',df.scalar,'color',df.sex);
+        g=gramm('x',df.normalizedweight,'y',df.scalar,'color',df.sex, 'marker', df.weight);
         g.facet_grid([], df.delta, 'scale', 'fixed','space','free');
         g.geom_point('alpha', 0.5);
-        g.set_point_options('base_size', 3)
+        g.set_point_options('base_size', 3, 'markers', {'o' '^' 's' 'd' 'v' '>' '<' 'p''h' '*' 's' 'o'})
         g.stat_glm('disp_fit', true, 'geom', 'lines');
         g.draw();
         
-%         subset = df.delta == 1 & df.sex == 2;
+%         subset = df.delta == 1 & df.sex == 1 & df.weight == 6;
 %         [Rho, pvalue] = corr(df.normalizedweight(subset)', df.scalar(subset)', 'type', 'Pearson')   
     end
     
@@ -58,11 +61,11 @@ else
     g.set_names('column','','row','','x','time (% trial)','y','contribution (% weight)','color','Contribution','linestyle','sex');
     g.draw();
     
-    g = gramm('x', df.time ,'y', df.data, 'color', df.delta);
-    g.stat_summary('type','std','geom','lines', 'setylim', true);
-    g.axe_property('TickDir','out');
-    g.set_names('column','','row','','x','time (% trial)','y','contribution (% weight)','color','Contribution','linestyle','sex');
-    g.draw();
+%     g = gramm('x', df.time ,'y', df.data, 'color', df.delta);
+%     g.stat_summary('type','std','geom','lines', 'setylim', true);
+%     g.axe_property('TickDir','out');
+%     g.set_names('column','','row','','x','time (% trial)','y','contribution (% weight)','color','Contribution','linestyle','sex');
+%     g.draw();
          
     % export
     % g.export('file_name','test2','file_type','pdf','units','inches','width',10,'height',6)
