@@ -14,39 +14,26 @@ else
     
     
     if nargin > 1 && contains(varargin, 'corr')
-        %         method = 'drop'; % interaction or drop
-        %         if contains(method, 'interaction')
-        %             zone.WREL = 63:69;
-        %             zone.GH = 55:72;
-        %             zone.SCAC = 60:100;
-        %             zone.TRPE = 60:100;
-        %         elseif contains(method, 'drop')
-        %             zone.WREL = 60:100;
-        %             zone.GH = 60:100;
-        %             zone.SCAC = 60:100;
-        %             zone.TRPE = 60:100;
-        %         else
-        %             error('Choose valid method (interaction or drop)')
-        %         end
-        zone = 60:100;
+        zone = 60:100; % zone of scalar calculation
         df.scalar = mean(df.data(:,zone), 2)';
         % normalization with box mass/subject mass
         df.normalizedweight = repmat(input.weight ./ input.subjweight,[1 4]);
         
-        df.sex(df.sex == 1) = 3;
-        df.sex(df.sex == 2) = 1;
-        df.sex(df.sex == 3) = 2;
+        % delete SC/AC & TR/PE
+        id = df.delta == 3 | df.delta == 4;
         
         figure('units','normalized','outerposition',[0 0 1 1])
         clear g
-        g=gramm('x',df.normalizedweight,'y',df.scalar,'color',df.sex, 'marker', df.weight);
-        g.facet_grid([], df.delta, 'scale', 'fixed','space','free');
+        g=gramm('x',df.normalizedweight(~id),'y',df.scalar(~id),'color',df.sex(~id));
+        g.facet_grid(df.delta(~id), df.weight(~id), 'scale', 'fixed', 'space', 'free');
         g.geom_point('alpha', 0.5);
-        g.set_point_options('base_size', 3, 'markers', {'o' '^' 's' 'd' 'v' '>' '<' 'p''h' '*' 's' 'o'})
         g.stat_glm('disp_fit', true, 'geom', 'lines');
+%         g.set_color_options('map', [0 0.6 1 ; 0.8 0 0.2])
         g.draw();
-        
-%         subset = df.delta == 1 & df.sex == 1 & df.weight == 6;
+  
+%         df.normalizedweight = df.normalizedweight(~id)
+%         df.scalar = df.scalar(~id)
+%         subset = df.delta(~id) == 2 & df.sex(~id) == 2 & df.weight(~id) == 12;
 %         [Rho, pvalue] = corr(df.normalizedweight(subset)', df.scalar(subset)', 'type', 'Pearson')   
     end
     

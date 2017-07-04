@@ -61,13 +61,13 @@ for i = 1 : length(bigstruct)
 end
 
 if verif
-    selected = gramm_contribution(SPM, 'verif');
+    selected = gramm_contribution(SPM, 'verif'); %#ok<UNRCH>
     export_selected = [cellstr(str2mat(bigstruct(selected).sujet)) cellstr(str2mat(bigstruct(selected).trialname))];
     cell2csv('verif.csv', export_selected, ',');
 end
 
 if grammplot
-    gramm_contribution(SPM);
+    gramm_contribution(SPM); %#ok<UNRCH>
 end
 
 if correlation
@@ -95,7 +95,7 @@ end
 
 % Export results (csv)
 if exporter
-    for ibatch = {'anova', 'posthoc'}
+    for ibatch = {'anova', 'posthoc'} %#ok<UNRCH>
         %         if isempty([result(:).(ibatch{:})]) ~= 1
         % cat structure
         export.(ibatch{:}) = [result(:).(ibatch{:})];
@@ -115,10 +115,11 @@ end
 
 % Export results (csv)
 if exporter
-    for ibatch = {'anova', 'posthoc'}
+    for ibatch = {'anova', 'posthoc'} %#ok<UNRCH>
         if isempty([result(:).(ibatch{:})]) ~= 1
             % cat structure
             export.(ibatch{:}) = [result(:).(ibatch{:})];
+            
             % headers
             header.(ibatch{:}) = fieldnames(export.(ibatch{:}))';
             % struct2cell
