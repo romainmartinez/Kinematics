@@ -1,44 +1,59 @@
-function gramm_contribution(input)
-idx = find(input.poids == 1);
-%% reshaping data
-long.sexe     = repmat(input.sexe(idx),[1 4]);
-long.hauteur  = repmat(input.hauteur(idx),[1 4]);
-long.delta    = kron(transpose(1:4), ones(length(input.sexe(idx)),1))';
-data.data  = vertcat(input.delta_hand(idx,:), input.delta_GH(idx,:),...
-    input.delta_SCAC(idx,:), input.delta_RoB(idx,:));
+function selected = gramm_contribution(input, varargin)
 
-% convert to string
-convert.sexe = {'men','women'};
-convert.hauteur = {'hips-shoulder','hips-eyes','hips-shoulder','shoulders-eyes','hips-eyes','shoulders-eyes'};
-convert.delta = {'WR/EL','GH','SC/AC','TR/PE'};
-convert.sens  = {'upward', 'downward'};
-
-data.sexe    = convert.sexe(long.sexe);
-data.hauteur = convert.hauteur(long.hauteur);
-data.delta   = convert.delta(long.delta);
-data.sens(long.hauteur == 1 | long.hauteur == 2 | long.hauteur == 4) = convert.sens(1);
-data.sens(long.hauteur == 3 | long.hauteur == 5 | long.hauteur == 6) = convert.sens(2);
-data.time    = input.time;
-
-
-% create figure
-figure('units','normalized','outerposition',[0 0 1 1])
-clear g
-
-% aes
-g = gramm('x', data.time ,'y', data.data, 'color', data.delta, 'linestyle', data.sexe);
-% facet
-g.facet_grid(data.hauteur,data.sens, 'scale', 'fixed','space','free');
-% geom
-g.stat_summary('type','std','geom','area', 'setylim', true);
-% options
-g.axe_property('TickDir','out');
-% titles
-g.set_names('column','','row','','x','time (% trial)','y','contribution (% height)','color','Contribution','linestyle','sex');
-
-
-g.draw();
-
-% export
-% g.export('file_name','test2','file_type','pdf','units','inches','width',10,'height',6)
+if nargin > 1 && contains(varargin, 'verif')
+    selected = verif_gui(input);
+else
+    % gramm plot (for publication)
+    % reshape data
+    df.sex = repmat(input.sex,[1 4]);
+    df.weight = repmat(input.weight,[1 4]);
+    df.delta = kron(transpose(1:4), ones(length(input.sex),1))';
+    df.data = vertcat(input.deltahand, input.deltaGH, input.deltaSCAC, input.deltaRoB);
+    df.time = input.time;
+    
+    
+    
+    if nargin > 1 && contains(varargin, 'corr')
+        zone = 60:100; % zone of scalar calculation
+        df.scalar = mean(df.data(:,zone), 2)';
+        % normalization with box mass/subject mass
+        df.normalizedweight = repmat(input.weight ./ input.subjweight,[1 4]);
+        
+        % delete SC/AC & TR/PE
+        id = df.delta == 3 | df.delta == 4;
+        
+        figure('units','normalized','outerposition',[0 0 1 1])
+        clear g
+        g=gramm('x',df.normalizedweight(~id),'y',df.scalar(~id),'color',df.sex(~id));
+        g.facet_grid(df.delta(~id), df.weight(~id), 'scale', 'fixed', 'space', 'free');
+        g.geom_point('alpha', 0.5);
+        g.stat_glm('disp_fit', true, 'geom', 'lines');
+%         g.set_color_options('map', [0 0.6 1 ; 0.8 0 0.2])
+        g.draw();
+  
+%         df.normalizedweight = df.normalizedweight(~id)
+%         df.scalar = df.scalar(~id)
+%         subset = df.delta(~id) == 2 & df.sex(~id) == 2 & df.weight(~id) == 12;
+%         [Rho, pvalue] = corr(df.normalizedweight(subset)', df.scalar(subset)', 'type', 'Pearson')   
+    end
+    
+    % create figure
+    figure('units','normalized','outerposition',[0 0 1 1])
+    clear g
+    
+    g = gramm('x',df.time,'y',df.data, 'color',df.delta,'linestyle',df.sex);
+    g.facet_grid(df.weight, df.sex,'scale','fixed','space','free');
+    g.stat_summary('type','std','geom','lines', 'setylim', true);
+    g.axe_property('TickDir','out');
+    g.set_names('column','','row','','x','time (% trial)','y','contribution (% weight)','color','Contribution','linestyle','sex');
+    g.draw();
+    
+%     g = gramm('x', df.time ,'y', df.data, 'color', df.delta);
+%     g.stat_summary('type','std','geom','lines', 'setylim', true);
+%     g.axe_property('TickDir','out');
+%     g.set_names('column','','row','','x','time (% trial)','y','contribution (% weight)','color','Contribution','linestyle','sex');
+%     g.draw();
+         
+    % export
+    % g.export('file_name','test2','file_type','pdf','units','inches','width',10,'height',6)
 end

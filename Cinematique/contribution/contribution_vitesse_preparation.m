@@ -1,35 +1,28 @@
 %   Description: used to compute the contribution of each articulation to the acceleration
 %   Output: gives matrix for input in SPM1D and GRAMM
-%   Functions: uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
+%   Functions: uses functions present in //10.89.24.15/e/Project_IRSST_LeverCaisse/Codes/Functions_Matlab
 %
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
 %   Website: https://github.com/romainmartinez
 %_____________________________________________________________________________
 
-clear all; close all; clc
+clear variables; close all; clc
 
-%% Chargement des fonctions
-if isempty(strfind(path, '\\10.89.24.15\e\Librairies\S2M_Lib\'))
-    % Librairie S2M
-    loadS2MLib;
-end
-
-% Fonctions locales
-cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
+path2 = load_functions('linux', 'Kinematics/Cinematique');
 
 %% Interrupteurs
-saveresults = 1;
+saveresults = 0;
 model       = 2.1;
 outlier     = 1;
 
 %% Dossiers
-path.datapath   = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\cinematique\';
-path.exportpath = '\\10.89.24.15\e\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\vitesse\';
-alias.matname = dir([path.datapath '*mat']);
+path2.datapath   = [path2.E '/Projet_IRSST_LeverCaisse/ElaboratedData/matrices/cinematique/'];
+path2.exportpath = [path2.E '/Projet_IRSST_LeverCaisse/ElaboratedData/matrices/vitesse/'];
+alias.matname = dir([path2.datapath '*mat']);
 
 %% Info sur le sujets et le model
-alias.sujet = sujets_valides;
+alias.sujet = IRSST_participants('IRSST');
 [segmentMarkers, segmentDoF] = segment_RBDL(round(model));
 segmentDoF = struct2cell(segmentDoF);
 
@@ -38,11 +31,11 @@ for isujet = length(alias.sujet) : -1 : 1
     disp(['Traitement de: ' alias.sujet{isujet} ' (' num2str(length(alias.sujet) - isujet+1) ' sur ' num2str(length(alias.sujet)) ')'])
     
     % Open model
-    Path.DirModels  = ['\\10.89.24.15\f\Data\Shoulder\Lib\' alias.sujet{isujet} 'd\Model_' num2str(round(model)) '\' 'Model.s2mMod'];
-    alias.model = S2M_rbdl('new',Path.DirModels);
+    path2.DirModels  = [path2.F '/Data/Shoulder/Lib/' alias.sujet{isujet} 'd/Model_' num2str(round(model)) '/' 'Model.s2mMod'];
+    alias.model = S2M_rbdl('new',path2.DirModels);
     
     % load data
-    load([path.datapath alias.sujet{isujet} '.mat']);
+    load([path2.datapath alias.sujet{isujet} '.mat']);
     
     for itrial = length(temp) : - 1 : 1
         disp([9 'essai: ' num2str(length(temp)-itrial+1) ' sur ' num2str(length(temp))])
@@ -84,7 +77,7 @@ for isujet = length(alias.sujet) : -1 : 1
     % save matrix
     if saveresults == 1
         temp = rmfield(temp, {'Qdata'});
-        save([path.exportpath alias.sujet{isujet} '.mat'],'temp')
+        save([path2.exportpath alias.sujet{isujet} '.mat'],'temp')
     end
     %     clearvars temp TJi
 end
@@ -99,7 +92,7 @@ end
 % plot(tp) ;
 % tp=tp+temp(tata).deltahand;
 % plot(tp) ;
-% 
+%
 % figure
 % tp=temp(tata).deltaRoB;
 % plot(tp) ; hold on
@@ -109,9 +102,9 @@ end
 % plot(tp) ;
 % tp=temp(tata).deltahand;
 % plot(tp) ;
-% tp=temp(tata).velocity; % la somme des autres doit être égal à elle
+% tp=temp(tata).velocity; % la somme des autres doit ï¿½tre ï¿½gal ï¿½ elle
 % plot(tp) ;
-% 
+%
 % %%
 % xi = [temp(1).deltaRoB temp(1).deltaSCAC temp(1).deltaGH temp(1).deltahand]
 % subplot(2,1,1)
@@ -120,9 +113,9 @@ end
 % xi = medfilt1(xi,10);
 % subplot(2,1,2)
 % plot(xi);
-% 
+%
 % for icol= size(xi,2): -1 : 1
 %     xi(:,icol) = lpfilter(xi(irow,round(temp(itrial).start):round(temp(itrial).end))', 6, 100);
 % end
-% 
+%
 % plot([temp(itrial).deltaGH])

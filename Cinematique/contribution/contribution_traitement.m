@@ -1,6 +1,6 @@
 %   Description: used to compute the contribution of each articulation to the height
 %   Output:  gives SPM output and graph
-%   Functions: uses functions present in \\10.89.24.15\e\Project_IRSST_LeverCaisse\Codes\Functions_Matlab
+%   Functions: uses functions present in //10.89.24.15/e/Project_IRSST_LeverCaisse/Codes/Functions_Matlab
 %
 %   Author:  Romain Martinez
 %   email:   martinez.staps@gmail.com
@@ -9,32 +9,24 @@
 
 clear variables; close all; clc
 
-%% load functions
-if ~contains(path, '\\10.89.24.15\e\Librairies\S2M_Lib\')
-    % S2M library
-    loadS2MLib;
-end
-
-% local functions
-cd('C:\Users\marti\Documents\Codes\Kinematics\Cinematique\functions');
+path2 = load_functions('windo', 'Kinematics/Cinematique');
 
 %% Switch
-grammplot   =   1;                  % 0 ou 1 ou 2
-stat        =   1;                  % 0 ou 1
-correctbonf =   1;                  % 0 ou 1
-exporter    =   1;                  % 0 ou 1
-comparaison =  '%';                 % '=' (absolu) ou '%' (relatif)
 variable    =  'hauteur';           % 'vitesse' ou 'hauteur'
-poids       =   1;                  % 1 (12-6) ou 2 (18-12)
+weight      =   [12,6];             % first: men's weight | second: women's weight
+samesex     =   1;                  % 0 ou 1 (men) ou 2 (women)
+correctbonf =   1;                  % 0 ou 1
+exporter    =   0;                  % 0 ou 1
+grammplot   =   1;                  % 0 ou 1 ou 2
 
 %% Path
-path.Datapath = ['\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\matrices\' variable '\'];
-path.exportpath = '\\10.89.24.15\e\\Projet_IRSST_LeverCaisse\ElaboratedData\contribution_articulation\SPM\';
-alias.matname = dir([path.Datapath '*mat']);
+path2.Datapath = [path2.E '/Projet_IRSST_LeverCaisse/ElaboratedData/matrices/' variable '/'];
+path2.exportpath = [path2.E '/Projet_IRSST_LeverCaisse/ElaboratedData/contribution_articulation/SPM/'];
+alias.matname = dir([path2.Datapath '*mat']);
 
 %% load data
 for i = length(alias.matname) : -1 : 1
-    RAW(i) = load([path.Datapath alias.matname(i).name]);
+    RAW(i) = load([path2.Datapath alias.matname(i).name]);
     
     for u = 1 : length(RAW(i).temp)
         RAW(i).temp(u).sujet = alias.matname(i).name(1:end-4);
@@ -49,40 +41,15 @@ end
 % big structure of data
 bigstruct  = struct2array(RAW);
 
-%% Choice of comparison (absolute or relative)
-switch comparaison
-    case '='
-        for i = length(bigstruct):-1:1
-            if bigstruct(i).poids == 18
-                bigstruct(i) = [];
-            elseif bigstruct(i).poids == 6
-                bigstruct(i).poids = 1;
-            elseif bigstruct(i).poids == 12
-                bigstruct(i).poids = 2;
-            end
-        end
-    case '%'
-        for i = length(bigstruct):-1:1
-            if bigstruct(i).poids == 6 && bigstruct(i).sexe == 1
-                bigstruct(i) = [];
-            elseif bigstruct(i).poids == 12 && bigstruct(i).sexe == 1
-                bigstruct(i).poids = 1;
-            elseif bigstruct(i).poids == 18 && bigstruct(i).sexe == 1
-                bigstruct(i).poids = 2;
-            elseif bigstruct(i).poids == 6 && bigstruct(i).sexe == 2
-                bigstruct(i).poids = 1;
-            elseif bigstruct(i).poids == 12 && bigstruct(i).sexe == 2
-                bigstruct(i).poids = 2;
-            end
-        end
-end
+% select weight
+bigstruct = select_weight(bigstruct, weight, samesex);
 
 %% Factors
-SPM.sexe    = vertcat(bigstruct(:).sexe)';
-SPM.hauteur = vertcat(bigstruct(:).hauteur)';
-SPM.poids   = vertcat(bigstruct(:).poids)';
-SPM.duree   = vertcat(bigstruct(:).time)';
-SPM.sujet   = vertcat(bigstruct(:).nsujet)';
+SPM.sex = vertcat(bigstruct(:).sexe)';
+SPM.height = vertcat(bigstruct(:).hauteur)';
+SPM.weight = vertcat(bigstruct(:).poids)';
+SPM.time = vertcat(bigstruct(:).time)';
+SPM.subject = vertcat(bigstruct(:).nsujet)';
 
 %% Number of men & women
 femmes = sum(SPM.sexe == 2)/36;
@@ -103,10 +70,10 @@ for i = 1 : length(bigstruct)
     bigstruct(i).deltaRoB  = lpfilter(bigstruct(i).deltaRoB, 15, 100);
     
     % interpolation
-    SPM.delta_hand(i,:) = ScaleTime(bigstruct(i).deltahand, 1, length(bigstruct(i).deltahand), nbframe);
-    SPM.delta_GH(i,:)   = ScaleTime(bigstruct(i).deltaGH, 1, length(bigstruct(i).deltaGH), nbframe);
-    SPM.delta_SCAC(i,:) = ScaleTime(bigstruct(i).deltaSCAC, 1, length(bigstruct(i).deltaSCAC), nbframe);
-    SPM.delta_RoB(i,:)  = ScaleTime(bigstruct(i).deltaRoB, 1, length(bigstruct(i).deltaRoB), nbframe);
+    SPM.deltahand(i,:) = ScaleTime(bigstruct(i).deltahand, 1, length(bigstruct(i).deltahand), nbframe);
+    SPM.deltaGH(i,:)   = ScaleTime(bigstruct(i).deltaGH, 1, length(bigstruct(i).deltaGH), nbframe);
+    SPM.deltaSCAC(i,:) = ScaleTime(bigstruct(i).deltaSCAC, 1, length(bigstruct(i).deltaSCAC), nbframe);
+    SPM.deltaRoB(i,:)  = ScaleTime(bigstruct(i).deltaRoB, 1, length(bigstruct(i).deltaRoB), nbframe);
     SPM.boite(i,:) = ScaleTime(bigstruct(i).boite, 1, length(bigstruct(i).boite), nbframe)';
 end
 
@@ -114,19 +81,17 @@ end
 SPM.time  = linspace(0,100,nbframe);
 
 %% SPM
-if stat == 1
-    for iDelta = 4 : -1 : 1 % delta
-        %% variable
-        [SPM, result(iDelta).test, idx] = selectSPMvariable(SPM,iDelta,poids);
-        %% SPM analysis
-        [result(iDelta).anova,result(iDelta).interaction,result(iDelta).mainA,result(iDelta).mainB] = SPM_contribution(...
-            SPM.comp(idx,:),SPM.sexe(idx),SPM.hauteur(idx),SPM.sujet(idx),iDelta,SPM.duree(idx),correctbonf);
-    end
+for iDelta = 4 : -1 : 1 % delta
+    %% variable
+    [SPM, result(iDelta).test] = selectSPMvariable(SPM,iDelta);
+    %% SPM analysis
+    [result(iDelta).anova,result(iDelta).interaction] = SPM_contribution(...
+        SPM.comp,SPM.sexe,SPM.hauteur,SPM.sujet,iDelta,SPM.duree,correctbonf);
 end
 
 %% Export results (xlsx)
 if exporter == 1
-    batch = {'anova', 'interaction', 'mainA', 'mainB'};
+    batch = {'anova', 'interaction'};
     for ibatch = 1 : length(batch)
         if isempty([result(:).(batch{ibatch})]) ~= 1
             % cat structure
@@ -140,16 +105,12 @@ if exporter == 1
             % export matrix
             export.(batch{ibatch}) = vertcat(header.(batch{ibatch}),export.(batch{ibatch}));
             
-            if     comparaison == '%'
-                xlswrite([path.exportpath variable '_relative.xlsx'], export.(batch{ibatch}), batch{ibatch});
-            elseif comparaison == '='
-                xlswrite([path.exportpath variable '_absolute.xlsx'], export.(batch{ibatch}), batch{ibatch});
-            end
+            cell2csv([path2.exportpath variable batch{ibatch} num2str(weight(1)) 'vs' num2str(weight(2)) '.csv'], export.(batch{ibatch}), ',');
         end
     end
 end
+
 %% plot
 if grammplot == 1
     gramm_contribution(SPM);
-    gramm_boite(SPM);
 end

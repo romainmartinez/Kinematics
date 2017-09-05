@@ -1,5 +1,4 @@
 function [ output_args ] = gramm_boite(input)
-idx = find(input.poids == 1);
 % convert to string
 convert.sexe = {'men','women'};
 convert.hauteur = {'hips-shoulder','hips-eyes','hips-shoulder','shoulders-eyes','hips-eyes','shoulders-eyes'};
